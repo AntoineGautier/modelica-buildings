@@ -1,5 +1,5 @@
 simulateModel("Buildings.Controls.OBC.ASHRAE.PrimarySystem.ChillerPlant.Examples.ClosedLoopTestCase", stopTime=172800, method="Cvode", tolerance=1e-06, resultFile="ClosedLoopTestCase");
-createPlot(id=1, position={10, 10, 932, 952}, y={"TCHWSup.T", "TCHWRet.T", "TCWLvgCon.T", "TCWEntCon.T"}, grid=true, subPlot=1, timeUnit="h");
-createPlot(id=1, position={10, 10, 1192, 952}, y={"chi1.PLR1", "chi2.PLR1", "cooTow1.y", "cooTow2.y"}, grid=true, subPlot=2, timeUnit="h");
+createPlot(id=1, position={10, 10, 932, 952}, y={"sen_TCHWSup.T", "sen_TCHWRet.T", "sen_TCWLvgCon.T", "sen_TCWEntCon.T", "sen_TCWEntTow.T", "sen_TCWLvgTow.T"}, grid=true, subPlot=1, timeUnit="h");
+createPlot(id=1, position={10, 10, 1192, 952}, y={"chi1.PLR1", "chi2.PLR1", "cooTow1.y", "cooTow2.y", "valTowByp.y_actual"}, grid=true, subPlot=2, timeUnit="h");
 createPlot(id=2, position={950, 9, 510, 952}, y={"pumCW1.m_flow", "pumCW2.m_flow", "pumCHW2.m_flow", "pumCHW1.m_flow"}, grid=true, timeUnit="h");
 createPlot(id=3, position={1468, 7, 467, 953}, y={"chi1.COP", "chi2.COP"}, grid=true, timeUnit="h");
