@@ -95,9 +95,9 @@ model ClosedLoopTestCase
         rotation=180)));
   BoundaryConditions.WeatherData.ReaderTMY3           weaData(filNam=
         Modelica.Utilities.Files.loadResource("modelica://Buildings/Resources/weatherdata/USA_CA_San.Francisco.Intl.AP.724940_TMY3.mos"))
-    annotation (Placement(transformation(extent={{-224,420},{-204,440}})));
+    annotation (Placement(transformation(extent={{-224,442},{-204,462}})));
   BoundaryConditions.WeatherData.Bus weaBus
-    annotation (Placement(transformation(extent={{-166,418},{-146,438}})));
+    annotation (Placement(transformation(extent={{-166,440},{-146,460}})));
   Fluid.Chillers.ElectricEIR           chi2(
     redeclare package Medium1 = MediumW,
     redeclare package Medium2 = MediumW,
@@ -107,8 +107,8 @@ model ClosedLoopTestCase
     dp1_nominal=0,
     per=Buildings.Fluid.Chillers.Data.ElectricEIR.ElectricEIRChiller_Carrier_19XR_742kW_5_42COP_VSD(),
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyStateInitial)
-    annotation (Placement(transformation(extent={{154,59},{134,79}})));
-  Fluid.MixingVolumes.MixingVolume volCHWLoa(nPorts=2,
+    annotation (Placement(transformation(extent={{148,59},{128,79}})));
+  Fluid.MixingVolumes.MixingVolume volCHWLoa(nPorts=3,
     redeclare package Medium = MediumW,
     m_flow_nominal=2*m_floCHW_nominal,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyStateInitial,
@@ -161,8 +161,8 @@ model ClosedLoopTestCase
     falling=5*3600,
     period=24*3600,
     startTime=7*3600,
-    amplitude=2*q_floEva_nominal,
-    offset=0)
+    amplitude=0.95*2*q_floEva_nominal,
+    offset=0.05*2*q_floEva_nominal)
     annotation (Placement(transformation(extent={{-656,-42},{-636,-22}})));
   HeatTransfer.Sources.PrescribedHeatFlow prescribedHeatFlow
     annotation (Placement(transformation(extent={{20,-42},{40,-22}})));
@@ -190,19 +190,13 @@ model ClosedLoopTestCase
   CDL.Continuous.Sources.Constant set_TCHWSup(k=7)
     "Setpoint for chilled water supply temperature (C)"
     annotation (Placement(transformation(extent={{-654,410},{-634,430}})));
-  Staging.Subsequences.CapacityRequirement capReq(water_spec_heat=cpLiq)
-    annotation (Placement(transformation(extent={{-564,208},{-544,228}})));
   Fluid.Sensors.VolumeFlowRate sen_V_floCHW(redeclare package Medium = MediumW,
       m_flow_nominal=2*m_floCHW_nominal) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-86,22})));
-  Modelica.Blocks.Sources.RealExpression chi1PLR(y=chi1.PLR1)
-    annotation (Placement(transformation(extent={{-564,106},{-544,126}})));
   UnitConversions.From_degC from_degC
     annotation (Placement(transformation(extent={{-616,410},{-596,430}})));
-  Modelica.Blocks.Sources.RealExpression chi2PLR1(y=chi2.PLR1)
-    annotation (Placement(transformation(extent={{-564,88},{-544,108}})));
   Fluid.Movers.FlowControlled_m_flow pumCW1(
     use_inputFilter=false,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
@@ -252,10 +246,10 @@ model ClosedLoopTestCase
                          annotation (Placement(transformation(
         extent={{10,10},{-10,-10}},
         rotation=180,
-        origin={-66,104})));
+        origin={-64,104})));
   Modelica.Blocks.Sources.Constant con_pumCHW(k=1)
     "Control singal for cooling tower fan" annotation (Placement(transformation(
-          extent={{-10,-10},{10,10}}, origin={-272,129})));
+          extent={{-10,-10},{10,10}}, origin={-272,123})));
   Fluid.Sources.Boundary_pT expCW(redeclare package Medium = MediumW, nPorts=1)
     "Expansion device on condenser water loop"
     annotation (Placement(transformation(
@@ -267,25 +261,21 @@ model ClosedLoopTestCase
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
-        origin={-108,92})));
-  Generic.EquipmentRotationTwo equRot
-    annotation (Placement(transformation(extent={{-440,192},{-420,212}})));
-  Modelica.Blocks.Sources.BooleanExpression chi1On(y=chi1.on) "Chiller status"
-    annotation (Placement(transformation(extent={{-566,272},{-546,292}})));
+        origin={96,-10})));
+  Generic.EquipmentRotationTwo equRot(stagingRuntime=86400)
+    annotation (Placement(transformation(extent={{-280,196},{-260,216}})));
   Modelica.Blocks.Sources.BooleanExpression chi2On(y=chi2.on) "Chiller status"
-    annotation (Placement(transformation(extent={{-566,248},{-546,268}})));
-  CDL.Logical.Sources.Constant con(k=true)
-    annotation (Placement(transformation(extent={{-494,198},{-474,218}})));
+    annotation (Placement(transformation(extent={{-580,206},{-560,226}})));
   CDL.Conversions.BooleanToInteger booToInt
-    annotation (Placement(transformation(extent={{-530,272},{-510,292}})));
+    annotation (Placement(transformation(extent={{-490,234},{-470,254}})));
   CDL.Conversions.BooleanToInteger booToInt1
-    annotation (Placement(transformation(extent={{-530,248},{-510,268}})));
+    annotation (Placement(transformation(extent={{-490,206},{-470,226}})));
   CDL.Logical.Sources.Constant chi1Ava(k=true) "Chiller availability "
-    annotation (Placement(transformation(extent={{-566,166},{-546,186}})));
+    annotation (Placement(transformation(extent={{-656,132},{-636,152}})));
   CDL.Logical.Sources.Constant chi2Ava(k=true) "Chiller availability "
-    annotation (Placement(transformation(extent={{-566,134},{-546,154}})));
-  CDL.Integers.MultiSum mulSumInt(nin=2)
-    annotation (Placement(transformation(extent={{-472,260},{-452,280}})));
+    annotation (Placement(transformation(extent={{-656,100},{-636,120}})));
+  CDL.Integers.MultiSum chiStage(nin=2)
+    annotation (Placement(transformation(extent={{-432,220},{-412,240}})));
   Fluid.Actuators.Valves.ThreeWayEqualPercentageLinear valTowByp(
     redeclare package Medium = MediumW,
     m_flow_nominal=m_floCW_nominal,
@@ -325,19 +315,40 @@ model ClosedLoopTestCase
         extent={{10,-10},{-10,10}},
         rotation=180,
         origin={232,62})));
-  Staging.Subsequences.PartLoadRatios PLRs
-    annotation (Placement(transformation(extent={{-374,238},{-354,258}})));
-  Staging.Subsequences.Capacities staCap(nSta=2, staNomCap=q_floEva_nominal*{1,
-        2})
-    annotation (Placement(transformation(extent={{-442,236},{-422,256}})));
+  Staging.Subsequences.Change staChaPosDis(nPosDis=2, staNomCap=
+        q_floEva_nominal*{1,1})
+    annotation (Placement(transformation(extent={{-432,90},{-412,110}})));
   Modelica.Blocks.Sources.RealExpression dumCHWdP(y=dpCHW_nominal)
     "Dummy value (CHW pumps not controlled yet)"
     annotation (Placement(transformation(extent={{-564,68},{-544,88}})));
   Modelica.Blocks.Sources.RealExpression dumCooTowFanMax(y=1) "Dummy value"
     annotation (Placement(transformation(extent={{-564,50},{-544,70}})));
-  Modelica.Blocks.Sources.BooleanExpression WSEOn(y=false)
-    "Water side economizer status"
-    annotation (Placement(transformation(extent={{-564,30},{-544,50}})));
+  Modelica.Blocks.Sources.BooleanExpression dumWSEOn(y=false)
+    "Dummy water side economizer status"
+    annotation (Placement(transformation(extent={{-564,32},{-544,52}})));
+  Modelica.Blocks.Sources.RealExpression dumWSETLvg(y=273.15 + 10)
+    "Dummy value"
+    annotation (Placement(transformation(extent={{-564,16},{-544,36}})));
+  CDL.Integers.MultiSum chiStageNew(nin=2)
+    annotation (Placement(transformation(extent={{-382,150},{-362,170}})));
+  CDL.Integers.GreaterEqual intGreEqu
+    annotation (Placement(transformation(extent={{-328,130},{-308,150}})));
+  CDL.Integers.Sources.Constant conInt(k=1)
+    annotation (Placement(transformation(extent={{-382,110},{-362,130}})));
+  CDL.Integers.GreaterEqual intGreEqu1
+    annotation (Placement(transformation(extent={{-328,78},{-308,98}})));
+  CDL.Integers.Sources.Constant conInt1(k=2)
+    annotation (Placement(transformation(extent={{-382,70},{-362,90}})));
+  CDL.Logical.TrueFalseHold truFalHol(trueHoldDuration=10)
+    annotation (Placement(transformation(extent={{-534,206},{-514,226}})));
+  Modelica.Blocks.Sources.BooleanExpression chi1On(y=chi1.on) "Chiller status"
+    annotation (Placement(transformation(extent={{-580,234},{-560,254}})));
+  CDL.Logical.TrueFalseHold truFalHol1(trueHoldDuration=10)
+    annotation (Placement(transformation(extent={{-534,234},{-514,254}})));
+  CDL.Conversions.BooleanToReal booToRea
+    annotation (Placement(transformation(extent={{-230,184},{-210,204}})));
+  CDL.Conversions.BooleanToReal booToRea1
+    annotation (Placement(transformation(extent={{-230,158},{-210,178}})));
 equation
   connect(valIsoCW1.port_a, chi1.port_b1) annotation (Line(
       points={{98,144},{98,145},{126,145}},
@@ -350,7 +361,7 @@ equation
       smooth=Smooth.None,
       thickness=0.5));
   connect(weaData.weaBus,weaBus)  annotation (Line(
-      points={{-204,430},{-204,428},{-156,428}},
+      points={{-204,452},{-204,450},{-156,450}},
       color={255,204,51},
       thickness=0.5,
       smooth=Smooth.None), Text(
@@ -358,7 +369,7 @@ equation
       index=1,
       extent={{6,3},{6,3}}));
   connect(cooTow1.TAir, weaBus.TWetBul) annotation (Line(
-      points={{217,275},{217,429},{-156,429},{-156,428}},
+      points={{217,275},{217,445},{-156,445},{-156,450}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash), Text(
@@ -366,41 +377,33 @@ equation
       index=1,
       extent={{6,3},{6,3}}));
   connect(chi2.port_b1, valIsoCW2.port_a)
-    annotation (Line(points={{134,75},{114,75},{114,74}}, color={0,127,255}));
-  connect(chi2.port_b2, valIsoCHW2.port_a) annotation (Line(points={{154,63},{186,
-          63},{186,62}},          color={0,127,255}));
+    annotation (Line(points={{128,75},{114,75},{114,74}}, color={0,127,255}));
+  connect(chi2.port_b2, valIsoCHW2.port_a) annotation (Line(points={{148,63},{
+          186,63},{186,62}},      color={0,127,255}));
   connect(sen_TCHWSup.port_b, volCHWLoa.ports[1]) annotation (Line(points={{242,62},
-          {242,-42},{64,-42}},          color={0,127,255}));
+          {242,-42},{63.3333,-42}},     color={0,127,255}));
   connect(con_valIsoCW.y, valIsoCW2.y) annotation (Line(
       points={{-261,317},{104.5,317},{104.5,86},{104,86}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(volCHWLoa.heatPort, prescribedHeatFlow.port)
     annotation (Line(points={{56,-32},{40,-32}}, color={191,0,0}));
-  connect(con_valIsoCHW.y, valIsoCHW1.y) annotation (Line(
-      points={{-261,163},{184.5,163},{184.5,142},{186,142}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
-  connect(con_valIsoCHW.y, valIsoCHW2.y) annotation (Line(
-      points={{-261,163},{194.5,163},{194.5,74},{196,74}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
   connect(weaBus.TWetBul, cooTow2.TAir) annotation (Line(
-      points={{-156,428},{-156,429},{217,429},{217,239}},
+      points={{-156,450},{-156,445},{217,445},{217,239}},
       color={255,204,51},
       thickness=0.5), Text(
       string="%first",
       index=-1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
-  connect(volCHWLoa.ports[2], sen_TCHWRet.port_a) annotation (Line(points={{68,-42},
+  connect(volCHWLoa.ports[2], sen_TCHWRet.port_a) annotation (Line(points={{66,-42},
           {-86,-42},{-86,-18}}, color={0,127,255}));
   connect(sen_TCHWEntEva.port_b, chi2.port_a2)
-    annotation (Line(points={{10,64},{134,64},{134,63}}, color={0,127,255}));
+    annotation (Line(points={{10,64},{128,64},{128,63}}, color={0,127,255}));
   connect(valIsoCW1.port_b, sen_TCWLvgCon.port_a)
     annotation (Line(points={{78,144},{50,144}}, color={0,127,255}));
   connect(sen_TCWEntCon.port_b, chi2.port_a1)
-    annotation (Line(points={{242,144},{242,75},{154,75}}, color={0,127,255}));
+    annotation (Line(points={{242,144},{242,75},{148,75}}, color={0,127,255}));
   connect(sen_TCWEntCon.port_b, chi1.port_a1) annotation (Line(points={{242,144},
           {146,144},{146,145}}, color={0,127,255}));
   connect(cooTow2.port_b, sen_TCWLvgTow.port_a)
@@ -417,28 +420,16 @@ equation
     annotation (Line(points={{206,62},{222,62}}, color={0,127,255}));
   connect(valIsoCHW1.port_b, sen_TCHWSup.port_a) annotation (Line(points={{196,130},
           {222,130},{222,62}}, color={0,127,255}));
-  connect(sen_TCHWRet.T, capReq.TChiWatRet) annotation (Line(
-      points={{-97,-8},{-586,-8},{-586,218},{-565,218}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
   connect(sen_TCHWRet.port_b, sen_V_floCHW.port_a)
     annotation (Line(points={{-86,2},{-86,12}}, color={0,127,255}));
-  connect(sen_V_floCHW.V_flow, capReq.VChiWat_flow) annotation (Line(
-      points={{-97,22},{-580,22},{-580,213},{-565,213}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
   connect(set_TCHWSup.y, from_degC.u)
     annotation (Line(points={{-633,420},{-618,420}}, color={0,0,127}));
-  connect(from_degC.y, capReq.TChiWatSupSet) annotation (Line(
-      points={{-595,420},{-586,420},{-586,223},{-565,223}},
-      color={0,0,127},
-      pattern=LinePattern.Dash));
   connect(from_degC.y, chi1.TSet) annotation (Line(
       points={{-595,420},{172,420},{172,136},{148,136}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(from_degC.y, chi2.TSet) annotation (Line(
-      points={{-595,420},{171.5,420},{171.5,66},{156,66}},
+      points={{-595,420},{171.5,420},{171.5,66},{150,66}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(load.y, prescribedHeatFlow.Q_flow)
@@ -463,7 +454,7 @@ equation
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(sen_TCHWSup.T, con_cooTowFan.TChiWatSup) annotation (Line(
-      points={{232,51},{232,40},{-314,40},{-314,350},{-284,350}},
+      points={{232,51},{232,36},{-396,36},{-396,350},{-284,350}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(con_cooTowFan.yFanSpe, cooTow1.y) annotation (Line(
@@ -477,41 +468,27 @@ equation
   connect(sen_V_floCHW.port_b, pumCHW2.port_a)
     annotation (Line(points={{-86,32},{-86,64},{-72,64}}, color={0,127,255}));
   connect(sen_V_floCHW.port_b, pumCHW1.port_a) annotation (Line(points={{-86,32},
-          {-86,104},{-76,104}}, color={0,127,255}));
+          {-86,104},{-74,104}}, color={0,127,255}));
   connect(con_pumCHW.y, pumCHW1.y) annotation (Line(
-      points={{-261,129},{-64.5,129},{-64.5,116},{-66,116}},
+      points={{-261,123},{-64.5,123},{-64.5,116},{-64,116}},
       color={0,0,127},
       pattern=LinePattern.Dash));
   connect(con_pumCHW.y, pumCHW2.y) annotation (Line(
-      points={{-261,129},{-59.5,129},{-59.5,76},{-62,76}},
+      points={{-261,123},{-59.5,123},{-59.5,76},{-62,76}},
       color={0,0,127},
       pattern=LinePattern.Dash));
-  connect(pumCHW1.port_b, sen_TCHWEntEva.port_a) annotation (Line(points={{-56,104},
+  connect(expCHW.ports[1],volCHWLoa. ports[3]) annotation (Line(points={{96,-20},
+          {96,-42},{68.6667,-42}},          color={0,127,255}));
+  connect(pumCHW1.port_b, sen_TCHWEntEva.port_a) annotation (Line(points={{-54,104},
           {-30,104},{-30,64},{-10,64}}, color={0,127,255}));
   connect(pumCHW2.port_b, sen_TCHWEntEva.port_a)
     annotation (Line(points={{-52,64},{-10,64}}, color={0,127,255}));
-  connect(equRot.uLeaSta, con.y)
-    annotation (Line(points={{-442,208},{-473,208}}, color={255,0,255}));
-  connect(con.y, equRot.uLagSta) annotation (Line(points={{-473,208},{-463.5,
-          208},{-463.5,196},{-442,196}}, color={255,0,255}));
-  connect(equRot.yDevSta[1], chi1.on) annotation (Line(
-      points={{-419,208},{206,208},{206,142},{148,142}},
-      color={255,0,255},
-      pattern=LinePattern.Dash));
-  connect(equRot.yDevSta[2], chi2.on) annotation (Line(
-      points={{-419,208},{205.5,208},{205.5,72},{156,72}},
-      color={255,0,255},
-      pattern=LinePattern.Dash));
-  connect(chi1On.y, booToInt.u)
-    annotation (Line(points={{-545,282},{-532,282}}, color={255,0,255}));
-  connect(chi2On.y, booToInt1.u)
-    annotation (Line(points={{-545,258},{-532,258}}, color={255,0,255}));
-  connect(booToInt.y, mulSumInt.u[1]) annotation (Line(points={{-509,282},{-494,
-          282},{-494,273.5},{-474,273.5}}, color={255,127,0}));
-  connect(booToInt1.y, mulSumInt.u[2]) annotation (Line(points={{-509,258},{
-          -494,258},{-494,266.5},{-474,266.5}}, color={255,127,0}));
-  connect(sen_TCWLvgTow.port_b, valTowByp.port_1) annotation (Line(points={{338,
-          235},{344,235},{344,204}}, color={0,127,255}));
+  connect(booToInt.y, chiStage.u[1]) annotation (Line(points={{-469,244},{-454,
+          244},{-454,233.5},{-434,233.5}}, color={255,127,0}));
+  connect(booToInt1.y, chiStage.u[2]) annotation (Line(points={{-469,216},{-454,
+          216},{-454,226.5},{-434,226.5}}, color={255,127,0}));
+  connect(sen_TCWLvgTow.port_b, valTowByp.port_1) annotation (Line(points={{338,235},
+          {344,235},{344,204}},      color={0,127,255}));
   connect(con_valTowByp.y, valTowByp.y) annotation (Line(
       points={{-261,278},{368,278},{368,194},{356,194}},
       color={0,0,127},
@@ -525,8 +502,9 @@ equation
   connect(valTowByp.port_2, pumCW1.port_a) annotation (Line(points={{344,184},{
           344,144},{322,144}},
                            color={0,127,255}));
-  connect(valTowByp.port_2, pumCW2.port_a) annotation (Line(points={{344,184},{344,
-          110},{322,110}}, color={0,127,255}));
+  connect(valTowByp.port_2, pumCW2.port_a) annotation (Line(points={{344,184},{
+          344,110},{322,110}},
+                           color={0,127,255}));
   connect(expCW.ports[1], pumCW2.port_a)
     annotation (Line(points={{362,110},{322,110}}, color={0,127,255}));
   connect(sen_TCWLvgTow.T, con_cooTowFan.TConWatRet) annotation (Line(
@@ -536,8 +514,10 @@ equation
   connect(set_TMinCWEntCon.y, from_degC1.u)
     annotation (Line(points={{-633,312},{-620,312}}, color={0,0,127}));
   connect(from_degC1.y, con_valTowByp.u_s)
-    annotation (Line(points={{-597,312},{-426,312},{-426,278},{-284,278}},
-                                                     color={0,0,127}));
+    annotation (Line(
+      points={{-597,312},{-426,312},{-426,278},{-284,278}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
   connect(pumCW1.port_b, sen_TCWEntCon.port_a)
     annotation (Line(points={{302,144},{262,144}}, color={0,127,255}));
   connect(set_m_floPumCW.y, pumCW1.m_flow_in) annotation (Line(
@@ -548,38 +528,97 @@ equation
       points={{-633,386},{311.5,386},{311.5,122},{312,122}},
       color={0,0,127},
       pattern=LinePattern.Dash));
-  connect(valTowByp.port_3, sen_TCWEntTow.port_a) annotation (Line(points={{334,
-          194},{30,194},{30,235},{70,235}}, color={0,127,255}));
+  connect(valTowByp.port_3, sen_TCWEntTow.port_a) annotation (Line(points={{334,194},
+          {30,194},{30,235},{70,235}},      color={0,127,255}));
   connect(pumCW2.port_b, sen_TCWEntCon.port_a) annotation (Line(points={{302,110},
           {282,110},{282,144},{262,144}}, color={0,127,255}));
   connect(sen_TCWEntCon.T, con_valTowByp.u_m) annotation (Line(
-      points={{252,155},{252,188},{-272,188},{-272,266}},
+      points={{252,155},{252,226},{-272,226},{-272,266}},
       color={0,0,127},
       pattern=LinePattern.Dash));
-  connect(mulSumInt.y, staCap.uSta) annotation (Line(points={{-450.3,270},{-448,
-          270},{-448,246},{-444,246}}, color={255,127,0}));
-  connect(chi1Ava.y, staCap.uStaAva[1]) annotation (Line(points={{-545,176},{
-          -456,176},{-456,239},{-444,239}}, color={255,0,255}));
-  connect(chi2Ava.y, staCap.uStaAva[2]) annotation (Line(points={{-545,144},{
-          -491.5,144},{-491.5,241},{-444,241}}, color={255,0,255}));
-  connect(capReq.y, PLRs.uCapReq) annotation (Line(points={{-543,218},{-410,218},
-          {-410,255},{-375,255}}, color={0,0,127}));
-  connect(staCap.yStaNom, PLRs.uStaCapNom)
-    annotation (Line(points={{-421,253},{-375,253}}, color={0,0,127}));
-  connect(staCap.yStaUpNom, PLRs.uStaUpCapNom) annotation (Line(points={{-421,
-          249},{-401.5,249},{-401.5,251},{-375,251}}, color={0,0,127}));
-  connect(staCap.yStaMin, PLRs.uStaCapMin) annotation (Line(points={{-421,238},
-          {-388,238},{-388,245},{-375,245}}, color={0,0,127}));
-  connect(mulSumInt.y, PLRs.uSta) annotation (Line(points={{-450.3,270},{-410,
-          270},{-410,257},{-375,257}}, color={255,127,0}));
-  connect(staCap.yStaDowNom, PLRs.uStaDowCapNom) annotation (Line(points={{-421,
-          245},{-398.5,245},{-398.5,249},{-375,249}}, color={0,0,127}));
-  connect(staCap.yStaUpMin, PLRs.uStaUpCapMin) annotation (Line(points={{-421,
-          240},{-390,240},{-390,247},{-375,247}}, color={0,0,127}));
-  connect(expCHW.ports[1], pumCHW2.port_a) annotation (Line(points={{-108,82},{
-          -108,64},{-72,64}}, color={0,127,255}));
+  connect(chiStage.y, staChaPosDis.uSta) annotation (Line(points={{-410.3,230},
+          {-408,230},{-408,124},{-439,124},{-439,112},{-433,112}}, color={255,
+          127,0}));
+  connect(chi1Ava.y, staChaPosDis.uStaAva[1]) annotation (Line(points={{-635,
+          142},{-518,142},{-518,110},{-433,110}}, color={255,0,255}));
+  connect(chi2Ava.y, staChaPosDis.uStaAva[2]) annotation (Line(points={{-635,
+          110},{-433,110}},                       color={255,0,255}));
+  connect(sen_TCHWRet.T, staChaPosDis.TChiWatRet) annotation (Line(
+      points={{-97,-8},{-532,-8},{-532,103},{-433,103}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(sen_TCHWSup.T, staChaPosDis.TChiWatSup) annotation (Line(
+      points={{232,51},{232,30},{-528,30},{-528,98},{-433,98}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(sen_V_floCHW.V_flow, staChaPosDis.VChiWat_flow) annotation (Line(
+      points={{-97,22},{-530,22},{-530,101},{-433,101}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(dumCHWdP.y, staChaPosDis.dpChiWatPum) annotation (Line(points={{-543,78},
+          {-514,78},{-514,94},{-433,94}},       color={0,0,127}));
+  connect(dumCHWdP.y, staChaPosDis.dpChiWatPumSet) annotation (Line(
+      points={{-543,78},{-514,78},{-514,96},{-433,96}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(dumCooTowFanMax.y, staChaPosDis.uTowFanSpeMax) annotation (Line(
+        points={{-543,60},{-508,60},{-508,90},{-433,90}},   color={0,0,127}));
+  connect(dumWSEOn.y, staChaPosDis.uWseSta) annotation (Line(points={{-543,42},
+          {-522,42},{-522,108},{-433,108}}, color={255,0,255}));
+  connect(from_degC.y, staChaPosDis.TChiWatSupSet) annotation (Line(
+      points={{-595,420},{-510,420},{-510,105},{-433,105}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(dumWSETLvg.y, staChaPosDis.TWsePre) annotation (Line(points={{-543,26},
+          {-512,26},{-512,92},{-433,92}}, color={0,0,127}));
+  connect(chiStage.y, chiStageNew.u[1]) annotation (Line(points={{-410.3,230},{
+          -388,230},{-388,163.5},{-384,163.5}}, color={255,127,0}));
+  connect(staChaPosDis.y, chiStageNew.u[2]) annotation (Line(points={{-411,100},
+          {-388,100},{-388,156.5},{-384,156.5}}, color={255,127,0}));
+  connect(chiStageNew.y, intGreEqu.u1) annotation (Line(points={{-360.3,160},{
+          -354,160},{-354,140},{-330,140}}, color={255,127,0}));
+  connect(intGreEqu.u2, conInt.y) annotation (Line(points={{-330,132},{-354,132},
+          {-354,120},{-361,120}}, color={255,127,0}));
+  connect(chiStageNew.y, intGreEqu1.u1) annotation (Line(points={{-360.3,160},{
+          -342,160},{-342,88},{-330,88}}, color={255,127,0}));
+  connect(intGreEqu1.u2, conInt1.y)
+    annotation (Line(points={{-330,80},{-361,80}}, color={255,127,0}));
+  connect(equRot.yDevSta[1], chi1.on) annotation (Line(points={{-259,212},{164,
+          212},{164,142},{148,142}}, color={255,0,255}));
+  connect(equRot.yDevSta[2], chi2.on) annotation (Line(
+      points={{-259,212},{164,212},{164,72},{150,72}},
+      color={255,0,255},
+      pattern=LinePattern.Dash));
+  connect(intGreEqu.y, equRot.uLeaSta) annotation (Line(points={{-307,140},{
+          -306,140},{-306,212},{-282,212}}, color={255,0,255}));
+  connect(intGreEqu1.y, equRot.uLagSta) annotation (Line(points={{-307,88},{
+          -302,88},{-302,200},{-282,200}}, color={255,0,255}));
+  connect(chi2On.y, truFalHol.u)
+    annotation (Line(points={{-559,216},{-535,216}}, color={255,0,255}));
+  connect(booToInt1.u, truFalHol.y)
+    annotation (Line(points={{-492,216},{-513,216}}, color={255,0,255}));
+  connect(chi1On.y, truFalHol1.u)
+    annotation (Line(points={{-559,244},{-535,244}}, color={255,0,255}));
+  connect(booToInt.u, truFalHol1.y)
+    annotation (Line(points={{-492,244},{-513,244}}, color={255,0,255}));
+  connect(equRot.yDevSta[1], booToRea.u) annotation (Line(
+      points={{-259,212},{-238,212},{-238,194},{-232,194}},
+      color={255,0,255},
+      pattern=LinePattern.Dash));
+  connect(equRot.yDevSta[2], booToRea1.u) annotation (Line(
+      points={{-259,212},{-244,212},{-244,168},{-232,168}},
+      color={255,0,255},
+      pattern=LinePattern.Dash));
+  connect(booToRea.y, valIsoCHW1.y) annotation (Line(
+      points={{-209,194},{186,194},{186,142}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
+  connect(booToRea1.y, valIsoCHW2.y) annotation (Line(
+      points={{-209,168},{196,168},{196,74}},
+      color={0,0,127},
+      pattern=LinePattern.Dash));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
-          extent={{-700,-120},{400,460}}), graphics={
+          extent={{-680,-60},{400,480}}),  graphics={
         Text(
           extent={{-700,460},{-586,444}},
           lineColor={28,108,200},
@@ -589,9 +628,17 @@ equation
           lineColor={28,108,200},
           textString="Loads"),
         Text(
-          extent={{-566,460},{-452,444}},
+          extent={{-604,460},{-490,444}},
           lineColor={28,108,200},
-          textString="Controls")}),
+          textString="Controls"),
+        Text(
+          extent={{-212,-96},{-212,-94}},
+          lineColor={28,108,200},
+          textString="TODO
+
+WSE
+Bypass valve for minimum evaporator flowrate ")}),
     __Dymola_Commands(file="Resources/Scripts/Dymola/Controls/OBC/ASHRAE/PrimarySystem/ChillerPlant/Examples/ClosedLoopTestCase.mos"
-        "Simulate and plot"));
+        "Simulate and plot"),
+    Icon(coordinateSystem(extent={{-680,-60},{400,480}})));
 end ClosedLoopTestCase;

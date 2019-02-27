@@ -1,5 +1,5 @@
 within Buildings.Controls.OBC.ASHRAE.PrimarySystem.ChillerPlant.Examples;
-model ClosedLoopTestCaseTmp
+model ClosedLoopTestCaseTmp1
   "Simple closed loop model for testing primary control sequences"
   extends Modelica.Icons.Example;
 
@@ -108,7 +108,7 @@ model ClosedLoopTestCaseTmp
     per=Buildings.Fluid.Chillers.Data.ElectricEIR.ElectricEIRChiller_Carrier_19XR_742kW_5_42COP_VSD(),
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyStateInitial)
     annotation (Placement(transformation(extent={{154,59},{134,79}})));
-  Fluid.MixingVolumes.MixingVolume volCHWLoa(nPorts=3,
+  Fluid.MixingVolumes.MixingVolume volCHWLoa(nPorts=2,
     redeclare package Medium = MediumW,
     m_flow_nominal=2*m_floCHW_nominal,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyStateInitial,
@@ -267,7 +267,7 @@ model ClosedLoopTestCaseTmp
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
-        origin={96,-10})));
+        origin={-108,92})));
   Generic.EquipmentRotationTwo equRot
     annotation (Placement(transformation(extent={{-440,192},{-420,212}})));
   Modelica.Blocks.Sources.BooleanExpression chi1On(y=chi1.on) "Chiller status"
@@ -330,9 +330,6 @@ model ClosedLoopTestCaseTmp
   Staging.Subsequences.Capacities staCap(nSta=2, staNomCap=q_floEva_nominal*{1,
         2})
     annotation (Placement(transformation(extent={{-442,236},{-422,256}})));
-  Staging.Subsequences.Change staChaPosDis(nPosDis=2, staNomCap=
-        q_floEva_nominal*{1,2})
-    annotation (Placement(transformation(extent={{-372,102},{-352,122}})));
   Modelica.Blocks.Sources.RealExpression dumCHWdP(y=dpCHW_nominal)
     "Dummy value (CHW pumps not controlled yet)"
     annotation (Placement(transformation(extent={{-564,68},{-544,88}})));
@@ -373,7 +370,7 @@ equation
   connect(chi2.port_b2, valIsoCHW2.port_a) annotation (Line(points={{154,63},{186,
           63},{186,62}},          color={0,127,255}));
   connect(sen_TCHWSup.port_b, volCHWLoa.ports[1]) annotation (Line(points={{242,62},
-          {242,-42},{63.3333,-42}},     color={0,127,255}));
+          {242,-42},{64,-42}},          color={0,127,255}));
   connect(con_valIsoCW.y, valIsoCW2.y) annotation (Line(
       points={{-261,317},{104.5,317},{104.5,86},{104,86}},
       color={0,0,127},
@@ -396,7 +393,7 @@ equation
       index=-1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
-  connect(volCHWLoa.ports[2], sen_TCHWRet.port_a) annotation (Line(points={{66,-42},
+  connect(volCHWLoa.ports[2], sen_TCHWRet.port_a) annotation (Line(points={{68,-42},
           {-86,-42},{-86,-18}}, color={0,127,255}));
   connect(sen_TCHWEntEva.port_b, chi2.port_a2)
     annotation (Line(points={{10,64},{134,64},{134,63}}, color={0,127,255}));
@@ -489,8 +486,6 @@ equation
       points={{-261,129},{-59.5,129},{-59.5,76},{-62,76}},
       color={0,0,127},
       pattern=LinePattern.Dash));
-  connect(expCHW.ports[1],volCHWLoa. ports[3]) annotation (Line(points={{96,-20},
-          {96,-42},{68.6667,-42}},          color={0,127,255}));
   connect(pumCHW1.port_b, sen_TCHWEntEva.port_a) annotation (Line(points={{-56,104},
           {-30,104},{-30,64},{-10,64}}, color={0,127,255}));
   connect(pumCHW2.port_b, sen_TCHWEntEva.port_a)
@@ -581,28 +576,8 @@ equation
           245},{-398.5,245},{-398.5,249},{-375,249}}, color={0,0,127}));
   connect(staCap.yStaUpMin, PLRs.uStaUpCapMin) annotation (Line(points={{-421,
           240},{-390,240},{-390,247},{-375,247}}, color={0,0,127}));
-  connect(mulSumInt.y, staChaPosDis.uSta) annotation (Line(points={{-450.3,270},
-          {-442,270},{-442,123},{-373,123}}, color={255,127,0}));
-  connect(chi1Ava.y, staChaPosDis.uStaAva[1]) annotation (Line(points={{-545,
-          176},{-518,176},{-518,106},{-374,106}}, color={255,0,255}));
-  connect(chi2Ava.y, staChaPosDis.uStaAva[2]) annotation (Line(points={{-545,
-          144},{-528,144},{-528,106},{-374,106}}, color={255,0,255}));
-  connect(sen_TCHWRet.T, staChaPosDis.TChiWatRet) annotation (Line(points={{-97,
-          -8},{-532,-8},{-532,119},{-373,119}}, color={0,0,127}));
-  connect(sen_TCHWSup.T, staChaPosDis.TChiWatSup) annotation (Line(points={{232,
-          51},{-528,51},{-528,114},{-373,114}}, color={0,0,127}));
-  connect(sen_V_floCHW.V_flow, staChaPosDis.VChiWat_flow) annotation (Line(
-        points={{-97,22},{-530,22},{-530,117},{-373,117}}, color={0,0,127}));
-  connect(dumCHWdP.y, staChaPosDis.dpChiWatPum) annotation (Line(points={{-543,
-          78},{-516,78},{-516,109},{-373,109}}, color={0,0,127}));
-  connect(dumCHWdP.y, staChaPosDis.dpChiWatPumSet) annotation (Line(points={{
-          -543,78},{-514,78},{-514,111},{-373,111}}, color={0,0,127}));
-  connect(dumCooTowFanMax.y, staChaPosDis.uTowFanSpeMax) annotation (Line(
-        points={{-543,60},{-512,60},{-512,104},{-373,104}}, color={0,0,127}));
-  connect(WSEOn.y, staChaPosDis.uWseSta) annotation (Line(points={{-543,40},{
-          -510,40},{-510,102},{-373,102}}, color={255,0,255}));
-  connect(from_degC.y, staChaPosDis.TChiWatSupSet) annotation (Line(points={{
-          -595,420},{-586,420},{-586,121},{-373,121}}, color={0,0,127}));
+  connect(expCHW.ports[1], pumCHW2.port_a) annotation (Line(points={{-108,82},{
+          -108,64},{-72,64}}, color={0,127,255}));
   annotation (Diagram(coordinateSystem(preserveAspectRatio=false,
           extent={{-700,-120},{400,460}}), graphics={
         Text(
@@ -619,4 +594,4 @@ equation
           textString="Controls")}),
     __Dymola_Commands(file="Resources/Scripts/Dymola/Controls/OBC/ASHRAE/PrimarySystem/ChillerPlant/Examples/ClosedLoopTestCase.mos"
         "Simulate and plot"));
-end ClosedLoopTestCaseTmp;
+end ClosedLoopTestCaseTmp1;
