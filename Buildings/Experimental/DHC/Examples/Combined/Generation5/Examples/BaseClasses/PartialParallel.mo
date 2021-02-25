@@ -69,7 +69,6 @@ partial model PartialParallel "Partial model for parallel network"
     dis(
     redeclare final package Medium = Medium,
     final nCon=nBui,
-    final dp_length_nominal=datDes.dp_length_nominal,
     final mDis_flow_nominal=datDes.mPipDis_flow_nominal,
     final mCon_flow_nominal=datDes.mCon_flow_nominal,
     final mDisCon_flow_nominal=datDes.mDisCon_flow_nominal,
@@ -182,14 +181,14 @@ partial model PartialParallel "Partial model for parallel network"
     "Storage pump electric energy"
     annotation (Placement(transformation(extent={{200,-150},{220,-130}})));
 initial equation
-  for i in 1:nBui loop
-    Modelica.Utilities.Streams.print(
-      "Nominal mass flow rate in section " + String(i) + ": " +
-      String(datDes.mDisCon_flow_nominal[i]));
-  end for;
-  Modelica.Utilities.Streams.print(
-    "Nominal mass flow rate in end of line: " +
-    String(dis.mEnd_flow_nominal));
+   for i in 1:nBui loop
+     Modelica.Utilities.Streams.print(
+       "Nominal mass flow rate in section " + String(i) + ": " +
+       String(datDes.mDisCon_flow_nominal[i]));
+   end for;
+   Modelica.Utilities.Streams.print(
+     "Nominal mass flow rate in end of line: " +
+     String(dis.mEnd_flow_nominal));
 equation
   connect(bou.ports[1], pumDis.port_a)
     annotation (Line(points={{102,-20},{80,-20},{80,-50}}, color={0,127,255}));

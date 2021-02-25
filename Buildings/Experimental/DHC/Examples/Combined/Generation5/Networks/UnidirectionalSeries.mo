@@ -3,16 +3,14 @@ model UnidirectionalSeries
   "Hydronic network for unidirectional series DHC system"
   extends DHC.Networks.BaseClasses.PartialDistribution1Pipe(
     tau=5*60,
-    redeclare BaseClasses.ConnectionSeriesAutosize con[nCon](
-      each final dp_length_nominal=dp_length_nominal,
+    redeclare BaseClasses.ConnectionSeriesStandard con[nCon](
       final lDis=lDis,
       final lCon=lCon,
       final dhDis=dhDis,
       final dhCon=dhCon),
-    redeclare model Model_pipDis = BaseClasses.PipeAutosize (
+    redeclare model Model_pipDis = BaseClasses.PipeStandard (
       roughness=7e-6,
       fac=1.5,
-      final dp_length_nominal=dp_length_nominal,
       final dh=dhEnd,
       final length=lEnd));
   parameter Real dp_length_nominal(final unit="Pa/m") = 250
@@ -24,19 +22,16 @@ model UnidirectionalSeries
   parameter Modelica.SIunits.Length lEnd
     "Length of the end of the distribution line (after last connection)";
   parameter Modelica.SIunits.Length dhDis[nCon](
-    each fixed=false,
     each start=0.2,
-    each min=0.01)
+    each min=0.01)=fill(0.2, nCon)
     "Hydraulic diameter of the distribution pipe before each connection";
   parameter Modelica.SIunits.Length dhCon[nCon](
-    each fixed=false,
     each start=0.2,
-    each min=0.01)
+    each min=0.01)=fill(0.2, nCon)
     "Hydraulic diameter of each connection pipe";
   parameter Modelica.SIunits.Length dhEnd(
-    fixed=false,
     start=0.2,
-    min=0.01)
+    min=0.01)=0.2
     "Hydraulic diameter of of the end of the distribution line (after last connection)";
   annotation (Documentation(info="<html>
 <p>

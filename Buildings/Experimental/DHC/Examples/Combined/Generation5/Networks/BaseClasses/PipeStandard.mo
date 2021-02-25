@@ -6,18 +6,18 @@ model PipeStandard "Pipe model parameterized with hydraulic diameter"
     final v_nominal=m_flow_nominal * 4 / (rho_default * dh^2 * Modelica.Constants.pi));
 
 equation
-  when terminal() then
-    if length > Modelica.Constants.eps then
-      Modelica.Utilities.Streams.print(
-       "Pipe nominal pressure drop for '" + getInstanceName() + "': " +
-        String(integer(floor(dp_nominal / length + 0.5))) +
-        " Pa/m, pipe diameter: " + String(integer(floor(dh * 100))/100) + " m.");
-    else
-      Modelica.Utilities.Streams.print(
-        "Pipe nominal pressure drop for '" + getInstanceName() +
-         "' as the pipe length is set to zero.");
-    end if;
-  end when;
+   when terminal() then
+     if length > Modelica.Constants.eps then
+       Modelica.Utilities.Streams.print(
+        "Pipe nominal pressure drop for '" + getInstanceName() + "': " +
+         String(integer(floor(dp_nominal / length + 0.5))) +
+         " Pa/m, pipe diameter: " + String(integer(floor(dh * 100))/100) + " m.");
+     else
+       Modelica.Utilities.Streams.print(
+         "Pipe nominal pressure drop for '" + getInstanceName() +
+          "' as the pipe length is set to zero.");
+     end if;
+   end when;
 annotation (
   DefaultComponentName="pipDis",
   Icon(graphics={

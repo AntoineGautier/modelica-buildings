@@ -60,18 +60,18 @@ protected
 initial equation
   dp_nominal = fac*dpStraightPipe_nominal;
 equation
-  when terminal() then
-    if length > Modelica.Constants.eps then
-      Modelica.Utilities.Streams.print(
-       "Pipe nominal pressure drop for '" + getInstanceName() + "': " +
-        String(integer(floor(dp_nominal / length + 0.5))) +
-        " Pa/m, pipe diameter: " + String(integer(floor(dh * 100))/100) + " m.");
-    else
-      Modelica.Utilities.Streams.print(
-        "Pipe nominal pressure drop for '" + getInstanceName() +
-         "' as the pipe length is set to zero.");
-    end if;
-  end when;
+//   when terminal() then
+//     if length > Modelica.Constants.eps then
+//       Modelica.Utilities.Streams.print(
+//        "Pipe nominal pressure drop for '" + getInstanceName() + "': " +
+//         String(integer(floor(dp_nominal / length + 0.5))) +
+//         " Pa/m, pipe diameter: " + String(integer(floor(dh * 100))/100) + " m.");
+//     else
+//       Modelica.Utilities.Streams.print(
+//         "Pipe nominal pressure drop for '" + getInstanceName() +
+//          "' as the pipe length is set to zero.");
+//     end if;
+//   end when;
 annotation (
     DefaultComponentName="pipCon",
     Icon(graphics={
