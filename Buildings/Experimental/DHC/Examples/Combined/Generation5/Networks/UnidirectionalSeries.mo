@@ -11,7 +11,7 @@ model UnidirectionalSeries
     redeclare model Model_pipDis = BaseClasses.PipeStandard (
       roughness=7e-6,
       fac=1.5,
-      final dh=dhEnd,
+      final dh(fixed=true)=dhEnd,
       final length=lEnd));
   parameter Real dp_length_nominal(final unit="Pa/m") = 250
     "Pressure drop per pipe length at nominal flow rate";
@@ -36,18 +36,18 @@ model UnidirectionalSeries
   annotation (Documentation(info="<html>
 <p>
 This model represents a one-pipe distribution network with built-in computation
-of the pipe diameter based on the pressure drop per pipe length 
+of the pipe diameter based on the pressure drop per pipe length
 at nominal flow rate.
 </p>
 <h4>Modeling considerations</h4>
 <p>
-Note that <code>dhDis</code> needs to be vectorized, even if the same value 
-is computed for each array element in case of a one-pipe network. 
+Note that <code>dhDis</code> needs to be vectorized, even if the same value
+is computed for each array element in case of a one-pipe network.
 This is because the pipe diameter is computed at initialization by the model
 <a href=\"Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesAutosize\">
 Buildings.Experimental.DHC.Examples.Combined.Generation5.Networks.BaseClasses.ConnectionSeriesAutosize</a>
 which is instantiated for each connection.
-So the initialization system of equations would be overdetermined if using 
+So the initialization system of equations would be overdetermined if using
 a parameter binding with a scalar variable.
 </p>
 </html>", revisions="<html>

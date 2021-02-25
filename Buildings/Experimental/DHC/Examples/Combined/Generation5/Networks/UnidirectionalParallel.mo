@@ -11,7 +11,7 @@ model UnidirectionalParallel
     redeclare model Model_pipDis = BaseClasses.PipeStandard (
       roughness=7e-6,
       fac=1.5,
-      final dh=dhEnd,
+      final dh(fixed=true)=dhEnd,
       final length=2*lEnd));
   parameter Modelica.SIunits.Length lDis[nCon]
     "Length of the distribution pipe before each connection (supply only, not counting return line)";
@@ -34,7 +34,7 @@ model UnidirectionalParallel
   annotation (Documentation(info="<html>
 <p>
 This model represents a two-pipe distribution network with built-in computation
-of the pipe diameters based on the pressure drop per pipe length 
+of the pipe diameters based on the pressure drop per pipe length
 at nominal flow rate.
 </p>
 </html>", revisions="<html>
