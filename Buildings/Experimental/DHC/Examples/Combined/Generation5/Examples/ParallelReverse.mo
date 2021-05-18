@@ -1,6 +1,5 @@
 within Buildings.Experimental.DHC.Examples.Combined.Generation5.Examples;
-model ParallelConstantFlow
-  "Example of parallel connection with constant district water mass flow rate"
+model ParallelReverse "Example of parallel connection with constant district water mass flow rate"
   extends BaseClasses.PartialParallel(
     redeclare
       Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BuildingTimeSeriesWithETS
@@ -12,9 +11,9 @@ model ParallelConstantFlow
       epsPla=0.91),
     dis(show_entFlo=true));
   parameter String filNam[nBui]={
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissOffice_20190916.mos",
+    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissHospital_20190916.mos",
     "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissResidential_20190916.mos",
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissHospital_20190916.mos"}
+    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissOffice_20190916.mos"}
     "Library paths of the files with thermal loads as time series";
   Modelica.Blocks.Sources.Constant masFloMaiPum(
     k=datDes.mPumDis_flow_nominal)
@@ -67,4 +66,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end ParallelConstantFlow;
+end ParallelReverse;

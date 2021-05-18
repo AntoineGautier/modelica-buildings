@@ -34,8 +34,7 @@ equation
           {60,-60},{60,-60},{68,-60}}, color={0,0,127}));
   connect(pumSto.m_flow_in, masFloMaiPum.y) annotation (Line(points={{-180,-68},
           {-180,-60},{-259,-60}}, color={0,0,127}));
-  connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{
-          -184,20},{-184,4.66667},{-161.333,4.66667}},
+  connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{-184,20},{-184,4.66667},{-161.333,4.66667}},
                                   color={0,0,127}));
   connect(THotWatSupSet.y, bui.THotWatSupSet) annotation (Line(points={{-168,
           180},{-24,180},{-24,183},{-12,183}}, color={0,0,127}));
