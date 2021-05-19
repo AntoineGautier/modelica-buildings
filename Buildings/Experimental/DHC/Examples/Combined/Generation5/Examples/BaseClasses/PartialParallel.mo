@@ -222,8 +222,7 @@ equation
           -228,220},{-20,220},{-20,187},{-12,187}}, color={0,0,127}));
   connect(TChiWatSupSet.y, bui.TChiWatSupSet) annotation (Line(points={{-198,
           200},{-24,200},{-24,185},{-12,185}}, color={0,0,127}));
-  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},
-          {-180,7.33333},{-161.333,7.33333}},
+  connect(TSewWat.y, pla.TSewWat) annotation (Line(points={{-259,40},{-180,40},{-180,7.33333},{-161.333,7.33333}},
                               color={0,0,127}));
   connect(pla.port_bSerAmb, conPla.port_aCon) annotation (Line(points={{-140,1.33333},
           {-100,1.33333},{-100,-4},{-90,-4}}, color={0,127,255}));
@@ -232,19 +231,18 @@ equation
         color={0,127,255}));
   connect(THeaWatSupMinSet.y, bui.THeaWatSupMinSet) annotation (Line(points={{
           -258,240},{-16,240},{-16,189},{-12,189}}, color={0,0,127}));
-  connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},
-          {-100,38.6667},{298,38.6667}}, color={0,0,127}));
+  connect(TDisWatSup.T, conVio.u[1]) annotation (Line(points={{-91,20},{-100,20},{-100,38.6667},{298,38.6667}},
+                                         color={0,0,127}));
   connect(TDisWatRet.T, conVio.u[2]) annotation (Line(points={{69,0},{60,0},{60,
           40},{298,40}}, color={0,0,127}));
-  connect(TDisWatBorLvg.T, conVio.u[3]) annotation (Line(points={{-91,-40},{
-          -102,-40},{-102,41.3333},{298,41.3333}},
+  connect(TDisWatBorLvg.T, conVio.u[3]) annotation (Line(points={{-91,-40},{-102,-40},{-102,41.3333},{298,41.3333}},
                                               color={0,0,127}));
   connect(bui.PPumETS,PPumETS. u)
     annotation (Line(points={{7,192},{7,200},{118,200}}, color={0,0,127}));
   connect(PPumETS.y,EPumETS. u)
     annotation (Line(points={{142,200},{198,200}}, color={0,0,127}));
-  connect(pla.PPum, EPumPla.u) annotation (Line(points={{-138.667,5.33333},{
-          -108,5.33333},{-108,44},{180,44},{180,60},{198,60}}, color={0,0,127}));
+  connect(pla.PPum, EPumPla.u) annotation (Line(points={{-138.667,5.33333},{-108,5.33333},{-108,44},{180,44},{180,60},{
+          198,60}},                                            color={0,0,127}));
   connect(EPumETS.y,EPum. u[1]) annotation (Line(points={{221,200},{240,200},{
           240,121.5},{258,121.5}},
                                color={0,0,127}));
