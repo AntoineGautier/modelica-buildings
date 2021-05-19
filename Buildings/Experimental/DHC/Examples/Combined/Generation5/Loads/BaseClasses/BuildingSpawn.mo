@@ -1,5 +1,5 @@
 within Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BaseClasses;
-model BuildingSpawnLargeOffice "EnergyPlus building model"
+model BuildingSpawn "Spawn building model"
   extends Buildings.Experimental.DHC.Loads.BaseClasses.PartialBuilding(
     redeclare package Medium=Buildings.Media.Water,
     final have_heaWat=true,
@@ -14,6 +14,10 @@ model BuildingSpawnLargeOffice "EnergyPlus building model"
     "Number of conditioned thermal zones";
   parameter Integer facMulTerUni[nZon]={5 for i in 1:nZon}
     "Multiplier factor for terminal units";
+  parameter String idfName="modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
+    "Name of the IDF file";
+  parameter String weaName="modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
+    "Name of the weather file";
   parameter Modelica.SIunits.MassFlowRate mLoa_flow_nominal[nZon]=fill(
     1,
     nZon)
@@ -29,10 +33,28 @@ model BuildingSpawnLargeOffice "EnergyPlus building model"
     nZon) ./ facMulTerUni
     "Design cooling heat flow rate (single terminal unit)"
     annotation (Dialog(group="Nominal condition"));
-  parameter String idfName="modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
-    "Name of the IDF file";
-  parameter String weaName="modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
-    "Name of the weather file";
+  parameter Modelica.SIunits.Temperature T_aHeaWat_nominal=313.15
+    "Heating water inlet temperature at nominal conditions"
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Temperature T_bHeaWat_nominal(
+    min=273.15,
+    displayUnit="degC")=T_aHeaWat_nominal-5
+    "Heating water outlet temperature at nominal conditions"
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Temperature T_aChiWat_nominal=291.15
+    "Chilled water inlet temperature at nominal conditions "
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Temperature T_bChiWat_nominal(
+    min=273.15,
+    displayUnit="degC")=T_aChiWat_nominal+5
+    "Chilled water outlet temperature at nominal conditions"
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Temperature T_aLoaHea_nominal=273.15 + 20
+    "Load side inlet temperature at nominal conditions in heating mode"
+    annotation (Dialog(group="Nominal condition"));
+  parameter Modelica.SIunits.Temperature T_aLoaCoo_nominal=273.15 + 24
+    "Load side inlet temperature at nominal conditions in cooling mode"
+    annotation (Dialog(group="Nominal condition"));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant minTSet[nZon](
     k=fill(
       293.15,
@@ -117,14 +139,15 @@ model BuildingSpawnLargeOffice "EnergyPlus building model"
     final facMul=facMulTerUni,
     final QHea_flow_nominal=QHea_flow_nominal,
     final QCoo_flow_nominal=QCoo_flow_nominal,
-    each T_aLoaHea_nominal=293.15,
-    each T_aLoaCoo_nominal=297.15,
-    each T_bHeaWat_nominal=308.15,
-    each T_bChiWat_nominal=285.15,
-    each T_aHeaWat_nominal=313.15,
-    each T_aChiWat_nominal=280.15,
+    each T_aLoaHea_nominal=T_aLoaHea_nominal,
+    each T_aLoaCoo_nominal=T_aLoaCoo_nominal,
+    each T_bHeaWat_nominal=T_bHeaWat_nominal,
+    each T_bChiWat_nominal=T_bChiWat_nominal,
+    each T_aHeaWat_nominal=T_aHeaWat_nominal,
+    each T_aChiWat_nominal=T_aChiWat_nominal,
     final mLoaHea_flow_nominal=mLoa_flow_nominal,
-    final mLoaCoo_flow_nominal=mLoa_flow_nominal) "Terminal unit"
+    final mLoaCoo_flow_nominal=mLoa_flow_nominal)
+    "Terminal unit"
     annotation (Placement(transformation(extent={{-140,-2},{-116,22}})));
   Buildings.Experimental.DHC.Loads.FlowDistribution disFloHea(
     redeclare package Medium=Medium,
@@ -272,4 +295,4 @@ First implementation.
         Bitmap(
           extent={{-108,-100},{92,100}},
           fileName="modelica://Buildings/Resources/Images/ThermalZones/EnergyPlus/EnergyPlusLogo.png")}));
-end BuildingSpawnLargeOffice;
+end BuildingSpawn;

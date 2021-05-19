@@ -1,19 +1,19 @@
 within Buildings.Experimental.DHC.Examples.Combined.Generation5.Examples;
-model ParallelReverse "Example of parallel connection with constant district water mass flow rate"
-  extends BaseClasses.PartialParallel(
+model LDRDFanCoils "Example of parallel connection with constant district water mass flow rate"
+  extends BaseClasses.PartialParallelSpawn(
     redeclare
       Buildings.Experimental.DHC.Examples.Combined.Generation5.Loads.BuildingTimeSeriesWithETS
-      bui[nBui](final filNam=filNam),
+      bui[nBui-1](final filNam=filNam),
     datDes(
+      idxBuiSpa=3,
       mPumDis_flow_nominal=150,
       mPipDis_flow_nominal=150,
       dp_length_nominal=250,
       epsPla=0.91),
     dis(show_entFlo=true));
-  parameter String filNam[nBui]={
+  parameter String filNam[nBui-1]={
     "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissHospital_20190916.mos",
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissResidential_20190916.mos",
-    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissOffice_20190916.mos"}
+    "modelica://Buildings/Resources/Data/Experimental/DHC/Loads/Examples/SwissResidential_20190916.mos"}
     "Library paths of the files with thermal loads as time series";
   Modelica.Blocks.Sources.Constant masFloMaiPum(
     k=datDes.mPumDis_flow_nominal)
@@ -35,9 +35,9 @@ equation
           {-180,-60},{-259,-60}}, color={0,0,127}));
   connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{-184,20},{-184,4.66667},{-161.333,4.66667}},
                                                   color={0,0,127}));
-  connect(THotWatSupSet.y, bui.THotWatSupSet) annotation (Line(points={{-168,
+  connect(THotWatSupSet[idxBuiTim].y, bui.THotWatSupSet) annotation (Line(points={{-168,
           180},{-24,180},{-24,183},{-12,183}}, color={0,0,127}));
-  connect(TColWat.y, bui.TColWat) annotation (Line(points={{-138,160},{-40,160},
+  connect(TColWat[idxBuiTim].y, bui.TColWat) annotation (Line(points={{-138,160},{-40,160},
           {-40,164},{-8,164},{-8,168}}, color={0,0,127}));
   connect(dis.port_bDisSup, dis.port_aDisRet) annotation (Line(points={{20,140},
           {40,140},{40,134},{20,134}}, color={0,127,255}));
@@ -66,4 +66,4 @@ except for the energy transfer stations that are connected in parallel and
 for the pipe sizing parameters that are adjusted consequently.
 </p>
 </html>"));
-end ParallelReverse;
+end LDRDFanCoils;

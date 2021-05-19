@@ -302,8 +302,8 @@ model HeatPumpHeatExchanger
     redeclare final package Medium = MediumSer,
     final m_flow_nominal=mDisWat_flow_nominal) "Flow switch box"
     annotation (Placement(transformation(extent={{-10,-390},{10,-370}})));
-  DHC.EnergyTransferStations.BaseClasses.Junction bypHeaWatSup(redeclare final
-      package Medium = MediumBui, final m_flow_nominal=proHeaWat.m1_flow_nominal
+  DHC.EnergyTransferStations.BaseClasses.Junction bypHeaWatSup(redeclare final package
+              Medium = MediumBui, final m_flow_nominal=proHeaWat.m1_flow_nominal
         *{1,-1,-1}) "Bypass heating water (supply)" annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
@@ -423,7 +423,8 @@ model HeatPumpHeatExchanger
   Buildings.Controls.OBC.CDL.Continuous.Add heaFloEvaSHW if have_hotWat and have_varFloEva
     "Heat flow rate at evaporator"
     annotation (Placement(transformation(extent={{-100,90},{-80,110}})));
-  Buildings.Controls.OBC.CDL.Continuous.Add dTHHW(k2=-1) if have_hotWat and have_varFloEva
+  Buildings.Controls.OBC.CDL.Continuous.Add dTHHW(
+    final k2=-1)
     "Heating hot water DeltaT"
     annotation (Placement(transformation(extent={{0,310},{-20,330}})));
   Buildings.Controls.OBC.CDL.Continuous.Gain capFloHHW(
@@ -454,10 +455,12 @@ model HeatPumpHeatExchanger
     final cp=cpSer_default) if have_varFloEva
     "Mass flow rate control"
     annotation (Placement(transformation(extent={{-60,230},{-40,250}})));
-  Buildings.Controls.OBC.CDL.Continuous.Max priOve "Ensure primary overflow"
+  Buildings.Controls.OBC.CDL.Continuous.Max priOve if have_varFloCon
+    "Ensure primary overflow"
     annotation (Placement(transformation(extent={{-60,270},{-40,290}})));
 
-  Buildings.Controls.OBC.CDL.Continuous.Product loaHHW "Heating load"
+  Buildings.Controls.OBC.CDL.Continuous.Product loaHHW if have_varFloEva or have_varFloCon
+    "Heating load"
     annotation (Placement(transformation(extent={{-140,270},{-120,290}})));
 equation
   connect(TChiWatSupSet, conTChiWat.u_s) annotation (Line(points={{-320,0},{-200,
@@ -494,8 +497,8 @@ equation
     annotation (Line(points={{110,260},{130,260}}, color={0,127,255}));
   connect(senTHeaWatSup.port_b, ports_bHeaWat[1])
     annotation (Line(points={{150,260},{300,260}}, color={0,127,255}));
-  connect(bypHeaWatRet.port_2, volHeaWatRet.ports[1]) annotation (Line(points={{90,240},
-          {80,240},{80,177.333}},             color={0,127,255}));
+  connect(bypHeaWatRet.port_2, volHeaWatRet.ports[1]) annotation (Line(points={{90,240},{80,240},{80,177.333}},
+                                              color={0,127,255}));
   connect(bouHeaWat.ports[1], volHeaWatRet.ports[2]) annotation (Line(points={{60,160},
           {60,180},{80,180}},                color={0,127,255}));
   connect(ports_aChiWat[1], senMasFloChiWat.port_a) annotation (Line(points={{-300,
@@ -504,8 +507,8 @@ equation
           -280},{200,-280},{200,200},{300,200}}, color={0,127,255}));
   connect(bypHeaWatRet.port_3, bypHeaWatSup.port_3)
     annotation (Line(points={{100,250},{100,250}}, color={0,127,255}));
-  connect(volHeaWatRet.ports[3], proHeaWat.port_a1) annotation (Line(points={{80,
-          182.667},{80,180},{-20,180},{-20,208},{-10,208}}, color={0,127,255}));
+  connect(volHeaWatRet.ports[3], proHeaWat.port_a1) annotation (Line(points={{80,182.667},{80,180},{-20,180},{-20,208},
+          {-10,208}},                                       color={0,127,255}));
   connect(proHeaWat.port_b2, volMix_b.ports[3]) annotation (Line(points={{10,
           220},{262,220},{262,-360},{260,-360}}, color={0,127,255}));
   connect(volMix_a.ports[3], proHeaWat.port_a2) annotation (Line(points={{-260,
@@ -581,8 +584,8 @@ equation
           {-114,43},{-12,43}},color={255,0,255}));
   connect(div1.y, souColWat.m_flow_in) annotation (Line(points={{-78,-40},{-68,-40},
           {-68,-32},{-50,-32}}, color={0,0,127}));
-  connect(senTChiWatRet.port_b, volChiWat.ports[1]) annotation (Line(points={{50,-120},
-          {60,-120},{60,-280},{-102.667,-280}},          color={0,127,255}));
+  connect(senTChiWatRet.port_b, volChiWat.ports[1]) annotation (Line(points={{50,-120},{60,-120},{60,-280},{-102.667,
+          -280}},                                        color={0,127,255}));
   connect(volChiWat.ports[2], hexChi.port_a2) annotation (Line(points={{-100,
           -280},{-120,-280},{-120,-320},{-20,-320},{-20,-328},{-10,-328}},
         color={0,127,255}));

@@ -1,11 +1,15 @@
 within Buildings.Experimental.DHC.Examples.Combined.Generation5.Data;
-record DesignDataLDRD "Record with design data for parallel network"
+record DesignDataSpawn "Record with design data for parallel network with Spawn models"
   extends Modelica.Icons.Record;
   parameter Integer nBui = 3
     "Number of served buildings"
     annotation(Evaluate=true);
   parameter Integer idxBuiSpa
-    "Index of Spawn building"
+    "Index of Spawn building model"
+    annotation (Evaluate=true);
+  final parameter Integer idxBuiTim[nBui-1]=
+    Modelica.Math.BooleanVectors.index({i<>idxBuiSpa for i in 1:nBui})
+    "Indices of building models based on time series"
     annotation (Evaluate=true);
   parameter Modelica.SIunits.MassFlowRate mPumDis_flow_nominal = 150
     "Nominal mass flow rate of main distribution pump";
@@ -51,4 +55,4 @@ record DesignDataLDRD "Record with design data for parallel network"
 This record contains parameter declarations used in example models of DHC systems.
 </p>
 </html>"));
-end DesignDataLDRD;
+end DesignDataSpawn;

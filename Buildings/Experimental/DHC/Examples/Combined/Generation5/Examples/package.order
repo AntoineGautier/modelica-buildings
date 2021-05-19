@@ -1,5 +1,5 @@
+LDRDFanCoils
 ParallelConstantFlow
-ParallelReverse
 SeriesConstantFlow
 SeriesVariableFlow
 BaseClasses
