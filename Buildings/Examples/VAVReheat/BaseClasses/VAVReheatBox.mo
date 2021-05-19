@@ -49,11 +49,13 @@ model VAVReheatBox "Supply box of a VAV system with a hot water reheat coil"
   Modelica.Blocks.Interfaces.RealOutput y_actual "Actual VAV damper position"
     annotation (Placement(transformation(extent={{100,-10},{120,10}}),
         iconTransformation(extent={{100,-10},{120,10}})));
-  Modelica.Fluid.Interfaces.FluidPort_a port_aHotWat(redeclare package Medium =
+  Modelica.Fluid.Interfaces.FluidPort_a port_aHotWat(redeclare package Medium
+      =
       MediumW) "Hot water inlet port"
     annotation (Placement(transformation(extent={{-110,-10},{-90,10}}),
         iconTransformation(extent={{-110,-10},{-90,10}})));
-  Modelica.Fluid.Interfaces.FluidPort_b port_bHotWat(redeclare package Medium =
+  Modelica.Fluid.Interfaces.FluidPort_b port_bHotWat(redeclare package Medium
+      =
       MediumW) "Hot water outlet port"
     annotation (Placement(transformation(extent={{-110,-70},{-90,-50}}),
         iconTransformation(extent={{-110,-70},{-90,-50}})));

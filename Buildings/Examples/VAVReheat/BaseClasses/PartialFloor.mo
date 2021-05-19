@@ -101,19 +101,19 @@ partial model PartialFloor "Interface for a model of a floor of a building"
     "Model for air infiltration through the envelope"
     annotation (Placement(transformation(extent={{-56,260},{-20,300}})));
 
-  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirSou
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirCor
     "Air temperature sensor"
     annotation (Placement(transformation(extent={{290,340},{310,360}})));
-  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirEas
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirSou
     "Air temperature sensor"
     annotation (Placement(transformation(extent={{292,310},{312,330}})));
-  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirNor
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirEas
     "Air temperature sensor"
     annotation (Placement(transformation(extent={{292,280},{312,300}})));
-  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirWes
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirNor
     "Air temperature sensor"
     annotation (Placement(transformation(extent={{292,248},{312,268}})));
-  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirCor
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temAirWes
     "Air temperature sensor"
     annotation (Placement(transformation(extent={{294,218},{314,238}})));
   Modelica.Blocks.Routing.Multiplex5 multiplex5_1
@@ -138,7 +138,8 @@ partial model PartialFloor "Interface for a model of a floor of a building"
         Medium, wOpe=10)
     "Opening between perimeter3 and core"
     annotation (Placement(transformation(extent={{20,-20},{40,0}})));
-  Buildings.Fluid.Sensors.RelativePressure senRelPre(redeclare package Medium = Medium)
+  Buildings.Fluid.Sensors.RelativePressure senRelPre(redeclare package Medium
+      =                                                                         Medium)
     "Building pressure measurement"
     annotation (Placement(transformation(extent={{60,240},{40,260}})));
   Buildings.Fluid.Sources.Outside out(nPorts=1, redeclare package Medium = Medium)
@@ -178,27 +179,27 @@ equation
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
-  connect(temAirSou.T, multiplex5_1.u1[1]) annotation (Line(
+  connect(temAirCor.T, multiplex5_1.u1[1]) annotation (Line(
       points={{310,350},{328,350},{328,300},{338,300}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
-  connect(temAirEas.T, multiplex5_1.u2[1]) annotation (Line(
+  connect(temAirSou.T, multiplex5_1.u2[1]) annotation (Line(
       points={{312,320},{324,320},{324,295},{338,295}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
-  connect(temAirNor.T, multiplex5_1.u3[1]) annotation (Line(
+  connect(temAirEas.T, multiplex5_1.u3[1]) annotation (Line(
       points={{312,290},{338,290}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
-  connect(temAirWes.T, multiplex5_1.u4[1]) annotation (Line(
+  connect(temAirNor.T, multiplex5_1.u4[1]) annotation (Line(
       points={{312,258},{324,258},{324,285},{338,285}},
       color={0,0,127},
       smooth=Smooth.None,
       pattern=LinePattern.Dash));
-  connect(temAirCor.T, multiplex5_1.u5[1]) annotation (Line(
+  connect(temAirWes.T, multiplex5_1.u5[1]) annotation (Line(
       points={{314,228},{322,228},{322,228},{332,228},{332,280},{338,280}},
       color={0,0,127},
       smooth=Smooth.None,
