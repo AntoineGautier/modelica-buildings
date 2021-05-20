@@ -203,13 +203,11 @@ model BuildingTimeSeries
     annotation (Placement(transformation(extent={{272,-10},{292,10}})));
 equation
   connect(terUniHea.port_bHeaWat,disFloHea.ports_a1[1])
-    annotation (Line(points={{90,-20.3333},{90,-20},{146,-20},{146,-54},{140,
-          -54}},                                                                   color={0,127,255}));
+    annotation (Line(points={{90,-20.3333},{90,-20},{146,-20},{146,-54},{140,-54}},color={0,127,255}));
   connect(disFloHea.ports_b1[1],terUniHea.port_aHeaWat)
     annotation (Line(points={{120,-54},{64,-54},{64,-20.3333},{70,-20.3333}},color={0,127,255}));
   connect(terUniHea.mReqHeaWat_flow,disFloHea.mReq_flow[1])
-    annotation (Line(points={{90.8333,-15.3333},{100,-15.3333},{100,-64},{119,
-          -64}},                                                                     color={0,0,127}));
+    annotation (Line(points={{90.8333,-15.3333},{100,-15.3333},{100,-64},{119,-64}}, color={0,0,127}));
   connect(loa.y[1],terUniCoo.QReqCoo_flow)
     annotation (Line(points={{-259,0},{40,0},{40,42.5},{69.1667,42.5}}, color={0,0,127}));
   connect(loa.y[2],terUniHea.QReqHea_flow)

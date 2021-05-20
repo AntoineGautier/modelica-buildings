@@ -11,7 +11,9 @@ model BuildingSpawnWithETS "Spawn model of building, connected to an ETS"
     ets(
       have_hotWat=false,
       QChiWat_flow_nominal=QCoo_flow_nominal,
-      QHeaWat_flow_nominal=QHea_flow_nominal));
+      QHeaWat_flow_nominal=QHea_flow_nominal,
+      have_varFloCon=false,
+      have_varFloEva=false));
   parameter String idfName="modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus/Examples/RefBldgSmallOffice/RefBldgSmallOfficeNew2004_Chicago.idf"
     "Name of the IDF file";
   parameter String weaName="modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos"
