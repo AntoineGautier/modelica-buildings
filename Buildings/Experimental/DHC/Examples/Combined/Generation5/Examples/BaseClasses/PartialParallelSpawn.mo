@@ -160,8 +160,7 @@ partial model PartialParallelSpawn "Partial model for parallel network"
     "Sewage water temperature"
     annotation (Placement(transformation(extent={{-280,30},{-260,50}})));
   Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMinSet[nBui](
-    each k=28 + 273.15)
-    "Heating water supply temperature set point - Minimum value"
+    each k=28 + 273.15) "Heating water supply temperature set point - Minimum value"
     annotation (Placement(transformation(extent={{-280,230},{-260,250}})));
   Buildings.Experimental.DHC.Loads.BaseClasses.ConstraintViolation conVio(
     uMin=datDes.TLooMin,
