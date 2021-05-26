@@ -2,6 +2,7 @@ within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5;
 model HeatPumpHeatExchanger
   "Model of a substation with heat pump and compressor-less cooling"
   extends DHC.EnergyTransferStations.BaseClasses.PartialETS(
+    allowFlowReversalSer=true,
     final typ=DHC.Types.DistrictSystemType.CombinedGeneration5,
     final have_weaBus=false,
     final have_chiWat=true,
@@ -356,7 +357,7 @@ model HeatPumpHeatExchanger
     annotation (Placement(transformation(extent={{-10,24},{10,44}})));
   Fluid.Sources.Boundary_pT sinSHW(
     redeclare final package Medium = MediumBui,
-    nPorts=1) if  have_hotWat
+    nPorts=1)  if have_hotWat
     "Sink for service hot water" annotation (Placement(
       transformation(
       extent={{10,-10},{-10,10}},
@@ -372,8 +373,8 @@ model HeatPumpHeatExchanger
   Buildings.Controls.OBC.CDL.Continuous.Division div1 if have_hotWat
     "Compute mass flow rate from load"
     annotation (Placement(transformation(extent={{-100,-50},{-80,-30}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain gai(final k=cpBui_default) if
-    have_hotWat "Times Cp"
+  Buildings.Controls.OBC.CDL.Continuous.Gain gai(final k=cpBui_default)
+ if have_hotWat "Times Cp"
     annotation (Placement(transformation(extent={{-120,-10},{-100,10}})));
   Buildings.Controls.OBC.CDL.Continuous.MultiSum masFloHeaTot(final nin=2)
     "Compute district water mass flow rate used for heating service"
