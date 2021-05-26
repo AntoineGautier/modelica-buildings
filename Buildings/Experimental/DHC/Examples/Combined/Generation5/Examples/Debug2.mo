@@ -64,6 +64,19 @@ model Debug2
   Modelica.Blocks.Sources.Constant masFloMaiPum(k=datDes.mPumDis_flow_nominal)
     "Distribution pump mass flow rate"
     annotation (Placement(transformation(extent={{-88,-70},{-68,-50}})));
+  Networks.BaseClasses.PipeAutosize pipeAutosize(
+    redeclare final package Medium = Medium,
+    m_flow_nominal=bui.ets.mDisWat_flow_nominal,
+    length=100)                                  annotation (Placement(transformation(extent={{100,-10},{120,10}})));
+  Fluid.Sources.MassFlowSource_T boundary(
+    redeclare final package Medium = Medium,
+    m_flow=bui.ets.mDisWat_flow_nominal,  nPorts=1) annotation (Placement(transformation(extent={{60,-10},{80,10}})));
+  Fluid.Sources.Boundary_pT bou1(redeclare final package Medium = Medium, nPorts=1)
+    "Boundary pressure condition representing the expansion vessel"
+    annotation (Placement(transformation(
+      extent={{-10,-10},{10,10}},
+      rotation=180,
+      origin={150,0})));
 equation
   connect(pumDis.port_a, bou.ports[1]) annotation (Line(points={{10,-80},{40,-80},{40,-62}}, color={0,127,255}));
   connect(dis.port_bDisRet, bou.ports[2])
@@ -83,5 +96,9 @@ equation
   connect(masFloMaiPum.y, pumDis.m_flow_in) annotation (Line(points={{-67,-60},{0,-60},{0,-68}}, color={0,0,127}));
   connect(dis.port_bDisSup, dis.port_aDisRet)
     annotation (Line(points={{20,0},{40,0},{40,-6},{20,-6}}, color={0,127,255}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)));
+  connect(boundary.ports[1], pipeAutosize.port_a) annotation (Line(points={{80,0},{100,0},{100,0}}, color={0,127,255}));
+  connect(pipeAutosize.port_b, bou1.ports[1]) annotation (Line(points={{120,0},{140,6.66134e-16}}, color={0,127,255}));
+  annotation (
+  Diagram(coordinateSystem(preserveAspectRatio=false, extent={
+            {-100,-100},{180,100}})));
 end Debug2;
