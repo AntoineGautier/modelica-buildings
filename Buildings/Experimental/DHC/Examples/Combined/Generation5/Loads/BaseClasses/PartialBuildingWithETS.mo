@@ -72,22 +72,17 @@ model PartialBuildingWithETS
         rotation=0,
         origin={-120,90})));
   // COMPONENTS
-  Controls.OBC.CDL.Continuous.Line resTHeaWatSup
-    "HW supply temperature reset"
+  Controls.OBC.CDL.Continuous.Line resTHeaWatSup "HW supply temperature reset"
     annotation (Placement(transformation(extent={{-110,-50},{-90,-30}})));
-  Controls.OBC.CDL.Continuous.Sources.Constant zer(k=0)
-    "Zero"
+  Controls.OBC.CDL.Continuous.Sources.Constant zer(k=0) "Zero"
     annotation (Placement(transformation(extent={{-180,-30},{-160,-10}})));
-  Controls.OBC.CDL.Continuous.Sources.Constant one(k=1)
-    "One"
+  Controls.OBC.CDL.Continuous.Sources.Constant one(k=1) "One"
     annotation (Placement(transformation(extent={{-180,-70},{-160,-50}})));
   Controls.OBC.CDL.Continuous.Gain mulPPumETS(
-    u(final unit="W"), final k=facMul) if have_pum
-    "Scaling"
+    u(final unit="W"), final k=facMul) if have_pum "Scaling"
     annotation (Placement(transformation(extent={{270,-10},{290,10}})));
   Controls.OBC.CDL.Interfaces.RealOutput PPumETS(
-    final unit="W") if have_pum
-    "ETS pump power"
+    final unit="W") if have_pum "ETS pump power"
     annotation (Placement(
         transformation(extent={{300,-20},{340,20}}),iconTransformation(
         extent={{-20,-20},{20,20}},

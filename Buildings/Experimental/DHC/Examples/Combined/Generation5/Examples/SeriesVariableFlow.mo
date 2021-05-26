@@ -18,12 +18,10 @@ model SeriesVariableFlow
     "District water flow rate to plant"
     annotation (Placement(transformation(extent={{-250,10},{-230,30}})));
   Controls.OBC.CDL.Continuous.Sources.Constant THotWatSupSet[nBui](
-    k=fill(63 + 273.15, nBui))
-    "Hot water supply temperature set point"
+    k=fill(63 + 273.15, nBui)) "Hot water supply temperature set point"
     annotation (Placement(transformation(extent={{-190,170},{-170,190}})));
   Controls.OBC.CDL.Continuous.Sources.Constant TColWat[nBui](
-    k=fill(15 + 273.15, nBui))
-    "Cold water temperature"
+    k=fill(15 + 273.15, nBui)) "Cold water temperature"
     annotation (Placement(transformation(extent={{-160,150},{-140,170}})));
   Buildings.Experimental.DHC.Networks.Controls.MainPump conPum(
     nMix=nBui,
@@ -33,8 +31,7 @@ model SeriesVariableFlow
     use_temperatureShift=false) "Main pump controller"
     annotation (Placement(transformation(extent={{-280,-70},{-260,-50}})));
   Controls.OBC.CDL.Continuous.Gain gai(
-    k=datDes.mPumDis_flow_nominal)
-    "Scale with nominal mass flow rate"
+    k=datDes.mPumDis_flow_nominal) "Scale with nominal mass flow rate"
     annotation (Placement(transformation(extent={{-240,-70},{-220,-50}})));
 equation
   connect(masFloDisPla.y, pla.mPum_flow) annotation (Line(points={{-229,20},{

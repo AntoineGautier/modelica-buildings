@@ -31,8 +31,7 @@ partial model PartialSeries "Partial model for series network"
   DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumDis(
     redeclare final package Medium = Medium,
     final m_flow_nominal=datDes.mPumDis_flow_nominal,
-    final allowFlowReversal=allowFlowReversalSer)
-    "Distribution pump"
+    final allowFlowReversal=allowFlowReversalSer) "Distribution pump"
     annotation (Placement(transformation(
       extent={{10,-10},{-10,10}},
       rotation=90,
@@ -47,8 +46,7 @@ partial model PartialSeries "Partial model for series network"
         origin={112,-20})));
   DHC.EnergyTransferStations.BaseClasses.Pump_m_flow pumSto(
     redeclare final package Medium = Medium,
-    m_flow_nominal=datDes.mSto_flow_nominal)
-    "Bore field pump"
+    m_flow_nominal=datDes.mSto_flow_nominal) "Bore field pump"
     annotation (Placement(transformation(
       extent={{10,10},{-10,-10}},
       rotation=180,
@@ -107,23 +105,20 @@ partial model PartialSeries "Partial model for series network"
     annotation (Placement(transformation(extent={{-20,130},{20,150}})));
   Fluid.Sensors.TemperatureTwoPort TDisWatSup(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPumDis_flow_nominal)
-    "District water supply temperature"
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water supply temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-80,20})));
   Fluid.Sensors.TemperatureTwoPort TDisWatRet(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPumDis_flow_nominal)
-    "District water return temperature"
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water return temperature"
     annotation (Placement(transformation(
         extent={{10,-10},{-10,10}},
         rotation=90,
         origin={80,0})));
   Fluid.Sensors.TemperatureTwoPort TDisWatBorLvg(
     redeclare final package Medium = Medium,
-    final m_flow_nominal=datDes.mPumDis_flow_nominal)
-    "District water borefield leaving temperature"
+    final m_flow_nominal=datDes.mPumDis_flow_nominal) "District water borefield leaving temperature"
     annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
@@ -143,20 +138,16 @@ partial model PartialSeries "Partial model for series network"
     "Sewage water temperature"
     annotation (Placement(transformation(extent={{-280,30},{-260,50}})));
   Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMaxSet[nBui](
-    k=bui.THeaWatSup_nominal)
-    "Heating water supply temperature set point - Maximum value"
+    k=bui.THeaWatSup_nominal) "Heating water supply temperature set point - Maximum value"
     annotation (Placement(transformation(extent={{-250,210},{-230,230}})));
   Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSet[nBui](
-    k=bui.TChiWatSup_nominal)
-    "Chilled water supply temperature set point"
+    k=bui.TChiWatSup_nominal) "Chilled water supply temperature set point"
     annotation (Placement(transformation(extent={{-220,190},{-200,210}})));
   Controls.OBC.CDL.Continuous.Sources.Constant THeaWatSupMinSet[nBui](
-    each k=28 + 273.15)
-    "Heating water supply temperature set point - Minimum value"
+    each k=28 + 273.15) "Heating water supply temperature set point - Minimum value"
     annotation (Placement(transformation(extent={{-280,230},{-260,250}})));
   Controls.OBC.CDL.Continuous.MultiSum PPumETS(
-    final nin=nBui)
-    "ETS pump power"
+    final nin=nBui) "ETS pump power"
     annotation (Placement(transformation(extent={{140,190},{160,210}})));
   Modelica.Blocks.Continuous.Integrator EPumETS(
     initType=Modelica.Blocks.Types.Init.InitialState)
@@ -173,12 +164,10 @@ partial model PartialSeries "Partial model for series network"
   Modelica.Blocks.Continuous.Integrator EPumPla(initType=Modelica.Blocks.Types.Init.InitialState)
     "Plant pump electric energy"
     annotation (Placement(transformation(extent={{220,30},{240,50}})));
-  Controls.OBC.CDL.Continuous.MultiSum EPum(nin=4)
-    "Total pump electric energy"
+  Controls.OBC.CDL.Continuous.MultiSum EPum(nin=4) "Total pump electric energy"
     annotation (Placement(transformation(extent={{280,110},{300,130}})));
   Controls.OBC.CDL.Continuous.MultiSum PHeaPump(
-    final nin=nBui)
-    "Heat pump power"
+    final nin=nBui) "Heat pump power"
     annotation (Placement(transformation(extent={{140,150},{160,170}})));
   Modelica.Blocks.Continuous.Integrator EHeaPum(
     initType=Modelica.Blocks.Types.Init.InitialState)
