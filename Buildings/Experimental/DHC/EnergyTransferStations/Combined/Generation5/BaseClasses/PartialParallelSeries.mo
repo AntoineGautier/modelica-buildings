@@ -1,6 +1,6 @@
 within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.BaseClasses;
-model PartialParallel
-  "Partial ETS model with district heat exchanger and parallel connection of production systems"
+model PartialParallelSeries
+  "Partial ETS model with district HX, parallel connection on condenser side, series connection on evaporator side"
   extends DHC.EnergyTransferStations.BaseClasses.PartialETS(
     final typ=DHC.Types.DistrictSystemType.CombinedGeneration5,
     final have_heaWat=true,
@@ -196,12 +196,6 @@ model PartialParallel
     final nSeg=nSegTan)
     "Heating water tank"
     annotation (Placement(transformation(extent={{-220,96},{-200,116}})));
-  EnergyTransferStations.BaseClasses.CollectorDistributor colChiWat(
-    redeclare final package Medium=MediumBui,
-    final nCon=1+nSysCoo,
-    mCon_flow_nominal={colAmbWat.mDis_flow_nominal})
-    "Collector/distributor for chilled water"
-    annotation (Placement(transformation(extent={{-20,10},{20,-10}},rotation=180,origin={120,-34})));
   EnergyTransferStations.BaseClasses.CollectorDistributor colHeaWat(
     redeclare final package Medium=MediumBui,
     final nCon=1+nSysHea,
@@ -236,12 +230,16 @@ model PartialParallel
     final m_flow_nominal=colHeaWat.mDis_flow_nominal)
     "Variation of enthalpy flow rate"
     annotation (Placement(transformation(extent={{-230,96},{-250,116}})));
-  Fluid.Sources.Boundary_pT bou(redeclare final package Medium = MediumBui, nPorts=1)
+  Fluid.Sources.Boundary_pT bou(redeclare final package Medium = MediumBui)
     "Pressure boundary condition representing expansion vessel (common to HHW and CHW)" annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={160,-110})));
+  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Header heaChiWatRet "Header of chilled water return"
+    annotation (Placement(transformation(extent={{120,-10},{80,10}})));
+  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Header heaChiWatRet1 "Header of chilled water return"
+    annotation (Placement(transformation(extent={{80,-50},{120,-30}})));
 protected
   parameter Boolean have_val1Hex=conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
     "True in case of control valve on district side, false in case of a pump";
@@ -279,20 +277,12 @@ equation
     annotation (Line(points={{-320,60},{-292,60},{-292,29},{-262,29}},color={255,0,255}));
   connect(uHea,conSup.uHea)
     annotation (Line(points={{-320,100},{-290,100},{-290,31},{-262,31}},color={255,0,255}));
-  connect(valIsoEva.port_a,colChiWat.ports_aCon[1])
-    annotation (Line(points={{70,-120},{108,-120},{108,-24}},color={0,127,255}));
-  connect(colAmbWat.port_aDisRet,colChiWat.ports_bCon[1])
-    annotation (Line(points={{20,-100},{132,-100},{132,-24}},color={0,127,255}));
   connect(conSup.yValIsoEva,valIsoEva.y)
     annotation (Line(points={{-238,21},{-220,21},{-220,-80},{60,-80},{60,-108}},color={0,0,127}));
   connect(conSup.yValIsoCon,valIsoCon.y)
     annotation (Line(points={{-238,23},{-218,23},{-218,-76},{-60,-76},{-60,-108}},color={0,0,127}));
   connect(conSup.yAmb[nSouAmb],hex.u)
     annotation (Line(points={{-238,25},{-200,25},{-200,-256},{-12,-256}},color={0,0,127}));
-  connect(colChiWat.port_bDisRet,tanChiWat.port_aBot)
-    annotation (Line(points={{140,-40},{180,-40},{180,100},{200,100}},color={0,127,255}));
-  connect(colChiWat.port_aDisSup,tanChiWat.port_bTop)
-    annotation (Line(points={{140,-34},{160,-34},{160,112},{200,112}},color={0,127,255}));
   connect(colHeaWat.port_bDisRet,tanHeaWat.port_aTop)
     annotation (Line(points={{-140,-40},{-160,-40},{-160,112},{-200,112}},color={0,127,255}));
   connect(tanHeaWat.port_bBot,colHeaWat.port_aDisSup)
@@ -327,8 +317,10 @@ equation
     annotation (Line(points={{-230,100},{-220,100}},color={0,127,255}));
   connect(dHFloHeaWat.dH_flow,dHHeaWat_flow)
     annotation (Line(points={{-252,109},{-270,109},{-270,160},{320,160}},color={0,0,127}));
-  connect(bou.ports[1], colChiWat.port_aDisSup)
-    annotation (Line(points={{160,-100},{160,-34},{140,-34}}, color={0,127,255}));
+  connect(tanChiWat.port_bTop, heaChiWatRet.port_aDisSup)
+    annotation (Line(points={{200,112},{160,112},{160,0},{120,0}}, color={0,127,255}));
+  connect(heaChiWatRet1.port_bDisSup, tanChiWat.port_aBot)
+    annotation (Line(points={{120,-40},{180,-40},{180,100},{200,100}}, color={0,127,255}));
   annotation (
     Icon(
       coordinateSystem(
@@ -419,4 +411,4 @@ First implementation.
 </li>
 </ul>
 </html>"));
-end PartialParallel;
+end PartialParallelSeries;

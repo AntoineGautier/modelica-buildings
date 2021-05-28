@@ -44,11 +44,6 @@ partial model PartialChillerBorefield
       displayUnit="degC"))
     "Heating water supply temperature set point"
     annotation (Placement(transformation(extent={{-140,130},{-120,150}})));
-  Fluid.Sources.Boundary_pT heaWat(
-    redeclare package Medium=Medium,
-    nPorts=1)
-    "Heating water boundary conditions"
-    annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=90,origin={20,60})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant TChiWatSupSet(
     k=7+273.15,
     y(final unit="K",
@@ -288,8 +283,6 @@ equation
     annotation (Line(points={{162,60},{149,60},{149,10}},color={191,0,0}));
   connect(volHeaWat.ports[2],senTHeaWatRet.port_a)
     annotation (Line(points={{-101,-2},{-101,-28},{-70,-28}},color={0,127,255}));
-  connect(heaWat.ports[1],pumHeaWat.port_a)
-    annotation (Line(points={{20,50},{20,40},{10,40}},color={0,127,255}));
   connect(heaLoaNor.y,gai3.u)
     annotation (Line(points={{-229,60},{-182,60}},color={0,0,127}));
   connect(heaLoaNor.y,uHea.u)
@@ -320,8 +313,8 @@ equation
     annotation (Line(points={{-50,-28},{-10,-28}},color={0,127,255}));
   connect(senTChiWatRet.port_b,ets.ports_aChiWat[1])
     annotation (Line(points={{80,0},{-40,0},{-40,-38},{-10,-38}},color={0,127,255}));
-  connect(ets.PCoo, EChi.u) annotation (Line(points={{54,-52},{60,-52},{60,-60},
-          {298,-60}}, color={0,0,127}));
+  connect(ets.PCoo, EChi.u) annotation (Line(points={{54,-50},{60,-50},{60,-60},{298,-60}},
+                      color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(
