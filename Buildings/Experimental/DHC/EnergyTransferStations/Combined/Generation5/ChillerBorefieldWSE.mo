@@ -1,6 +1,5 @@
 within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5;
-model ChillerBorefield
-  "ETS model for 5GDHC systems with heat recovery chiller and optional borefield"
+model ChillerBorefieldWSE "ETS model for 5GDHC systems with heat recovery chiller and optional borefield"
   extends BaseClasses.PartialParallel(
     final have_eleCoo=true,
     final have_fan=false,
@@ -169,7 +168,33 @@ model ChillerBorefield
   Networks.BaseClasses.DifferenceEnthalpyFlowRate dHFloChiWat(redeclare final package Medium1 = MediumBui, final
       m_flow_nominal=colChiWat.mDis_flow_nominal)
     "Variation of enthalpy flow rate"
-    annotation (Placement(transformation(extent={{250,116},{270,96}})));
+    annotation (Placement(transformation(extent={{-10,10},{10,-10}},
+        rotation=90,
+        origin={280,140})));
+  Subsystems.HeatExchanger WSE(
+    redeclare final package Medium1 = MediumSer,
+    redeclare final package Medium2 = MediumBui,
+    final perPum1=perPum1Hex,
+    final perPum2=perPum2Hex,
+    final allowFlowReversal1=allowFlowReversalSer,
+    final allowFlowReversal2=allowFlowReversalBui,
+    final conCon=conCon,
+    final dp1Hex_nominal=dp1Hex_nominal,
+    final dp2Hex_nominal=dp2Hex_nominal,
+    final QHex_flow_nominal=QHex_flow_nominal,
+    final T_a1Hex_nominal=T_a1Hex_nominal,
+    final T_b1Hex_nominal=T_b1Hex_nominal,
+    final T_a2Hex_nominal=T_a2Hex_nominal,
+    final T_b2Hex_nominal=T_b2Hex_nominal,
+    final dT1HexSet=dT1HexSet,
+    final spePum1HexMin=spePum1HexMin,
+    final yVal1HexMin=yVal1HexMin,
+    final spePum2HexMin=spePum2HexMin) "Waterside economizer"
+    annotation (Placement(transformation(extent={{230,108},{250,128}})));
+  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Junction junction
+    annotation (Placement(transformation(extent={{-270,-270},{-250,-250}})));
+  Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Junction junction1
+    annotation (Placement(transformation(extent={{248,-252},{268,-272}})));
 equation
   connect(chi.port_bHeaWat,colHeaWat.ports_aCon[2])
     annotation (Line(points={{-10,0},{-108,0},{-108,-24}},color={0,127,255}));
@@ -196,7 +221,7 @@ equation
   connect(borFie.PPum,totPPum.u[3])
     annotation (Line(points={{-58,-216},{240,-216},{240,-62},{258,-62},{258,-60}},color={0,0,127}));
   connect(zerPPum.y,totPPum.u[3])
-    annotation (Line(points={{222,-80},{254,-80},{254,-62},{258,-62},{258,-60}},color={0,0,127}));
+    annotation (Line(points={{222,-80},{240,-80},{240,-62},{258,-62},{258,-60}},color={0,0,127}));
   connect(zerPHea.y,totPHea.u[1])
     annotation (Line(points={{222,60},{258,60}},color={0,0,127}));
   connect(chi.PChi,totPCoo.u[1])
@@ -214,11 +239,11 @@ equation
   connect(dHFloHeaWat.dH_flow,dHHeaWat_flow)
     annotation (Line(points={{-262,109},{-268,109},{-268,160},{320,160}},color={0,0,127}));
   connect(dHFloChiWat.dH_flow,dHChiWat_flow)
-    annotation (Line(points={{272,103},{294,103},{294,120},{320,120}},color={0,0,127}));
-  connect(dHFloChiWat.port_b2, tanChiWat.port_aTop) annotation (Line(points={{250,112},{220,112}}, color={0,127,255}));
-  connect(dHFloChiWat.port_a1, tanChiWat.port_bBot) annotation (Line(points={{250,100},{220,100}}, color={0,127,255}));
+    annotation (Line(points={{283,152},{296,152},{296,120},{320,120}},color={0,0,127}));
+  connect(dHFloChiWat.port_a1, tanChiWat.port_bBot)
+    annotation (Line(points={{286,130},{292,130},{292,100},{220,100}}, color={0,127,255}));
   connect(dHFloChiWat.port_b1, ports_bChiWat[1])
-    annotation (Line(points={{270,100},{288,100},{288,200},{300,200}}, color={0,127,255}));
+    annotation (Line(points={{286,150},{284,150},{284,164},{280,164},{280,200},{300,200}}, color={0,127,255}));
   connect(tanHeaWat.port_bTop, dHFloHeaWat.port_a1)
     annotation (Line(points={{-220,112},{-240,112}}, color={0,127,255}));
   connect(tanHeaWat.port_aBot, dHFloHeaWat.port_b2)
@@ -226,13 +251,13 @@ equation
   connect(dHFloHeaWat.port_a2, ports_aHeaWat[1])
     annotation (Line(points={{-260,100},{-280,100},{-280,260},{-300,260}}, color={0,127,255}));
   connect(ports_aChiWat[1], dHFloChiWat.port_a2)
-    annotation (Line(points={{-300,200},{280,200},{280,112},{270,112}}, color={0,127,255}));
+    annotation (Line(points={{-300,200},{-268,200},{-268,150},{274,150}}, color={0,127,255}));
   connect(dHFloHeaWat.port_b1, ports_bHeaWat[1])
     annotation (Line(points={{-260,112},{-274,112},{-274,260},{300,260}}, color={0,127,255}));
-  connect(port_aSerAmb, hex.port_a1)
-    annotation (Line(points={{-300,-200},{-280,-200},{-280,-260},{-10,-260}}, color={0,127,255}));
-  connect(hex.port_b1, port_bSerAmb)
-    annotation (Line(points={{10,-260},{280,-260},{280,-200},{300,-200}}, color={0,127,255}));
+  connect(junction.port_2, hex.port_a1) annotation (Line(points={{-250,-260},{-10,-260}}, color={0,127,255}));
+  connect(dHFloChiWat.port_b2, WSE.port_a2)
+    annotation (Line(points={{274,130},{256,130},{256,112},{250,112}}, color={0,127,255}));
+  connect(WSE.port_b2, tanChiWat.port_aTop) annotation (Line(points={{230,112},{220,112}}, color={0,127,255}));
   annotation (
     Diagram(
       coordinateSystem(
@@ -300,4 +325,4 @@ Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.
 src=\"modelica://Buildings/Resources/Images/Experimental/DHC/EnergyTransferStations/Combined/Generation5/ChillerBorefield.png\"/>
 </p>
 </html>"));
-end ChillerBorefield;
+end ChillerBorefieldWSE;
