@@ -60,20 +60,27 @@ partial model PartialChillerBorefield
     m_flow_nominal=datChi.mEva_flow_nominal)
     "Chilled water supply temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={90,40})));
-  replaceable Combined.Generation5.ChillerBorefield ets(
+  replaceable ChillerBorefieldWSE ets constrainedby Combined.Generation5.ChillerBorefield(
     redeclare package MediumSer=Medium,
     redeclare package MediumBui=Medium,
     QChiWat_flow_nominal=QCoo_flow_nominal,
     QHeaWat_flow_nominal=QHea_flow_nominal,
-    dp1Hex_nominal=20E3,
-    dp2Hex_nominal=20E3,
+    dp1Hex_nominal=40E3,
+    dp2Hex_nominal=40E3,
     QHex_flow_nominal=-QCoo_flow_nominal,
     T_a1Hex_nominal=284.15,
     T_b1Hex_nominal=279.15,
     T_a2Hex_nominal=277.15,
     T_b2Hex_nominal=282.15,
-    dpCon_nominal=15E3,
-    dpEva_nominal=15E3,
+    dp1WSE_nominal=40E3,
+    dp2WSE_nominal=40E3,
+    QWSE_flow_nominal=QCoo_flow_nominal,
+    T_a1WSE_nominal=284.15,
+    T_b1WSE_nominal=279.15,
+    T_a2WSE_nominal=293.15,
+    T_b2WSE_nominal=286.15,
+    dpCon_nominal=40E3,
+    dpEva_nominal=40E3,
     datChi=datChi,
     nPorts_bChiWat=1,
     nPorts_bHeaWat=1,

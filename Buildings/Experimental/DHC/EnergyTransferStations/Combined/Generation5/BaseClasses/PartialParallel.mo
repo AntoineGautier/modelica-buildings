@@ -73,14 +73,15 @@ model PartialParallel
     annotation (Dialog(group="District heat exchanger"));
   replaceable parameter Buildings.Fluid.Movers.Data.Generic perPum1Hex(
     motorCooledByFluid=false)
-    constrainedby Buildings.Fluid.Movers.Data.Generic
-    "Record with performance data for primary pump"
-    annotation (Dialog(group="District heat exchanger",enable=not have_val1Hex),choicesAllMatching=true,Placement(transformation(extent={{-80,222},{-60,242}})));
+    constrainedby Buildings.Fluid.Movers.Data.Generic "Record with performance data for primary pump"
+    annotation (Dialog(group="District heat exchanger", enable=not have_val1Hex),
+      choicesAllMatching=true,Placement(transformation(extent={{-80,222},{-60,242}})));
   replaceable parameter Buildings.Fluid.Movers.Data.Generic perPum2Hex(
     motorCooledByFluid=false)
     constrainedby Buildings.Fluid.Movers.Data.Generic
     "Record with performance data for secondary pump"
-    annotation (Dialog(group="District heat exchanger"),choicesAllMatching=true,Placement(transformation(extent={{-40,222},{-20,242}})));
+    annotation (Dialog(group="District heat exchanger"),
+      choicesAllMatching=true,Placement(transformation(extent={{-40,222},{-20,242}})));
   parameter Modelica.SIunits.Volume VTanHeaWat
     "Heating water tank volume"
     annotation (Dialog(group="Buffer Tank"));
@@ -211,10 +212,11 @@ model PartialParallel
     "Pressure boundary condition representing expansion vessel (common to HHW and CHW)" annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
-        rotation=90,
-        origin={160,-110})));
+        rotation=180,
+        origin={190,-34})));
 protected
-  parameter Boolean have_val1Hex=conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
+  parameter Boolean have_val1Hex=
+    conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
     "True in case of control valve on district side, false in case of a pump";
 equation
   connect(hex.PPum,totPPum.u[1])
@@ -275,7 +277,7 @@ equation
     annotation (Line(points={{282,20},{290,20},{290,40},{320,40}},
                                                 color={0,0,127}));
   connect(bou.ports[1], colChiWat.port_aDisSup)
-    annotation (Line(points={{160,-100},{160,-34},{140,-34}}, color={0,127,255}));
+    annotation (Line(points={{180,-34},{140,-34}},            color={0,127,255}));
   annotation (
     Icon(
       coordinateSystem(

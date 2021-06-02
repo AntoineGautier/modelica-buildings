@@ -17,8 +17,7 @@ model HeatExchanger
     "Secondary boundary conditions"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={-110,-62})));
   Modelica.Blocks.Sources.BooleanExpression uHeaRej(
-    y=time >= 3000)
-    "Heat rejection enable signal"
+    y=time >= 3000) "Heat rejection enable signal"
     annotation (Placement(transformation(extent={{-230,110},{-210,130}})));
   Modelica.Blocks.Sources.BooleanExpression uEnaColRej(
     y=time >= 1000 and time < 3000)
@@ -53,13 +52,11 @@ model HeatExchanger
     "Primary inlet temperature"
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=0,origin={70,-40})));
   Fluid.Sensors.TemperatureTwoPort senT2OutPum(
-    redeclare final package Medium=Medium,
-    m_flow_nominal=hexPum.m1_flow_nominal)
+    redeclare final package Medium=Medium, m_flow_nominal=hexPum.m2_flow_nominal)
     "Secondary outlet temperature"
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=0,origin={-70,-40})));
   Fluid.Sensors.TemperatureTwoPort senT2InlPum(
-    redeclare final package Medium=Medium,
-    m_flow_nominal=hexPum.m1_flow_nominal)
+    redeclare final package Medium=Medium, m_flow_nominal=hexPum.m2_flow_nominal)
     "Secondary inlet temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={-70,-80})));
   Fluid.Sources.Boundary_pT bou2Val(
@@ -107,13 +104,11 @@ model HeatExchanger
     "Primary outlet temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={70,0})));
   Fluid.Sensors.TemperatureTwoPort senT2OutVal(
-    redeclare final package Medium=Medium,
-    m_flow_nominal=hexVal.m1_flow_nominal)
+    redeclare final package Medium=Medium, m_flow_nominal=hexVal.m2_flow_nominal)
     "Secondary outlet temperature"
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=0,origin={-70,40})));
   Fluid.Sensors.TemperatureTwoPort senT2InlVal(
-    redeclare final package Medium=Medium,
-    m_flow_nominal=hexVal.m1_flow_nominal)
+    redeclare final package Medium=Medium, m_flow_nominal=hexVal.m2_flow_nominal)
     "Secondary inlet temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={-70,0})));
   Fluid.Sensors.RelativePressure senRelPre(
@@ -122,16 +117,14 @@ model HeatExchanger
   Buildings.Controls.OBC.CDL.Logical.Or or2
     annotation (Placement(transformation(extent={{-160,90},{-140,110}})));
   Modelica.Blocks.Sources.RealExpression yValIsoCon(
-    y=
-      if time >= 2500 then
+    y=if time >= 2500 then
         1
       else
         0)
     "Condenser loop isolation valve opening"
     annotation (Placement(transformation(extent={{-230,70},{-210,90}})));
   Modelica.Blocks.Sources.RealExpression yValIsoEva(
-    y=
-      if time >= 500 then
+    y=if time >= 500 then
         1
       else
         0)
@@ -146,12 +139,10 @@ model HeatExchanger
   Buildings.Controls.OBC.CDL.Logical.Switch swi1
     annotation (Placement(transformation(extent={{-60,90},{-40,110}})));
   Buildings.Controls.OBC.CDL.Continuous.Sources.Constant zer(
-    k=0)
-    "Zero"
+    k=0) "Zero"
     annotation (Placement(transformation(extent={{-120,110},{-100,130}})));
   Modelica.Blocks.Sources.TimeTable TColVal(
-    y(
-      final unit="K",
+    y(final unit="K",
       displayUnit="degC"),
     table=[
       0,6;
@@ -161,12 +152,10 @@ model HeatExchanger
       5,6;
       10,6],
     timeScale=1000,
-    offset=273.15)
-    "Cold side temperature values"
+    offset=273.15) "Cold side temperature values"
     annotation (Placement(transformation(extent={{-230,-50},{-210,-30}})));
   Modelica.Blocks.Sources.TimeTable THotVal(
-    y(
-      final unit="K",
+    y(final unit="K",
       displayUnit="degC"),
     table=[
       0,45;
@@ -180,8 +169,7 @@ model HeatExchanger
     "Hot side temperature values"
     annotation (Placement(transformation(extent={{-230,-90},{-210,-70}})));
   Modelica.Blocks.Sources.TimeTable TDisVal(
-    y(
-      final unit="K",
+    y(final unit="K",
       displayUnit="degC"),
     table=[
       0,8;

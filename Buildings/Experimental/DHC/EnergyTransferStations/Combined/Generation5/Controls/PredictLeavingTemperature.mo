@@ -4,9 +4,9 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
   parameter Modelica.SIunits.TemperatureDifference dTApp_nominal
     "Heat exchanger approach"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dp2Hex_nominal(
+  parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
     displayUnit="Pa")
-    "Nominal pressure drop across heat exchanger on building side"
+    "Nominal pressure drop of secondary control valve"
     annotation (Dialog(group="Nominal condition"));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(
     final unit="K",
@@ -22,13 +22,13 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
         iconTransformation(extent={{100,-20},{140,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput dp2(
     final unit="Pa")
-    "Heat exchanger secondary pressure drop"
+    "Pressure drop across secondary control valve"
     annotation (Placement(transformation(extent={{-140,20},{-100,60}}),
         iconTransformation(extent={{-140,30},{-100,70}})));
 protected
   Real ratLoa "Part load ratio";
 equation
-  ratLoa = (dp2 / dp2Hex_nominal)^0.5;
+  ratLoa = min(1, (dp2 / dpVal2Hex_nominal)^0.5);
   T2HexWatLvg = T1HexWatEnt + dTApp_nominal * ratLoa;
 annotation (
   defaultComponentName="calTemLvg",
