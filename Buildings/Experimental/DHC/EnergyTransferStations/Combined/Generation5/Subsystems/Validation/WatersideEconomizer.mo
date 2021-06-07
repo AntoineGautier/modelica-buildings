@@ -136,7 +136,11 @@ model WatersideEconomizer "Validation of the base subsystem model with waterside
     m_flow_nominal=hexPum.m2_flow_nominal,
     dp_nominal=20E4)
     annotation (Placement(transformation(extent={{-100,-50},{-120,-30}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant dpSet(k=25E4) "Differential pressure set point"
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Ramp     dpSet(
+    height=15E4,
+    duration=1000,
+    offset=10E4,
+    startTime=1500)                                                    "Differential pressure set point"
     annotation (Placement(transformation(extent={{-200,-40},{-180,-20}})));
   Fluid.Movers.FlowControlled_dp
                             pum1(
@@ -215,7 +219,8 @@ equation
         preserveAspectRatio=false,
         extent={{-240,-140},{240,140}})),
     __Dymola_Commands(
-      file="modelica://Buildings/Resources/Scripts/Dymola/Experimental/DHC/EnergyTransferStations/Combined/Generation5/Subsystems/Validation/HeatExchanger.mos" "Simulate and plot"),
+      file="modelica://Buildings/Resources/Scripts/Dymola/Experimental/DHC/EnergyTransferStations/Combined/Generation5/Subsystems/Validation/WatersideEconomizer.mos"
+      "Simulate and plot"),
     experiment(
       StopTime=5000,
       Tolerance=1e-06),
@@ -231,8 +236,8 @@ First implementation.
       info="<html>
 <p>
 This model validates
-<a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Subsystems.HeatExchanger\">
-Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Subsystems.HeatExchanger</a>
+<a href=\"modelica://Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Subsystems.WatersideEconommizer\">
+Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Subsystems.WatersideEconommizer</a>
 in a configuration where the primary flow rate is modulated by means of a
 two-way valve (see <code>hexVal</code>), and in a configuration where the
 primary flow rate is modulated by means of a variable speed pump

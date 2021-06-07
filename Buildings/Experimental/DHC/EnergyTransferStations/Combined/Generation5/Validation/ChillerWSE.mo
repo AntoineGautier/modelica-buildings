@@ -26,7 +26,8 @@ equation
     annotation (Line(points={{-309,160},{280,160},{280,60},{272,60}},color={0,0,127}));
   annotation (
     __Dymola_Commands(
-      file="modelica://Buildings/Resources/Scripts/Dymola/Experimental/DHC/EnergyTransferStations/Combined/Generation5/Validation/ChillerOnly.mos" "Simulate and plot"),
+      file="modelica://Buildings/Resources/Scripts/Dymola/Experimental/DHC/EnergyTransferStations/Combined/Generation5/Validation/ChillerWSE.mos"
+      "Simulate and plot"),
     experiment(
       StopTime=360000,
       Tolerance=1e-06),

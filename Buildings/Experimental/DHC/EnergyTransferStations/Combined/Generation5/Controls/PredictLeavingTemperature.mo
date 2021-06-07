@@ -6,7 +6,7 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
     displayUnit="Pa")
-    "Nominal pressure drop of secondary control valve"
+    "Nominal pressure drop of heat exchanger bypass valve"
     annotation (Dialog(group="Nominal condition"));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(
     final unit="K",
@@ -22,7 +22,7 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
         iconTransformation(extent={{100,-20},{140,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput dp2(
     final unit="Pa")
-    "Pressure drop across secondary control valve"
+    "Pressure drop across heat exchanger bypass valve"
     annotation (Placement(transformation(extent={{-140,20},{-100,60}}),
         iconTransformation(extent={{-140,30},{-100,70}})));
 protected

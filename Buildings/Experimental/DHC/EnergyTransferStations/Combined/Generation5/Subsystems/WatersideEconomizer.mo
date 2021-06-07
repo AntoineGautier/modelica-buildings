@@ -26,7 +26,7 @@ model WatersideEconomizer "Base subsystem with waterside economizer"
     annotation (Dialog(enable=have_val1Hex,group="Nominal condition"));
   parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
     displayUnit="Pa")=dp2Hex_nominal/10
-    "Nominal pressure drop of secondary control valve"
+    "Nominal pressure drop of heat exchanger bypass valve"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.HeatFlowRate QHex_flow_nominal
     "Nominal heat flow rate (from district to building)"
@@ -58,11 +58,11 @@ model WatersideEconomizer "Base subsystem with waterside economizer"
     "Minimum delta-T across heat exchanger before disabling WSE"
     annotation (Dialog(group="Controls"));
   parameter Real k(
-    min=0)=0.1
+    min=0)=1
     "Gain of controller"
     annotation (Dialog(group="Controls"));
   parameter Modelica.SIunits.Time Ti(
-    min=Buildings.Controls.OBC.CDL.Constants.small)=120
+    min=Buildings.Controls.OBC.CDL.Constants.small)=60
     "Time constant of integrator block"
     annotation (Dialog(group="Controls"));
   // IO CONNECTORS
@@ -184,11 +184,6 @@ equation
   connect(conWSE.yVal2Hex, val2Hex.y)
     annotation (Line(points={{52,155},{60,155},{60,-40},{0,-40},{0,-48}}, color={0,0,127}));
   connect(preDro1.p_rel, conWSE.dp1) annotation (Line(points={{0,29},{0,165},{28,165}}, color={0,0,127}));
-  connect(senT2HexWatLvg.T, conWSE.T2HexWatEnt)
-    annotation (Line(points={{-40,-49},{-40,156},{28,156}},           color={0,0,127}));
-  connect(senT2HexWatEnt.T, conWSE.T2HexWatLvg)
-    annotation (Line(points={{40,-49},{40,144},{20,144},{20,153},{28,153}},
-                                                                    color={0,0,127}));
   connect(preDro2.p_rel, conWSE.dp2)
     annotation (Line(points={{0,-29},{0,-34},{-36,-34},{-36,162},{28,162}}, color={0,0,127}));
   connect(port_a2, senT2HexWatEnt.port_a) annotation (Line(points={{100,-60},{50,-60}}, color={0,127,255}));
@@ -211,6 +206,10 @@ equation
   connect(uCoo, conWSE.uCoo) annotation (Line(points={{-120,160},{-40,160},{-40,168},{28,168}}, color={255,0,255}));
   connect(senT1HexWatEnt.T, conWSE.T1HexWatEnt)
     annotation (Line(points={{-31,40},{-38,40},{-38,159},{28,159}}, color={0,0,127}));
+  connect(conWSE.T2HexWatEnt, senT2HexWatEnt.T)
+    annotation (Line(points={{28,156},{20,156},{20,140},{40,140},{40,-49},{40,-49}}, color={0,0,127}));
+  connect(senT2HexWatLvg.T, conWSE.T2HexWatLvg)
+    annotation (Line(points={{-40,-49},{-40,153},{28,153}}, color={0,0,127}));
   annotation (
     defaultComponentName="hex",
     Icon(
