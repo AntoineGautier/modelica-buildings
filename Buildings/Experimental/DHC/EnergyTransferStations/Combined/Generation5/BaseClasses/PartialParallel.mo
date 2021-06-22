@@ -49,9 +49,6 @@ model PartialParallel
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="District heat exchanger"));
-  parameter Modelica.SIunits.TemperatureDifference dT1HexSet[2]
-    "Primary side deltaT set point schedule (index 1 for heat rejection)"
-    annotation (Dialog(group="District heat exchanger"));
   final parameter Modelica.SIunits.MassFlowRate mDisWat_flow_nominal(min=0)=
     hex.m1_flow_nominal
     "District water mass flow rate"
@@ -61,11 +58,6 @@ model PartialParallel
     min=0)=0.1
     "Heat exchanger primary pump minimum speed (fractional)"
     annotation (Dialog(group="District heat exchanger",enable=not have_val1Hex));
-  parameter Real yVal1HexMin(
-    final unit="1",
-    min=0.01)=0.1
-    "Minimum valve opening for temperature measurement (fractional)"
-    annotation (Dialog(group="District heat exchanger",enable=have_val1Hex));
   parameter Real spePum2HexMin(
     final unit="1",
     min=0.01)=0.1
@@ -155,9 +147,7 @@ model PartialParallel
     final T_b1Hex_nominal=T_b1Hex_nominal,
     final T_a2Hex_nominal=T_a2Hex_nominal,
     final T_b2Hex_nominal=T_b2Hex_nominal,
-    final dT1HexSet=dT1HexSet,
     final spePum1HexMin=spePum1HexMin,
-    final yVal1HexMin=yVal1HexMin,
     final spePum2HexMin=spePum2HexMin) "District heat exchanger"
     annotation (Placement(transformation(extent={{-10,-244},{10,-264}})));
   EnergyTransferStations.BaseClasses.StratifiedTank tanChiWat(

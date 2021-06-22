@@ -56,24 +56,10 @@ model HeatExchanger
     min=0)=0.1
     "Heat exchanger primary pump minimum speed (fractional)"
     annotation (Dialog(group="Controls",enable=not have_val1Hex));
-  parameter Real yVal1HexMin(
-    final unit="1",
-    min=0.01)=0.1
-    "Minimum valve opening for temperature measurement (fractional)"
-    annotation (Dialog(group="Controls",enable=have_val1Hex));
   parameter Real spePum2HexMin(
     final unit="1",
     min=0.01)=0.1
     "Heat exchanger secondary pump minimum speed (fractional)"
-    annotation (Dialog(group="Controls"));
-  parameter Modelica.SIunits.TemperatureDifference dT1HexSet[2]
-    "Primary side deltaT set point schedule (index 1 for heat rejection)"
-    annotation (Dialog(group="Controls"));
-  parameter Real k[2]={0.05,0.1}
-    "Gain schedule for controller (index 1 for heat rejection)"
-    annotation (Dialog(group="Controls"));
-  parameter Modelica.SIunits.Time Ti=120
-    "Time constant of integrator block"
     annotation (Dialog(group="Controls"));
   // IO CONNECTORS
   Buildings.Controls.OBC.CDL.Interfaces.RealInput yValIso_actual[2]
@@ -93,10 +79,7 @@ model HeatExchanger
   Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls.HeatExchanger con(
     final conCon=conCon,
     final spePum1HexMin=spePum1HexMin,
-    final spePum2HexMin=spePum2HexMin,
-    final dT1HexSet=dT1HexSet,
-    final k=k,
-    final Ti=Ti)
+    final spePum2HexMin=spePum2HexMin)
     "District heat exchanger loop controller"
     annotation (Placement(transformation(extent={{-70,150},{-50,170}})));
   Fluid.HeatExchangers.PlateHeatExchangerEffectivenessNTU hex(
@@ -160,18 +143,6 @@ model HeatExchanger
     final dpFixed_nominal=dp1Hex_nominal) if have_val1Hex
     "Heat exchanger primary control valve"
     annotation (Placement(transformation(extent={{70,70},{90,90}})));
-  Fluid.Sensors.TemperatureTwoPort senT1HexWatEnt(
-    redeclare final package Medium=Medium1,
-    final m_flow_nominal=m1_flow_nominal,
-    final allowFlowReversal=allowFlowReversal1)
-    "Heat exchanger primary water entering temperature"
-    annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=90,origin={-20,40})));
-  Fluid.Sensors.TemperatureTwoPort senT1HexWatLvg(
-    redeclare final package Medium=Medium1,
-    final m_flow_nominal=m1_flow_nominal,
-    final allowFlowReversal=allowFlowReversal1)
-    "Heat exchanger primary water leaving temperature"
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=90,origin={20,20})));
   Buildings.Controls.OBC.CDL.Continuous.Gain gai1(
     final k=m1_flow_nominal) if not have_val1Hex
     "Scale to nominal mass flow rate"
@@ -205,12 +176,12 @@ protected
   parameter Boolean have_val1Hex=conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
     "True in case of control valve on district side, false in case of a pump";
 equation
-  if not have_val1Hex then
-    connect(senT1HexWatLvg.port_b,port_b1)
-      annotation (Line(points={{20,30},{20,60},{100,60}},color={0,127,255}));
+  if have_val1Hex then
+    connect(port_a1, hex.port_a1)
+      annotation (Line(points={{-100,60},{-20,60},{-20,6},{-10,6}}, color={0,127,255}));
   else
-    connect(port_a1,senT1HexWatEnt.port_a)
-      annotation (Line(points={{-100,60},{-20,60},{-20,50}},color={0,127,255}));
+    connect(hex.port_b1, port_b1)
+      annotation (Line(points={{10,6},{20,6},{20,60},{100,60}}, color={0,127,255}));
   end if;
   connect(gai2.y,pum2Hex.m_flow_in)
     annotation (Line(points={{40,106},{40,-48}},color={0,0,127}));
@@ -218,18 +189,10 @@ equation
     annotation (Line(points={{-100,60},{-90,60},{-90,80},{-70,80}},color={0,127,255}));
   connect(val1Hex.port_b,port_b1)
     annotation (Line(points={{90,80},{94,80},{94,60},{100,60}},color={0,127,255}));
-  connect(hex.port_b1,senT1HexWatLvg.port_a)
-    annotation (Line(points={{10,6},{20,6},{20,10}},color={0,127,255}));
   connect(pum2Hex.port_b,senT2HexWatEnt.port_a)
     annotation (Line(points={{30,-60},{20,-60},{20,-50}},color={0,127,255}));
   connect(senT2HexWatEnt.port_b,hex.port_a2)
     annotation (Line(points={{20,-30},{20,-6},{10,-6}},color={0,127,255}));
-  connect(senT1HexWatEnt.port_b,hex.port_a1)
-    annotation (Line(points={{-20,30},{-20,6},{-10,6}},color={0,127,255}));
-  connect(pum1Hex.port_b,senT1HexWatEnt.port_a)
-    annotation (Line(points={{-50,80},{-20,80},{-20,50}},color={0,127,255}));
-  connect(val1Hex.port_a,senT1HexWatLvg.port_b)
-    annotation (Line(points={{70,80},{20,80},{20,30}},color={0,127,255}));
   connect(con.y1Hex,val1Hex.y)
     annotation (Line(points={{-48,166},{80,166},{80,92}},color={0,0,127}));
   connect(con.y1Hex,gai1.u)
@@ -243,11 +206,11 @@ equation
   connect(totPPum.y,PPum)
     annotation (Line(points={{92,0},{120,0}},color={0,0,127}));
   connect(yValIso_actual,con.yValIso)
-    annotation (Line(points={{-120,100},{-92,100},{-92,163},{-72,163}},color={0,0,127}));
+    annotation (Line(points={{-120,100},{-92,100},{-92,155},{-72,155}},color={0,0,127}));
   connect(con.yPum2Hex,gai2.u)
     annotation (Line(points={{-48,160},{40,160},{40,130}},color={0,0,127}));
   connect(u,con.u)
-    annotation (Line(points={{-120,140},{-96,140},{-96,168},{-72,168}},color={0,0,127}));
+    annotation (Line(points={{-120,140},{-96,140},{-96,165},{-72,165}},color={0,0,127}));
   connect(hex.port_b2,senT2HexWatLvg.port_a)
     annotation (Line(points={{-10,-6},{-20,-6},{-20,-10}},color={0,127,255}));
   connect(val2Hex.port_2,pum2Hex.port_a)
@@ -262,10 +225,8 @@ equation
     annotation (Line(points={{-60,-70},{-60,-80},{80,-80},{80,-70}},color={0,127,255}));
   connect(con.yVal2Hex,val2Hex.y)
     annotation (Line(points={{-48,154},{64,154},{64,-40},{80,-40},{80,-48}},color={0,0,127}));
-  connect(senT1HexWatLvg.T,con.T1HexWatLvg)
-    annotation (Line(points={{9,20},{-76,20},{-76,152},{-72,152}},color={0,0,127}));
-  connect(senT1HexWatEnt.T,con.T1HexWatEnt)
-    annotation (Line(points={{-31,40},{-80,40},{-80,157},{-72,157}},color={0,0,127}));
+  connect(hex.port_b1, val1Hex.port_a) annotation (Line(points={{10,6},{20,6},{20,80},{70,80}}, color={0,127,255}));
+  connect(pum1Hex.port_b, hex.port_a1) annotation (Line(points={{-50,80},{-20,80},{-20,6},{-10,6}}, color={0,127,255}));
   annotation (
     defaultComponentName="hex",
     Icon(
