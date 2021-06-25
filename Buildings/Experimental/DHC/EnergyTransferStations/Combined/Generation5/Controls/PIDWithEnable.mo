@@ -15,6 +15,9 @@ block PIDWithEnable
     min=0)=0.1
     "Time constant of derivative block"
     annotation (Dialog(enable=controllerType == Buildings.Controls.OBC.CDL.Types.SimpleController.PD or controllerType == Buildings.Controls.OBC.CDL.Types.SimpleController.PID));
+  parameter Real r(
+    min=100*Modelica.Constants.eps)=1
+    "Typical range of control error, used for scaling the control error";
   parameter Real yMin=0
     "Lower limit of output";
   parameter Real yMax=1
@@ -39,10 +42,12 @@ block PIDWithEnable
     final k=k,
     final Ti=Ti,
     final Td=Td,
+    final r=r,
     final controllerType=controllerType,
     final yMin=yMin,
     final yMax=yMax,
-    final reverseActing=reverseActing)
+    final reverseActing=reverseActing,
+    final y_reset=y_reset)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
   Buildings.Controls.OBC.CDL.Logical.Switch swi
     annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
