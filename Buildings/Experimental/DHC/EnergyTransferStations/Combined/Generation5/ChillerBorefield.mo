@@ -71,28 +71,28 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
     annotation (Dialog(group="Chiller"),choicesAllMatching=true,
     Placement(transformation(extent={{100,222},{120,242}})));
   parameter Modelica.SIunits.PressureDifference dp1WSE_nominal(
-    displayUnit="Pa")
+    displayUnit="Pa") = 40E3
     "Nominal pressure drop across heat exchanger on district side"
-    annotation (Dialog(group="Waterside economizer"));
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
   parameter Modelica.SIunits.PressureDifference dp2WSE_nominal(
-    displayUnit="Pa")
+    displayUnit="Pa") = 40E3
     "Nominal pressure drop across heat exchanger on building side"
-    annotation (Dialog(group="Waterside economizer"));
-  parameter Modelica.SIunits.HeatFlowRate QWSE_flow_nominal
-    "Nominal heat flow rate through heat exchanger (from district to building)"
-    annotation (Dialog(group="Waterside economizer"));
-  parameter Modelica.SIunits.Temperature T_a1WSE_nominal
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
+  parameter Modelica.SIunits.HeatFlowRate QWSE_flow_nominal = 0
+    "Nominal heat flow rate through heat exchanger (<=0)"
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
+  parameter Modelica.SIunits.Temperature T_a1WSE_nominal = 6 + 273.15
     "Nominal water inlet temperature on district side"
-    annotation (Dialog(group="Waterside economizer"));
-  parameter Modelica.SIunits.Temperature T_b1WSE_nominal
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
+  parameter Modelica.SIunits.Temperature T_b1WSE_nominal = 11 + 273.15
     "Nominal water outlet temperature on district side"
-    annotation (Dialog(group="Waterside economizer"));
-  parameter Modelica.SIunits.Temperature T_a2WSE_nominal
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
+  parameter Modelica.SIunits.Temperature T_a2WSE_nominal = 15 + 273.15
     "Nominal water inlet temperature on building side"
-    annotation (Dialog(group="Waterside economizer"));
-  parameter Modelica.SIunits.Temperature T_b2WSE_nominal
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
+  parameter Modelica.SIunits.Temperature T_b2WSE_nominal = 8 + 273.15
     "Nominal water outlet temperature on building side"
-    annotation (Dialog(group="Waterside economizer"));
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
   parameter Real spePum1WSEMin(
     final unit="1",
     min=0)=0.1
@@ -321,6 +321,8 @@ equation
   connect(WSE.port_b1, mixWSE.port_3) annotation (Line(points={{240,132},{254,132},{254,-250}}, color={0,127,255}));
   connect(hex.port_b1, mixWSE.port_1) annotation (Line(points={{10,-260},{244,-260}}, color={0,127,255}));
   connect(conSup.yCoo, WSE.uCoo) annotation (Line(points={{-238,29},{140,29},{140,126},{218,126}}, color={255,0,255}));
+  connect(valIsoEva.y_actual, WSE.yValIsoEva_actual)
+    annotation (Line(points={{55,-113},{40,-113},{40,123},{218,123}}, color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(

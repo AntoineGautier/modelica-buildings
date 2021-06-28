@@ -134,16 +134,19 @@ model WatersideEconomizer "Base subsystem with waterside economizer"
   Buildings.Controls.OBC.CDL.Continuous.Gain gai1(
     final k=m1_flow_nominal) if not have_val1Hex
     "Scale to nominal mass flow rate"
-    annotation (Placement(transformation(extent={{-12,110},{-32,130}})));
-  Fluid.Actuators.Valves.TwoWayEqualPercentage val2Hex(
+    annotation (Placement(transformation(extent={{-12,100},{-32,120}})));
+  Fluid.Actuators.Valves.ThreeWayLinear        val2Hex(
     redeclare final package Medium = Medium2,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     final m_flow_nominal=m2_flow_nominal,
     from_dp=true,
     final dpValve_nominal=dpVal2Hex_nominal,
     use_inputFilter=false,
-    final dpFixed_nominal=0)
+    final dpFixed_nominal=fill(0, 2))
     "Heat exchanger secondary control valve"
-    annotation (Placement(transformation(extent={{10,-70},{-10,-50}})));
+    annotation (Placement(transformation(extent={{10,-10},{-10,10}},
+        rotation=-90,
+        origin={20,-40})));
   Fluid.Sensors.RelativePressure preDro1(
     redeclare final package Medium = Medium1)
     "HX primary pressure drop"
@@ -162,6 +165,10 @@ model WatersideEconomizer "Base subsystem with waterside economizer"
     "Cooling enable signal"
     annotation (Placement(transformation(extent={{-140,140},{-100,180}}),
     iconTransformation(extent={{-140,-20},{-100,20}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput yValIsoEva_actual(final unit="1")
+    "Return position of evaporator to ambient loop isolation valve"
+    annotation (Placement(transformation(extent={{-140,110},{-100,150}}),
+    iconTransformation(extent={{-140,-50},{-100,-10}})));
 protected
   parameter Boolean have_val1Hex=
     conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
@@ -177,23 +184,19 @@ equation
   connect(val1Hex.port_b,port_b1)
     annotation (Line(points={{90,80},{94,80},{94,60},{100,60}},color={0,127,255}));
   connect(conWSE.y1Hex, val1Hex.y) annotation (Line(points={{52,165},{80,165},{80,92}},  color={0,0,127}));
-  connect(conWSE.y1Hex, gai1.u) annotation (Line(points={{52,165},{80,165},{80,120},{-10,120}},color={0,0,127}));
+  connect(conWSE.y1Hex, gai1.u) annotation (Line(points={{52,165},{80,165},{80,110},{-10,110}},color={0,0,127}));
   connect(gai1.y,pum1Hex.m_flow_in)
-    annotation (Line(points={{-34,120},{-60,120},{-60,92}},color={0,0,127}));
+    annotation (Line(points={{-34,110},{-60,110},{-60,92}},color={0,0,127}));
   connect(PPum, pum1Hex.P) annotation (Line(points={{120,0},{44,0},{44,89},{-49,89}}, color={0,0,127}));
   connect(conWSE.yVal2Hex, val2Hex.y)
-    annotation (Line(points={{52,155},{60,155},{60,-40},{0,-40},{0,-48}}, color={0,0,127}));
+    annotation (Line(points={{52,155},{60,155},{60,-40},{32,-40}},        color={0,0,127}));
   connect(preDro1.p_rel, conWSE.dp1) annotation (Line(points={{0,29},{0,165},{28,165}}, color={0,0,127}));
   connect(preDro2.p_rel, conWSE.dp2)
-    annotation (Line(points={{0,-29},{0,-34},{-36,-34},{-36,162},{28,162}}, color={0,0,127}));
+    annotation (Line(points={{0,-29},{0,-34},{-36,-34},{-36,163},{28,163}}, color={0,0,127}));
   connect(port_a2, senT2HexWatEnt.port_a) annotation (Line(points={{100,-60},{50,-60}}, color={0,127,255}));
-  connect(senT2HexWatEnt.port_b, hex.port_a2)
-    annotation (Line(points={{30,-60},{20,-60},{20,-6},{10,-6}}, color={0,127,255}));
-  connect(senT2HexWatEnt.port_b, val2Hex.port_a) annotation (Line(points={{30,-60},{10,-60}}, color={0,127,255}));
   connect(port_b2, senT2HexWatLvg.port_b) annotation (Line(points={{-100,-60},{-50,-60}}, color={0,127,255}));
   connect(hex.port_b2, senT2HexWatLvg.port_a)
     annotation (Line(points={{-10,-6},{-20,-6},{-20,-60},{-30,-60}}, color={0,127,255}));
-  connect(senT2HexWatLvg.port_a, val2Hex.port_b) annotation (Line(points={{-30,-60},{-10,-60}}, color={0,127,255}));
   connect(preDro1.port_a, hex.port_a1) annotation (Line(points={{-10,20},{-20,20},{-20,6},{-10,6}}, color={0,127,255}));
   connect(preDro1.port_b, hex.port_b1) annotation (Line(points={{10,20},{20,20},{20,6},{10,6}}, color={0,127,255}));
   connect(hex.port_a2, preDro2.port_a) annotation (Line(points={{10,-6},{20,-6},{20,-20},{10,-20}}, color={0,127,255}));
@@ -205,11 +208,18 @@ equation
   connect(hex.port_b1, val1Hex.port_a) annotation (Line(points={{10,6},{20,6},{20,80},{70,80}}, color={0,127,255}));
   connect(uCoo, conWSE.uCoo) annotation (Line(points={{-120,160},{-40,160},{-40,168},{28,168}}, color={255,0,255}));
   connect(senT1HexWatEnt.T, conWSE.T1HexWatEnt)
-    annotation (Line(points={{-31,40},{-38,40},{-38,159},{28,159}}, color={0,0,127}));
+    annotation (Line(points={{-31,40},{-38,40},{-38,160},{28,160}}, color={0,0,127}));
   connect(conWSE.T2HexWatEnt, senT2HexWatEnt.T)
-    annotation (Line(points={{28,156},{20,156},{20,140},{40,140},{40,-49},{40,-49}}, color={0,0,127}));
+    annotation (Line(points={{28,158},{20,158},{20,140},{40,140},{40,-49},{40,-49}}, color={0,0,127}));
   connect(senT2HexWatLvg.T, conWSE.T2HexWatLvg)
-    annotation (Line(points={{-40,-49},{-40,153},{28,153}}, color={0,0,127}));
+    annotation (Line(points={{-40,-49},{-40,156},{28,156}}, color={0,0,127}));
+  connect(yValIsoEva_actual, conWSE.yValIsoEva_actual)
+    annotation (Line(points={{-120,130},{24,130},{24,153},{28,153}}, color={0,0,127}));
+  connect(senT2HexWatEnt.port_b, val2Hex.port_1)
+    annotation (Line(points={{30,-60},{20,-60},{20,-50}}, color={0,127,255}));
+  connect(val2Hex.port_2, hex.port_a2) annotation (Line(points={{20,-30},{20,-6},{10,-6}}, color={0,127,255}));
+  connect(val2Hex.port_3, senT2HexWatLvg.port_a)
+    annotation (Line(points={{10,-40},{-20,-40},{-20,-60},{-30,-60}}, color={0,127,255}));
   annotation (
     defaultComponentName="hex",
     Icon(

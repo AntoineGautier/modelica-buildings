@@ -120,8 +120,7 @@ block SideHot
     annotation (Placement(transformation(extent={{-160,-90},{-140,-70}})));
   Buildings.Controls.OBC.CDL.Continuous.LessThreshold isValIsoEvaClo(
     final t=1E-6,
-    h=0.5E-6)
-    "At least one signal is non zero"
+    h=0.5E-6) "Check if isolation valve is closed"
     annotation (Placement(transformation(extent={{-160,-130},{-140,-110}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(
     nu=3)

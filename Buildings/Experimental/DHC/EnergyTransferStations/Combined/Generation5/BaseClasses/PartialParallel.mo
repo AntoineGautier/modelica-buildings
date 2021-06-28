@@ -65,7 +65,8 @@ model PartialParallel
     annotation (Dialog(group="District heat exchanger"));
   replaceable parameter Buildings.Fluid.Movers.Data.Generic perPum1Hex(
     motorCooledByFluid=false)
-    constrainedby Buildings.Fluid.Movers.Data.Generic "Record with performance data for primary pump"
+    constrainedby Buildings.Fluid.Movers.Data.Generic
+    "Record with performance data for primary pump"
     annotation (Dialog(group="District heat exchanger", enable=not have_val1Hex),
       choicesAllMatching=true,Placement(transformation(extent={{-80,222},{-60,242}})));
   replaceable parameter Buildings.Fluid.Movers.Data.Generic perPum2Hex(

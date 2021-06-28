@@ -60,8 +60,7 @@ partial model PartialChillerBorefield
     m_flow_nominal=datChi.mEva_flow_nominal)
     "Chilled water supply temperature"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,origin={90,40})));
-  replaceable Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.ChillerBorefield ets
-    constrainedby Combined.Generation5.ChillerBorefield(
+  Combined.Generation5.ChillerBorefield ets(
     redeclare package MediumSer = Medium,
     redeclare package MediumBui = Medium,
     QChiWat_flow_nominal=QCoo_flow_nominal,
@@ -73,20 +72,16 @@ partial model PartialChillerBorefield
     T_b1Hex_nominal=279.15,
     T_a2Hex_nominal=277.15,
     T_b2Hex_nominal=282.15,
-    dp1WSE_nominal=40E3,
-    dp2WSE_nominal=40E3,
     QWSE_flow_nominal=QCoo_flow_nominal,
-    T_a1WSE_nominal=284.15,
-    T_b1WSE_nominal=279.15,
-    T_a2WSE_nominal=293.15,
-    T_b2WSE_nominal=286.15,
     dpCon_nominal=40E3,
     dpEva_nominal=40E3,
     datChi=datChi,
     nPorts_bChiWat=1,
     nPorts_bHeaWat=1,
     nPorts_aHeaWat=1,
-    nPorts_aChiWat=1) "ETS" annotation (Placement(transformation(extent={{-10,-84},{50,-24}})));
+    nPorts_aChiWat=1)
+    "ETS"
+    annotation (Placement(transformation(extent={{-10,-84},{50,-24}})));
   Fluid.Sensors.TemperatureTwoPort senTHeaWatRet(
     redeclare final package Medium=Medium,
     m_flow_nominal=datChi.mCon_flow_nominal)

@@ -20,12 +20,10 @@ model HeatExchanger
     constrainedby Buildings.Fluid.Movers.Data.Generic
     "Record with performance data for secondary pump"
     annotation (choicesAllMatching=true,Placement(transformation(extent={{20,-140},{40,-120}})));
-  parameter Modelica.SIunits.PressureDifference dp1Hex_nominal(
-    displayUnit="Pa")
+  parameter Modelica.SIunits.PressureDifference dp1Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop across heat exchanger on district side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dp2Hex_nominal(
-    displayUnit="Pa")
+  parameter Modelica.SIunits.PressureDifference dp2Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop across heat exchanger on building side"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.PressureDifference dpVal1Hex_nominal(
@@ -51,14 +49,10 @@ model HeatExchanger
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Real spePum1HexMin(
-    final unit="1",
-    min=0)=0.1
+  parameter Real spePum1HexMin(unit="1")=0.1
     "Heat exchanger primary pump minimum speed (fractional)"
     annotation (Dialog(group="Controls",enable=not have_val1Hex));
-  parameter Real spePum2HexMin(
-    final unit="1",
-    min=0.01)=0.1
+  parameter Real spePum2HexMin(unit="1")=0.1
     "Heat exchanger secondary pump minimum speed (fractional)"
     annotation (Dialog(group="Controls"));
   // IO CONNECTORS
