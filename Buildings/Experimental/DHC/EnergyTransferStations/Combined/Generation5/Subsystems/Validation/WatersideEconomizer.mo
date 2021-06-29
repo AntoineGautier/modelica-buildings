@@ -18,7 +18,8 @@ model WatersideEconomizer "Validation of the base subsystem model with waterside
     nominalValuesDefineDefaultPressureCurve=true,
     dp_nominal=25E4) "CHW pump"
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=0,origin={-70,-40})));
-  Modelica.Blocks.Sources.BooleanExpression uCoo(y=time >= 1000) "Cooling enable signal"
+  Modelica.Blocks.Sources.BooleanExpression uCoo(y=time >= 1000)
+    "Cooling enable signal"
     annotation (Placement(transformation(extent={{-200,70},{-180,90}})));
   Subsystems.WatersideEconomizer hexPum(
     redeclare final package Medium1=Medium,
@@ -156,6 +157,8 @@ model WatersideEconomizer "Validation of the base subsystem model with waterside
     m_flow_nominal=hexPum.m2_flow_nominal,
     dp_nominal=20E4)
     annotation (Placement(transformation(extent={{-100,30},{-120,50}})));
+  Modelica.Blocks.Sources.RealExpression yEva(y=0) "Isolation valve signal"
+    annotation (Placement(transformation(extent={{-200,50},{-180,70}})));
 equation
   connect(hexPum.port_b1,senT1OutPum.port_a)
     annotation (Line(points={{40,-54},{70,-54},{70,-80},{90,-80}},color={0,127,255}));
@@ -213,6 +216,11 @@ equation
   connect(dpSet.y, pum1.dp_in)
     annotation (Line(points={{-178,-30},{-90,-30},{-90,60},{-70,60},{-70,52}}, color={0,0,127}));
   connect(res1.port_b, bou2Val1.ports[2]) annotation (Line(points={{-120,40},{-130,40},{-130,-2}}, color={0,127,255}));
+  connect(yEva.y, hexVal.yValIsoEva_actual) annotation (Line(points={{-179,60},
+          {-6,60},{-6,17},{18,17}}, color={0,0,127}));
+  connect(yEva.y, hexPum.yValIsoEva_actual) annotation (Line(points={{-179,60},
+          {-6.07143,60},{-6.07143,17.1429},{-6,17.1429},{-6,-63},{18,-63}},
+        color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(

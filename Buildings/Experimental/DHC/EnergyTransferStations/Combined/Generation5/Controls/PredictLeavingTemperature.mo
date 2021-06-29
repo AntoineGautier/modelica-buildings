@@ -1,5 +1,5 @@
 within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls;
-model PredictLeavingTemperature "Block that predicts heat exchanger leaving water temperature"
+model PredictLeavingTemperature "Block that predicts heat exchanger leaving water temperatureBlock that predicts heat exchanger leaving water temperature"
   extends Modelica.Blocks.Icons.Block;
   parameter Modelica.SIunits.TemperatureDifference dTApp_nominal
     "Heat exchanger approach"
@@ -28,7 +28,7 @@ model PredictLeavingTemperature "Block that predicts heat exchanger leaving wate
 protected
   Real ratLoa "Part load ratio";
 equation
-  ratLoa = min(1, (dp2 / dpVal2Hex_nominal)^0.5);
+  ratLoa = min(1, abs(dp2 / dpVal2Hex_nominal)^0.5);
   T2HexWatLvg = T1HexWatEnt + dTApp_nominal * ratLoa;
 annotation (
   defaultComponentName="calTemLvg",

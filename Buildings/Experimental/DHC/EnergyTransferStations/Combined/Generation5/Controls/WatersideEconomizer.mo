@@ -4,16 +4,13 @@ model WatersideEconomizer "District heat exchanger controller"
   parameter DHC.EnergyTransferStations.Types.ConnectionConfiguration conCon
     "District connection configuration"
     annotation (Evaluate=true);
-  parameter Modelica.SIunits.PressureDifference dp1Hex_nominal(
-    displayUnit="Pa")
+  parameter Modelica.SIunits.PressureDifference dp1Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop across heat exchanger on district side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dp2Hex_nominal(
-    displayUnit="Pa")
+  parameter Modelica.SIunits.PressureDifference dp2Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop across heat exchanger on building side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(
-    displayUnit="Pa")
+  parameter Modelica.SIunits.PressureDifference dpVal2Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop of heat exchanger bypass valve"
     annotation (Dialog(group="Nominal condition"));
   parameter Modelica.SIunits.Temperature T_a1Hex_nominal
@@ -22,14 +19,10 @@ model WatersideEconomizer "District heat exchanger controller"
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Real spePum1HexMin(
-    final unit="1",
-    min=0)=0.1
+  parameter Real spePum1HexMin(unit="1")=0.1
     "Heat exchanger primary pump minimum speed (fractional)"
     annotation (Dialog(group="Controls",enable=not have_val1Hex));
-  parameter Real yVal1HexMin(
-    final unit="1",
-    min=0.01)=0.1
+  parameter Real yVal1HexMin(unit="1")=0.1
     "Minimum valve opening for temperature measurement (fractional)"
     annotation (Dialog(group="Controls",enable=have_val1Hex));
   parameter Modelica.SIunits.TemperatureDifference dTEna = 1
@@ -39,11 +32,11 @@ model WatersideEconomizer "District heat exchanger controller"
     "Minimum delta-T across heat exchanger before disabling WSE"
     annotation (Dialog(group="Controls"));
   parameter Real k(
-    min=0)=1
+    min=0)=0.1
     "Gain of controller"
     annotation (Dialog(group="Controls"));
   parameter Modelica.SIunits.Time Ti(
-    min=Buildings.Controls.OBC.CDL.Constants.small)=60
+    min=Buildings.Controls.OBC.CDL.Constants.small)=120
     "Time constant of integrator block"
     annotation (Dialog(group="Controls"));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(
@@ -84,12 +77,6 @@ model WatersideEconomizer "District heat exchanger controller"
     final k=1)
     "Add threshold for enabling WSE"
     annotation (Placement(transformation(extent={{-90,-50},{-70,-30}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain ratNom2(
-    final k=1/dp2Hex_nominal) "Compute ratio to nominal"
-    annotation (Placement(transformation(extent={{-140,30},{-120,50}})));
-  Buildings.Controls.OBC.CDL.Continuous.Gain ratNom1(
-    final k=1/dp1Hex_nominal) "Compute ratio to nominal"
-    annotation (Placement(transformation(extent={{-140,90},{-120,110}})));
   PIDWithEnable conPI(
     controllerType=Buildings.Controls.OBC.CDL.Types.SimpleController.PI,
     final k=k,
@@ -140,7 +127,7 @@ model WatersideEconomizer "District heat exchanger controller"
     iconTransformation(extent={{-140,60},{-100,100}})));
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nu=4)
     "Enable if cooling enabled and temperature criterion verified"
-    annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
+    annotation (Placement(transformation(extent={{0,-50},{20,-30}})));
   Buildings.Controls.OBC.CDL.Logical.MultiOr
                                         or1(nu=3)
                                             "Cooling disabled or temperature criterion verified"
@@ -155,8 +142,7 @@ model WatersideEconomizer "District heat exchanger controller"
   Buildings.Controls.OBC.CDL.Logical.Timer tim1(t=1200) "True when WSE inactive for more than t"
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
-        rotation=-90,
-        origin={-20,0})));
+        rotation=-90)));
   Buildings.Controls.OBC.CDL.Logical.And and2 "Cooling disabled or temperature criterion verified"
     annotation (Placement(transformation(extent={{70,-102},{90,-82}})));
   Buildings.Controls.OBC.CDL.Continuous.LessThreshold isValIsoEvaClo(final t=1E-6, h=0.5E-6) "True if valve closed"
@@ -169,16 +155,18 @@ model WatersideEconomizer "District heat exchanger controller"
     annotation (Placement(transformation(extent={{-50,-150},{-30,-130}})));
   Buildings.Controls.OBC.CDL.Logical.And and1 "Cooling disabled or temperature criterion verified"
     annotation (Placement(transformation(extent={{-90,150},{-70,170}})));
+  Buildings.Controls.OBC.CDL.Continuous.Gain nor1(k=1/dp1Hex_nominal)
+    "Normalize"
+    annotation (Placement(transformation(extent={{-148,90},{-128,110}})));
+  Buildings.Controls.OBC.CDL.Continuous.Gain nor2(k=1/(dp2Hex_nominal +
+        dpVal2Hex_nominal))
+    "Normalize"
+    annotation (Placement(transformation(extent={{-148,30},{-128,50}})));
 protected
   parameter Boolean have_val1Hex=
     conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
     "True in case of control valve on district side, false in case of a pump";
 equation
-  connect(dp2, ratNom2.u) annotation (Line(points={{-200,40},{-142,40}}, color={0,0,127}));
-  connect(dp1, ratNom1.u) annotation (Line(points={{-200,100},{-142,100}}, color={0,0,127}));
-  connect(ratNom2.y, conPI.u_s) annotation (Line(points={{-118,40},{-80,40},{-80,120},{-68,120}},    color={0,0,127}));
-  connect(ratNom1.y, conPI.u_m)
-    annotation (Line(points={{-118,100},{-56,100},{-56,108}},                      color={0,0,127}));
   connect(T2HexWatEnt, delT1.u1)
     annotation (Line(points={{-200,-80},{-160,-80},{-160,-94},{-142,-94}}, color={0,0,127}));
   connect(T2HexWatLvg, delT1.u2)
@@ -207,17 +195,19 @@ equation
   connect(max1.y, swiOff1.u1) annotation (Line(points={{52,120},{90,120},{90,108},{98,108}}, color={0,0,127}));
   connect(swiOff1.y, y1Hex) annotation (Line(points={{122,100},{160,100},{160,40},{200,40}}, color={0,0,127}));
   connect(zer.y, swiOff1.u3) annotation (Line(points={{52,80},{90,80},{90,92},{98,92}}, color={0,0,127}));
-  connect(mulAnd.y, ena.condition) annotation (Line(points={{12,-40},{20,-40},{20,28}}, color={255,0,255}));
+  connect(mulAnd.y, ena.condition) annotation (Line(points={{22,-40},{30,-40},{
+          30,18},{20,18},{20,28}},                                                      color={255,0,255}));
   connect(uCoo, not2.u) annotation (Line(points={{-200,160},{-170,160},{-170,-70},{-52,-70}},   color={255,0,255}));
   connect(actSta.active, booToRea.u) annotation (Line(points={{60,29},{60,-40},{138,-40}}, color={255,0,255}));
   connect(delTemDis1.y, mulAnd.u[1])
-    annotation (Line(points={{-28,-40},{-12,-40},{-12,-34.75}},                  color={255,0,255}));
-  connect(iniSta.active, tim1.u) annotation (Line(points={{-20,29},{-20,12}}, color={255,0,255}));
+    annotation (Line(points={{-28,-40},{-2,-40},{-2,-34.75}},                    color={255,0,255}));
+  connect(iniSta.active, tim1.u) annotation (Line(points={{-20,29},{-20,22},{
+          2.22045e-15,22},{2.22045e-15,12}},                                  color={255,0,255}));
   connect(tim1.passed, mulAnd.u[2])
-    annotation (Line(points={{-28,-12},{-28,-32},{-12,-32},{-12,-38.25}},
-                                                                       color={255,0,255}));
-  connect(uCoo, mulAnd.u[3]) annotation (Line(points={{-200,160},{-170,160},{-170,-20},{-20,-20},{-20,-40},{-12,-40},{
-          -12,-41.75}},   color={255,0,255}));
+    annotation (Line(points={{-8,-12},{-8,-36},{-2,-36},{-2,-38.25}},  color={255,0,255}));
+  connect(uCoo, mulAnd.u[3]) annotation (Line(points={{-200,160},{-170,160},{
+          -170,0},{-20,0},{-20,-38},{-2,-38},{-2,-41.75}},
+                          color={255,0,255}));
   connect(actSta.active, tim.u) annotation (Line(points={{60,29},{60,-40},{50,-40},{50,-58}},
                                                                             color={255,0,255}));
   connect(tim.passed, and2.u1) annotation (Line(points={{42,-82},{42,-92},{68,-92}},    color={255,0,255}));
@@ -227,18 +217,29 @@ equation
   connect(yValIsoEva_actual,isValIsoEvaClo.u)
     annotation (Line(points={{-200,-160},{-142,-160}},color={0,0,127}));
   connect(isValIsoEvaClo.y, mulAnd.u[4])
-    annotation (Line(points={{-118,-160},{-14,-160},{-14,-45.25},{-12,-45.25}}, color={255,0,255}));
+    annotation (Line(points={{-118,-160},{-100,-160},{-100,-20},{-24,-20},{-24,
+          -42},{-2,-42},{-2,-45.25}},                                           color={255,0,255}));
   connect(isValIsoEvaClo.y, not1.u)
     annotation (Line(points={{-118,-160},{-60,-160},{-60,-140},{-52,-140}}, color={255,0,255}));
   connect(delTemDis.y, or1.u[1])
-    annotation (Line(points={{-28,-100},{-16,-100},{-16,-95.3333},{-2,-95.3333}}, color={255,0,255}));
-  connect(not2.y, or1.u[2]) annotation (Line(points={{-28,-70},{-16,-70},{-16,-100},{-2,-100}}, color={255,0,255}));
+    annotation (Line(points={{-28,-100},{-2,-100},{-2,-95.3333}},                 color={255,0,255}));
+  connect(not2.y, or1.u[2]) annotation (Line(points={{-28,-70},{-20,-70},{-20,
+          -96},{-2,-96},{-2,-100}},                                                             color={255,0,255}));
   connect(not1.y, or1.u[3])
-    annotation (Line(points={{-28,-140},{-16,-140},{-16,-104.667},{-2,-104.667}}, color={255,0,255}));
+    annotation (Line(points={{-28,-140},{-20,-140},{-20,-104},{-2,-104},{-2,
+          -104.667}},                                                             color={255,0,255}));
   connect(uCoo, and1.u1) annotation (Line(points={{-200,160},{-92,160}}, color={255,0,255}));
   connect(and1.y, swiOff1.u2) annotation (Line(points={{-68,160},{80,160},{80,100},{98,100}}, color={255,0,255}));
   connect(isValIsoEvaClo.y, and1.u2)
     annotation (Line(points={{-118,-160},{-100,-160},{-100,152},{-92,152}}, color={255,0,255}));
+  connect(dp1, nor1.u)
+    annotation (Line(points={{-200,100},{-150,100}}, color={0,0,127}));
+  connect(nor1.y, conPI.u_m) annotation (Line(points={{-126,100},{-56,100},{-56,
+          108}}, color={0,0,127}));
+  connect(dp2, nor2.u)
+    annotation (Line(points={{-200,40},{-150,40}}, color={0,0,127}));
+  connect(nor2.y, conPI.u_s) annotation (Line(points={{-126,40},{-80,40},{-80,120},
+          {-68,120}}, color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(

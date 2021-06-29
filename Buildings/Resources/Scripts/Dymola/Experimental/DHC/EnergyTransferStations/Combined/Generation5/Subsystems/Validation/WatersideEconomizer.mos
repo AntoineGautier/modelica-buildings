@@ -10,7 +10,7 @@ createPlot(
     grid=true);
 createPlot(
     id=1,
-    y={"hexPum.m1_flow", "hexPum.m1_flow_nominal", "hexPum.m2_flow_nominal", "hexPum.hex.m2_flow", "hexPum.val2Hex.m_flow"},
+    y={"hexPum.m1_flow", "hexPum.m1_flow_nominal", "hexPum.m2_flow_nominal", "hexPum.hex.m2_flow"},
     grid=true,
     subPlot=2);
 createPlot(
@@ -21,11 +21,11 @@ createPlot(
 createPlot(
     id=2,
     position={91, 23, 542, 623},
-    y={"senT1InlVal.T", "senT2InlVal.T", "hexVal.m2_flow_nominal", "hexVal.hex.m2_flow", "hexVal.val2Hex.m_flow"},
+    y={"senT1InlVal.T", "senT2InlVal.T", "hexVal.conWSE.calTemLvg.T2HexWatLvg", "senT2OutVal.T"},
     grid=true);
 createPlot(
     id=2,
-    y={"hexVal.m1_flow", "hexVal.m1_flow_nominal", "hexVal.m2_flow_nominal"},
+    y={"hexVal.m1_flow", "hexVal.m1_flow_nominal", "hexVal.m2_flow_nominal", "hexVal.hex.m2_flow"},
     grid=true,
     subPlot=2);
 createPlot(
