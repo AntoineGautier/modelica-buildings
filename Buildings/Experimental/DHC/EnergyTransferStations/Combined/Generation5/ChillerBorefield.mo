@@ -93,12 +93,9 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
   parameter Modelica.SIunits.Temperature T_b2WSE_nominal = 8 + 273.15
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="Waterside economizer", enable=have_WSE));
-  parameter Real spePum1WSEMin(
-    final unit="1",
-    min=0)=0.1
-    "Waterside economizer primary pump minimum speed (fractional)"
-    annotation (Dialog(group="Waterside economizer",
-      enable=not have_val1Hex and have_WSE));
+  parameter Real y1WSEMin(final unit="1") = 0.05
+    "Minimum pump flow rate or valve opening for temperature measurement (fractional)"
+    annotation (Dialog(group="Waterside economizer", enable=have_WSE));
   replaceable parameter Fluid.Movers.Data.Generic perPum1WSE(
     motorCooledByFluid=false) constrainedby Fluid.Movers.Data.Generic
     "Record with performance data for primary pump of waterside economizer"
@@ -227,7 +224,7 @@ model ChillerBorefield "ETS model for 5GDHC systems with heat recovery chiller a
     final T_b1Hex_nominal=T_b1WSE_nominal,
     final T_a2Hex_nominal=T_a2WSE_nominal,
     final T_b2Hex_nominal=T_b2WSE_nominal,
-    final spePum1HexMin=spePum1WSEMin) if have_WSE
+    final y1Min=y1WSEMin) if have_WSE
     "Waterside economizer"
     annotation (Placement(transformation(extent={{220,116},{240,136}})));
   Buildings.Experimental.DHC.EnergyTransferStations.BaseClasses.Junction splWSE(

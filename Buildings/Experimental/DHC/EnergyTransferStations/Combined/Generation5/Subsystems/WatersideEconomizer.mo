@@ -44,12 +44,9 @@ model WatersideEconomizer
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Real spePum1HexMin(unit="1")=0.1
-    "Heat exchanger primary pump minimum speed (fractional)"
-    annotation (Dialog(group="Controls",enable=not have_val1Hex));
-  parameter Real yVal1HexMin(unit="1")=0.1
-    "Minimum valve opening for temperature measurement (fractional)"
-    annotation (Dialog(group="Controls",enable=have_val1Hex));
+  parameter Real y1Min(final unit="1")=0.05
+    "Minimum pump flow rate or valve opening for temperature measurement (fractional)"
+    annotation (Dialog(group="Controls"));
   parameter Modelica.SIunits.TemperatureDifference dTEna = 1
     "Minimum delta-T above predicted heat exchanger leaving water temperature to enable WSE"
     annotation (Dialog(group="Controls"));
@@ -72,9 +69,7 @@ model WatersideEconomizer
     iconTransformation(extent={{100,-20},{140,20}})));
   // COMPONENTS
   Controls.WatersideEconomizer conWSE(
-    final conCon=conCon,
-    final spePum1HexMin=spePum1HexMin,
-    final yVal1HexMin=yVal1HexMin,
+    final y1Min=y1Min,
     final dp1Hex_nominal=dp1Hex_nominal,
     final dp2Hex_nominal=dp2Hex_nominal,
     final dpVal2Hex_nominal=dpVal2Hex_nominal,

@@ -1,9 +1,7 @@
 within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Controls;
 model WatersideEconomizer "District heat exchanger controller"
   extends Modelica.Blocks.Icons.Block;
-  parameter DHC.EnergyTransferStations.Types.ConnectionConfiguration conCon
-    "District connection configuration"
-    annotation (Evaluate=true);
+
   parameter Modelica.SIunits.PressureDifference dp1Hex_nominal(displayUnit="Pa")
     "Nominal pressure drop across heat exchanger on district side"
     annotation (Dialog(group="Nominal condition"));
@@ -19,12 +17,9 @@ model WatersideEconomizer "District heat exchanger controller"
   parameter Modelica.SIunits.Temperature T_b2Hex_nominal
     "Nominal water outlet temperature on building side"
     annotation (Dialog(group="Nominal condition"));
-  parameter Real spePum1HexMin(unit="1")=0.1
-    "Heat exchanger primary pump minimum speed (fractional)"
-    annotation (Dialog(group="Controls",enable=not have_val1Hex));
-  parameter Real yVal1HexMin(unit="1")=0.1
-    "Minimum valve opening for temperature measurement (fractional)"
-    annotation (Dialog(group="Controls",enable=have_val1Hex));
+  parameter Real y1Min(final unit="1")=0.05
+    "Minimum pump flow rate or valve opening for temperature measurement (fractional)"
+    annotation (Dialog(group="Controls"));
   parameter Modelica.SIunits.TemperatureDifference dTEna = 1
     "Minimum delta-T above predicted heat exchanger leaving water temperature to enable WSE"
     annotation (Dialog(group="Controls"));
@@ -109,11 +104,12 @@ model WatersideEconomizer "District heat exchanger controller"
     annotation (Placement(transformation(extent={{140,-50},{160,-30}})));
   inner Modelica.StateGraph.StateGraphRoot stateGraphRoot "Root of state graph"
     annotation (Placement(transformation(extent={{-10,70},{10,90}})));
-  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant min1(final k=if have_val1Hex then yVal1HexMin else
-        spePum1HexMin) "Minimum pump speed"
+  Buildings.Controls.OBC.CDL.Continuous.Sources.Constant min1(
+    final k=y1Min)
+    "Minimum signal"
     annotation (Placement(transformation(extent={{-10,130},{10,150}})));
   Buildings.Controls.OBC.CDL.Continuous.Max max1
-    "Maximum between control signal and minimum speed or opening"
+    "Maximum between control signal and minimum signal"
     annotation (Placement(transformation(extent={{30,110},{50,130}})));
   Buildings.Controls.OBC.CDL.Logical.Switch swiOff1
     "Output zero if not enabled"
@@ -128,9 +124,8 @@ model WatersideEconomizer "District heat exchanger controller"
   Buildings.Controls.OBC.CDL.Logical.MultiAnd mulAnd(nu=4)
     "Enable if cooling enabled and temperature criterion verified"
     annotation (Placement(transformation(extent={{0,-50},{20,-30}})));
-  Buildings.Controls.OBC.CDL.Logical.MultiOr
-                                        or1(nu=3)
-                                            "Cooling disabled or temperature criterion verified"
+  Buildings.Controls.OBC.CDL.Logical.MultiOr or1(nu=3)
+    "Cooling disabled or temperature criterion verified"
     annotation (Placement(transformation(extent={{0,-110},{20,-90}})));
   Buildings.Controls.OBC.CDL.Logical.Not not2 "Cooling disabled"
     annotation (Placement(transformation(extent={{-50,-80},{-30,-60}})));
@@ -162,10 +157,6 @@ model WatersideEconomizer "District heat exchanger controller"
         dpVal2Hex_nominal))
     "Normalize"
     annotation (Placement(transformation(extent={{-148,30},{-128,50}})));
-protected
-  parameter Boolean have_val1Hex=
-    conCon == Buildings.Experimental.DHC.EnergyTransferStations.Types.ConnectionConfiguration.TwoWayValve
-    "True in case of control valve on district side, false in case of a pump";
 equation
   connect(T2HexWatEnt, delT1.u1)
     annotation (Line(points={{-200,-80},{-160,-80},{-160,-94},{-142,-94}}, color={0,0,127}));
