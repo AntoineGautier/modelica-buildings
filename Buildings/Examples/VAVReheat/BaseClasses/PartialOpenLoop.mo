@@ -103,7 +103,7 @@ partial model PartialOpenLoop
     "Heating coil"
     annotation (Placement(transformation(extent={{118,-36},{98,-56}})));
 
-  Buildings.Fluid.HeatExchangers.WetCoilCounterFlow cooCoi(
+  Fluid.HeatExchangers.WetCoilEffectivenessNTU cooCoi(
     show_T=true,
     UA_nominal=3*m_flow_nominal*1000*15/
       Buildings.Fluid.HeatExchangers.BaseClasses.lmtd(
@@ -269,9 +269,10 @@ partial model PartialOpenLoop
   Results res(
     final A=ATot,
     PFan=fanSup.P + 0,
-    PHea=heaCoi.Q2_flow + sum(VAVBox.terHea.Q2_flow),
+    PHea=heaCoi.Q2_flow + cor.terHea.Q2_flow + nor.terHea.Q2_flow + wes.terHea.Q2_flow + eas.terHea.Q2_flow + sou.terHea.Q2_flow,
     PCooSen=cooCoi.QSen2_flow,
     PCooLat=cooCoi.QLat2_flow) "Results of the simulation";
+
   /*fanRet*/
 
 public
@@ -394,8 +395,67 @@ equation
       color={0,127,255},
       smooth=Smooth.None,
       thickness=0.5));
-
-  connect(cooCoi.port_b1, sinCoo.ports[1]) annotation (Line(
+  connect(splRetRoo1.port_1, dpRetDuc.port_a) annotation (Line(
+      points={{630,0},{430,0},{430,140},{400,140}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splRetNor.port_1, splRetEas.port_2) annotation (Line(
+      points={{1142,0},{1110,0},{1110,0},{1078,0},{1078,0},{1012,0}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splRetEas.port_1, splRetSou.port_2) annotation (Line(
+      points={{992,0},{952,0},{952,0},{912,0},{912,0},{832,0}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splRetSou.port_1, splRetRoo1.port_2) annotation (Line(
+      points={{812,0},{650,0}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupRoo1.port_3, cor.port_aAir) annotation (Line(
+      points={{590,-30},{590,-4},{590,22},{590,22}},
+      color={0,127,255},
+      thickness=0.5));
+  connect(splSupRoo1.port_2, splSupSou.port_1) annotation (Line(
+      points={{600,-40},{760,-40}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupSou.port_3, sou.port_aAir) annotation (Line(
+      points={{770,-30},{770,-6},{770,20},{770,20}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupSou.port_2, splSupEas.port_1) annotation (Line(
+      points={{780,-40},{940,-40}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupEas.port_3, eas.port_aAir) annotation (Line(
+      points={{950,-30},{950,-6},{950,20},{950,20}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupEas.port_2, splSupNor.port_1) annotation (Line(
+      points={{960,-40},{1100,-40}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupNor.port_3, nor.port_aAir) annotation (Line(
+      points={{1110,-30},{1110,-6},{1110,20},{1110,20}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(splSupNor.port_2, wes.port_aAir) annotation (Line(
+      points={{1120,-40},{1310,-40},{1310,20}},
+      color={0,127,255},
+      smooth=Smooth.None,
+      thickness=0.5));
+  connect(cooCoi.port_b1, sinCoo.ports[1])
+    annotation (Line(
       points={{190,-52},{180,-52},{180,-110}},
       color={28,108,200},
       thickness=0.5));
@@ -429,8 +489,16 @@ equation
       smooth=Smooth.None,
       thickness=0.5));
 
-  connect(cooCoi.port_a1, souCoo.ports[1]) annotation (Line(
-      points={{210,-52},{228,-52},{228,-110}},
+
+  connect(senRetFlo.port_a, dpRetDuc.port_b)
+    annotation (Line(points={{360,140},{380,140}}, color={0,127,255}));
+  connect(TSup.port_b, senSupFlo.port_a)
+    annotation (Line(points={{350,-40},{400,-40}}, color={0,127,255}));
+  connect(senSupFlo.port_b, splSupRoo1.port_1)
+    annotation (Line(points={{420,-40},{580,-40}}, color={0,127,255}));
+  connect(cooCoi.port_a1, souCoo.ports[1])
+    annotation (Line(
+      points={{210,-52},{230,-52},{230,-110}},
       color={28,108,200},
       thickness=0.5));
   connect(gaiHeaCoi.y, souHea.m_flow_in) annotation (Line(points={{120,-158},{120,
@@ -454,7 +522,8 @@ equation
       points={{50,-40},{98,-40}},
       color={0,127,255},
       thickness=0.5));
-  connect(heaCoi.port_b2, cooCoi.port_a2) annotation (Line(
+  connect(heaCoi.port_b2, cooCoi.port_a2)
+    annotation (Line(
       points={{118,-40},{190,-40}},
       color={0,127,255},
       thickness=0.5));
@@ -587,6 +656,22 @@ shading devices, Technical Report, Oct. 17, 2006.
 </p>
 </html>", revisions="<html>
 <ul>
+<li>
+June 30, 2021, by Antoine Gautier:<br/>
+Changed cooling coil model. This is for
+<a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2549\">issue #2549</a>.
+</li>
+<li>
+May 6, 2021, by David Blum:<br/>
+Change to <code>from_dp=false</code> for all mixing box dampers.<br/>
+This is for <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2485\">issue #2485</a>.
+</li>
+<li>
+April 30, 2021, by Michael Wetter:<br/>
+Reformulated replaceable class and introduced floor areas in base class
+to avoid access of components that are not in the constraining type.<br/>
+This is for <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2471\">issue #2471</a>.
+</li>
 <li>
 April 16, 2021, by Michael Wetter:<br/>
 Refactored model to implement the economizer dampers directly in
