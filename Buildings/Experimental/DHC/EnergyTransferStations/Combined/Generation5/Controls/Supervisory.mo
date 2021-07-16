@@ -2,6 +2,8 @@ within Buildings.Experimental.DHC.EnergyTransferStations.Combined.Generation5.Co
 model Supervisory
   "Supervisory controller"
   extends BaseClasses.PartialSupervisory;
+  parameter Modelica.SIunits.TemperatureDifference dT12Hex_nominal
+    "Difference between primary and secondary entering temperature in cold rejection";
   parameter Buildings.Controls.OBC.CDL.Types.SimpleController controllerType=Buildings.Controls.OBC.CDL.Types.SimpleController.PI
     "Type of controller"
     annotation (choices(choice=Buildings.Controls.OBC.CDL.Types.SimpleController.P,
@@ -48,6 +50,7 @@ model Supervisory
     "Hot side controller"
     annotation (Placement(transformation(extent={{0,20},{20,40}})));
   SideCold conCol(
+    final dT12Hex_nominal=dT12Hex_nominal,
     final k=kCol,
     final Ti=TiCol,
     final nSouAmb=nSouAmb,
@@ -62,21 +65,23 @@ model Supervisory
     final THeaWatSupSetMin=THeaWatSupSetMin)
     "Supply temperature reset"
     annotation (Placement(transformation(extent={{-70,10},{-50,30}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput T1HexWatEnt(final unit="K",
+      displayUnit="degC") "Heat exchanger primary water entering temperature"
+    annotation (Placement(transformation(extent={{-160,-40},{-120,0}}),
+        iconTransformation(extent={{-140,-60},{-100,-20}})));
 equation
   connect(conHot.yAmb,max1.u1)
     annotation (Line(points={{22,34},{40,34},{40,6},{48,6}},color={0,0,127}));
   connect(conCol.yAmb,max1.u2)
     annotation (Line(points={{22,-28},{40,-28},{40,-6},{48,-6}},color={0,0,127}));
   connect(conHot.yCol,conCol.uCol)
-    annotation (Line(points={{22,26},{30,26},{30,0},{-14,0},{-14,-32.2},{-2,-32.2}},color={0,0,127}));
+    annotation (Line(points={{22,26},{30,26},{30,0},{-14,0},{-14,-28},{-2,-28}},    color={0,0,127}));
   connect(resTSup.THeaWatSupSet,conHot.TSet)
     annotation (Line(points={{-48,20},{-30,20},{-30,34.2},{-2,34.2}},color={0,0,127}));
   connect(THeaWatTop,conHot.TTop)
     annotation (Line(points={{-140,0},{-26,0},{-26,30},{-2,30}},color={0,0,127}));
   connect(max1.y,yAmb)
     annotation (Line(points={{72,0},{90,0},{90,-20},{140,-20}},color={0,0,127}));
-  connect(TChiWatBot,conCol.TBot)
-    annotation (Line(points={{-140,-60},{-40,-60},{-40,-40.4},{-2,-40.4}},color={0,0,127}));
   connect(THeaWatSupPreSet,resTSup.THeaWatSupPreSet)
     annotation (Line(points={{-140,20},{-80,20},{-80,15},{-72,15}},color={0,0,127}));
   connect(conHot.yValIso,yValIsoCon)
@@ -88,7 +93,7 @@ equation
   connect(conCol.TChiWatSupSet,TChiWatSupSet)
     annotation (Line(points={{22,-36},{100,-36},{100,-80},{140,-80}},color={0,0,127}));
   connect(TChiWatSupPreSet,conCol.TSet)
-    annotation (Line(points={{-140,-40},{-44,-40},{-44,-36.2},{-2,-36.2}},color={0,0,127}));
+    annotation (Line(points={{-140,-40},{-44,-40},{-44,-32},{-2,-32}},    color={0,0,127}));
   connect(uHeaHol.y,conHot.uHeaCoo)
     annotation (Line(points={{-88,100},{-20,100},{-20,38},{-2,38}},color={255,0,255}));
   connect(uCooHol.y,conCol.uHeaCoo)
@@ -103,6 +108,10 @@ equation
     annotation (Line(points={{-140,-80},{-22,-80},{-22,26},{-2,26}},color={0,0,127}));
   connect(yValIsoEva_actual,conHot.yValIsoEva_actual)
     annotation (Line(points={{-140,-100},{-18,-100},{-18,22},{-2,22}},color={0,0,127}));
+  connect(T1HexWatEnt, conCol.T1HexWatEnt) annotation (Line(points={{-140,-20},
+          {-60,-20},{-60,-36.2},{-2,-36.2}},color={0,0,127}));
+  connect(TChiWatBot, conCol.TBot) annotation (Line(points={{-140,-60},{-40,-60},
+          {-40,-40.4},{-2,-40.4}}, color={0,0,127}));
   annotation (
     Icon(
       coordinateSystem(

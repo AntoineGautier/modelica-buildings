@@ -18,13 +18,13 @@ partial block PartialSupervisory
     displayUnit="degC")
     "Chilled water supply temperature set point"
     annotation (Placement(transformation(extent={{-160,-60},{-120,-20}}),
-    iconTransformation(extent={{-140,-30},{-100,10}})));
+    iconTransformation(extent={{-140,-20},{-100,20}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput TChiWatBot(
     final unit="K",
     displayUnit="degC")
     "Chilled water temperature at tank bottom"
     annotation (Placement(transformation(extent={{-160,-80},{-120,-40}}),
-    iconTransformation(extent={{-140,-50},{-100,-10}})));
+    iconTransformation(extent={{-140,-40},{-100,0}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput THeaWatTop(
     final unit="K",
     displayUnit="degC")

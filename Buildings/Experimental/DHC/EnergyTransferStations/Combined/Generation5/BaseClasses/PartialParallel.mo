@@ -118,7 +118,7 @@ model PartialParallel
     constrainedby Generation5.Controls.BaseClasses.PartialSupervisory(
       final nSouAmb=nSouAmb)
     "Supervisory controller"
-    annotation (Placement(transformation(extent={{-260,12},{-240,32}})));
+    annotation (Placement(transformation(extent={{-250,12},{-230,32}})));
   Fluid.Actuators.Valves.TwoWayLinear valIsoEva(
     redeclare final package Medium=MediumBui,
     final dpValve_nominal=dpValIso_nominal,
@@ -213,11 +213,13 @@ equation
   connect(hex.PPum,totPPum.u[1])
     annotation (Line(points={{12,-254},{36,-254},{36,-60},{258,-60}},color={0,0,127}));
   connect(THeaWatSupSet,conSup.THeaWatSupPreSet)
-    annotation (Line(points={{-320,-20},{-292,-20},{-292,27},{-262,27}},color={0,0,127}));
+    annotation (Line(points={{-320,-20},{-292,-20},{-292,27},{-252,27}},color={0,0,127}));
   connect(tanHeaWat.TTop,conSup.THeaWatTop)
-    annotation (Line(points={{-199,115},{-190,115},{-190,80},{-274,80},{-274,25},{-262,25}},color={0,0,127}));
+    annotation (Line(points={{-199,115},{-190,115},{-190,80},{-274,80},{-274,25},
+          {-252,25}},                                                                       color={0,0,127}));
   connect(tanChiWat.TBot,conSup.TChiWatBot)
-    annotation (Line(points={{201,97},{206,97},{206,0},{-274,0},{-274,19},{-262,19}},  color={0,0,127}));
+    annotation (Line(points={{201,97},{206,97},{206,0},{-274,0},{-274,20},{-252,
+          20}},                                                                        color={0,0,127}));
   connect(hex.port_b2,colAmbWat.ports_aCon[1])
     annotation (Line(points={{-10,-248},{-20,-248},{-20,-160},{12,-160},{12,-116}},color={0,127,255}));
   connect(hex.port_a2,colAmbWat.ports_bCon[1])
@@ -234,21 +236,21 @@ equation
   connect(valIsoCon.port_b,colAmbWat.port_aDisSup)
     annotation (Line(points={{-50,-120},{-30,-120},{-30,-106},{-20,-106}},color={0,127,255}));
   connect(TChiWatSupSet,conSup.TChiWatSupPreSet)
-    annotation (Line(points={{-320,-60},{-290,-60},{-290,21},{-262,21}},color={0,0,127}));
+    annotation (Line(points={{-320,-60},{-290,-60},{-290,22},{-252,22}},color={0,0,127}));
   connect(uCoo,conSup.uCoo)
-    annotation (Line(points={{-320,60},{-292,60},{-292,29},{-262,29}},color={255,0,255}));
+    annotation (Line(points={{-320,60},{-292,60},{-292,29},{-252,29}},color={255,0,255}));
   connect(uHea,conSup.uHea)
-    annotation (Line(points={{-320,100},{-290,100},{-290,31},{-262,31}},color={255,0,255}));
+    annotation (Line(points={{-320,100},{-290,100},{-290,31},{-252,31}},color={255,0,255}));
   connect(valIsoEva.port_a,colChiWat.ports_aCon[1])
     annotation (Line(points={{70,-120},{108,-120},{108,-24}},color={0,127,255}));
   connect(colAmbWat.port_aDisRet,colChiWat.ports_bCon[1])
     annotation (Line(points={{20,-100},{132,-100},{132,-24}},color={0,127,255}));
   connect(conSup.yValIsoEva,valIsoEva.y)
-    annotation (Line(points={{-238,21},{-220,21},{-220,-80},{60,-80},{60,-108}},color={0,0,127}));
+    annotation (Line(points={{-228,21},{-220,21},{-220,-80},{60,-80},{60,-108}},color={0,0,127}));
   connect(conSup.yValIsoCon,valIsoCon.y)
-    annotation (Line(points={{-238,23},{-218,23},{-218,-76},{-60,-76},{-60,-108}},color={0,0,127}));
+    annotation (Line(points={{-228,23},{-218,23},{-218,-76},{-60,-76},{-60,-108}},color={0,0,127}));
   connect(conSup.yAmb[nSouAmb],hex.u)
-    annotation (Line(points={{-238,25},{-200,25},{-200,-256},{-12,-256}},color={0,0,127}));
+    annotation (Line(points={{-228,25},{-200,25},{-200,-256},{-12,-256}},color={0,0,127}));
   connect(colChiWat.port_bDisRet,tanChiWat.port_aBot)
     annotation (Line(points={{140,-40},{170,-40},{170,100},{180,100}},color={0,127,255}));
   connect(colChiWat.port_aDisSup,tanChiWat.port_bTop)
