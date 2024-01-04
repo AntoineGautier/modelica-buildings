@@ -1,0 +1,29 @@
+simulateModel("Buildings.Fluid.HeatPumps.Examples.TwoUnitsTwoLoops", method="CVode", tolerance=1e-06, stopTime=10000.0, resultFile="TwoUnitsTwoLoops");
+createPlot(
+  id=1,
+  position={3, 4, 403, 487},
+  y={"AWHP_1.P", "AWHP_2.P"},
+  subPlot=101,
+  autoscale=true,
+  autoerase=true,
+  autoreplot=true,
+  grid=true,
+  color=true);
+createPlot(
+  id=1,
+  y={"AWHP_1.heaPum.PLR", "AWHP_2.heaPum.PLR"},
+  subPlot=102,
+  autoscale=true,
+  autoerase=true,
+  autoreplot=true,
+  grid=true,
+  color=true);
+createPlot(
+  id=2,
+  position={413, 4, 404, 275},
+  y={"TE_1.T", "TE_2.T", "TE_3.T", "TE_4.T"},
+  autoscale=true,
+  autoerase=true,
+  autoreplot=true,
+  grid=true,
+  color=true);

@@ -1,5 +1,6 @@
 within Buildings.Fluid.Movers.Validation;
 model TestPump
+  extends Modelica.Icons.Example;
   FixedResistances.PressureDrop hp1(
     redeclare package Medium = Buildings.Media.Water,
     m_flow_nominal=pmp1.m_flow_nominal,
@@ -102,7 +103,6 @@ equation
   connect(cheVal2.port_b, hex.port_a) annotation (Line(points={{100,-40},{120,-40},
           {120,-50}}, color={0,127,255}));
   annotation (
-    Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},{140,160}})),
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-140,-100},{140,
             160}})),
     experiment(StopTime=2000, __Dymola_Algorithm="Dassl"));
