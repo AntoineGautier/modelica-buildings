@@ -27,8 +27,8 @@ model TwoUnitsTwoLoops
       mSou_flow=1E-4*dat.hea.Q_flow,
       Q_flow=1E6,
       P=dat.hea.Q_flow/2.2,
-      coeQ={-4.7042248557,-0.8254212432,6.6259593798,0,0},
-      coeP={-4.8830101014,5.2443974448,0.5318696177,0,0},
+      coeQ={-4.3120835191,-0.756614628,6.0736234165,0,0},
+      coeP={-5.4389220207,5.8414519231,0.592420928,0,0},
       TRefLoa=313.15,
       TRefSou=280.15),
     coo(
@@ -363,30 +363,33 @@ equation
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-220,-220},{220,
             220}}),     graphics={
-    Bitmap(extent={{222,-286},{878,218}}, fileName="modelica://Buildings/Resources/Images/Fluid/Movers/Validation/TestPumpTwoLoops.png")}),
+    Bitmap(extent={{222,-286},{878,218}}, fileName="modelica://Buildings/Resources/Images/Fluid/Movers/Validation/TwoUnitsTwoLoops.png")}),
 experiment(Tolerance=1e-06, StopTime=10000.0),
 __Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatPumps/Examples/TwoUnitsTwoLoops.mos"
         "Simulate and plot"),
     Documentation(info="<html>
-<p>This model reproduces the standard configuration from TRANE (2022).
+<p>
+This model reproduces the standard configuration from TRANE (2022).
 The simulation illustrates the faulty hydronics that yield uncontrolled mixing
-between the primary CHW and HHW loops.
+between the CHW and HHW loops.
 </p>
 <h4>Details</h4>
 <p>
-The model only represents the primary CHW and HHW loops, up to the decoupler.
-The plant is composed of two identical reversible air-to-water heat pumps.
-A pair of two-way two-position valves are used at the outlet of
+The plant is composed of two identical reversible air-to-water heat pumps
+totaling <i>1.9</i>&nbsp;MW of heating capacity and <i>2.4</i>&nbsp;MW
+of cooling capacity at design conditions.
+Two actuated isolation valves are used at the outlet of
 each unit to switch over between the CHW loop and the HHW loop.
+The model only represents the primary CHW and HHW loops, up to the decoupler.
 Only one operating mode is simulated, with
-<code>AWHP_1</code> operating in heating mode and 
+<code>AWHP_1</code> operating in heating mode and
 <code>AWHP_2</code> operating in cooling mode.
-Due to the absence of switching valves at the heat pump inlet,
-mixing occurs at the junction of the return pipes of the
-primary CHW and HHW loops 
+Due to the absence of isolation valves at the heat pump inlet,
+mixing between the CHW and HHW loops occurs at the junction of
+the return pipes
 (components <code>jun1</code> and <code>jun2</code> in the model).
-In this configuration, the unit in cooling mode practically cools the 
-primary HHW loop and prevents the unit in heating mode from meeting setpoint.
+In this configuration, the unit in cooling mode practically cools the
+primary HHW loop and prevents the unit in heating mode from making setpoint.
 Without any load on the plant, <code>AWHP_1</code> operates at
 <i>100&nbsp;%</i> PLR while <code>AWHP_2</code> operates at
 <i>57&nbsp;%</i>PLR, with a total input power of around <i>440</i>&nbsp;kW.
@@ -395,7 +398,7 @@ Without any load on the plant, <code>AWHP_1</code> operates at
 <p>
 TRANE (2022).
 <a href=https://www.trane.com/content/dam/Trane/Commercial/global/products-systems/equipment/chillers/air-cooled/ascend/SYS-APG003A-EN_04252022.pdf>
-Application Guide – ACX Comprehensive Chiller-Heater System</a>. SYS-APG003A-EN, April, 2022. 
+Application Guide – ACX Comprehensive Chiller-Heater System</a>. SYS-APG003A-EN, April, 2022.
 </p>
 </html>"));
 end TwoUnitsTwoLoops;

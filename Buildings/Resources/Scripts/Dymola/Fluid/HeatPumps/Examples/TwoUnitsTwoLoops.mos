@@ -1,4 +1,4 @@
-simulateModel("Buildings.Fluid.HeatPumps.Examples.TwoUnitsTwoLoops", method="CVode", tolerance=1e-06, stopTime=10000.0, resultFile="TwoUnitsTwoLoops");
+simulateModel("Buildings.Fluid.HeatPumps.Examples.TwoUnitsTwoLoops", method="dassl", tolerance=1e-06, stopTime=10000.0, resultFile="TwoUnitsTwoLoops");
 createPlot(
   id=1,
   position={3, 4, 403, 487},
