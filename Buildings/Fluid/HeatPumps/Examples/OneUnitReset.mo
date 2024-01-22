@@ -197,28 +197,30 @@ equation
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-220,-220},{220,
             220}})),
-experiment(Tolerance=1e-06, StopTime=10000.0),
-__Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatPumps/Examples/TwoUnitsTwoLoops.mos"
+experiment(Tolerance=1e-06, StopTime=3000.0),
+__Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatPumps/Examples/OneUnitReset.mos"
         "Simulate and plot"),
     Documentation(info="<html>
 <p>
-This model illustrates the impact of the HW supply temperature reset
-on the <i>COP</i> as computed with
+This model illustrates the impact of the part load ratio and supply 
+temperature reset on the <i>COP</i> as computed with
 <a href=\"modelica://Buildings.Fluid.HeatPumps.EquationFitReversible\">
 Buildings.Fluid.HeatPumps.EquationFitReversible</a>.
+</p>
+<p>
 We can observe that a change of <i>5</i>&nbsp;K in the supply temperature 
-setpoint—with unchanged condenser entering HW temperature and flow rate—does 
-not impact the computed <i>COP</i>.
+setpoint &ndash; with unchanged condenser entering HW temperature and flow rate
+&ndash; does not impact the computed <i>COP</i>.
 </p>
 <p>A system with a single on/off compressor should exhibit a higher
 cycling frequency at lower temperature setpoint, resulting in a 
 lower <i>COP</i>.
 A system with multiple on/off compressors should disable some compressors
-at lower temperature setpoint, resulting in a lower refrigerant flow and
-higher <i>COP</i>.
+at lower temperature setpoint, resulting in reduced input power,
+lower refrigerant flow and higher <i>COP</i>.
 A system with a variable speed compressor should reduce the compressor speed
-at lower temperature setpoint, resulting in a lower compression ratio and
-higher <i>COP</i>.
+at lower temperature setpoint, resulting in reduced input power,
+lower compression ratio and higher <i>COP</i>.
 All these effects cannot be reproduced by the model which only captures the 
 impact of the condenser entering temperature, and disregards the impact of 
 the part load ratio.
