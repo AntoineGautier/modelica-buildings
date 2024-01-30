@@ -23,7 +23,8 @@ model ReversibleAirToWaterTableData2D
         redeclare Buildings.Fluid.HeatPumps.ModularReversible.RefrigerantCycle.Frosting.NoFrosting iceFacCal,
         final datTab=datTabCoo),
     redeclare model RefrigerantCycleHeatPumpHeating =
-      Buildings.Fluid.HeatPumps.ModularReversible.RefrigerantCycle.TableData2D (
+      Buildings.Fluid.HeatPumps.ModularReversible.RefrigerantCycle.TableData2D
+        (
         redeclare Buildings.Fluid.HeatPumps.ModularReversible.RefrigerantCycle.Frosting.NoFrosting iceFacCal,
         final datTab=datTabHea),
     final use_rev=true,

@@ -1,65 +1,88 @@
 within Buildings.Fluid.HeatPumps.ModularReversible.Examples;
 model ReversibleAirToWater2D_OneRoomRadiator
   "Reversible heat pump with EN 2D data connected to a simple room model with radiator"
-  extends
-    Buildings.Fluid.HeatPumps.ModularReversible.Examples.BaseClasses.PartialOneRoomRadiator(
+  extends Buildings.Fluid.HeatPumps.ModularReversible.Examples.BaseClasses.PartialOneRoomRadiator(
+    witCoo=true,
     mEva_flow_nominal=heaPum.mEva_flow_nominal,
     mCon_flow_nominal=heaPum.mCon_flow_nominal,
-    sin(nPorts=1, redeclare package Medium = MediumAir),
-    booToReaPumEva(realTrue=heaPum.mEva_flow_nominal),
-    pumHeaPumSou(redeclare package Medium = MediumAir),
-    sou(redeclare package Medium = MediumAir));
-
-  Buildings.Fluid.HeatPumps.ModularReversible.ReversibleAirToWaterTableData2D
-    heaPum(
-    redeclare package MediumCon = MediumWat,
-    redeclare package MediumEva = MediumAir,
+    sin(
+      nPorts=1,
+      redeclare package Medium=MediumAir),
+    booToReaPumEva(
+      realTrue=heaPum.mEva_flow_nominal),
+    pumHeaPumSou(
+      show_T=true,
+      redeclare package Medium=MediumAir),
+    sou(
+      T=308.15,
+      redeclare package Medium=MediumAir),
+    oneRooRadHeaPumCtr(
+      TRooSetCoo=296.15),
+    cooLoa(
+      amplitude=Q_flow_nominal,
+      width=100,
+      period=50000,
+      startTime=0),
+    timTab(
+      table=[
+        - 6 * 3600, 0;
+        8 * 3600, 0;
+        18 * 3600, 0]));
+  Buildings.Fluid.HeatPumps.ModularReversible.ReversibleAirToWaterTableData2D heaPum(
+    show_T=true,
+    redeclare package MediumCon=MediumWat,
+    redeclare package MediumEva=MediumAir,
     QHea_flow_nominal=Q_flow_nominal,
-    use_intSafCtr=true,
+    use_intSafCtr=false,
     TCon_nominal=TRadSup_nominal,
-    dpCon_nominal(displayUnit="Pa") = 2000,
+    dpCon_nominal(
+      displayUnit="Pa")=2000,
     TEva_nominal=sou.T,
-    dpEva_nominal(displayUnit="Pa") = 200,
+    dpEva_nominal(
+      displayUnit="Pa")=200,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    redeclare
-      Buildings.Fluid.HeatPumps.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08
-      datTabHea,
-    redeclare
-      Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08
-      datTabCoo,
-    redeclare
-      Buildings.Fluid.HeatPumps.ModularReversible.Controls.Safety.Data.Wuellhorst2021
-      safCtrParEurNor(
+    redeclare Buildings.Fluid.HeatPumps.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08 datTabHea,
+    redeclare Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08 datTabCoo(
+      tabQEva_flow=[
+        0, 293.15, 298.15, 300.15, 303.15, 308.15, 313.15, 318.15;
+        280.15, - 8500, - 7800, - 7000, - 6000, - 4500, - 3100, - 1900;
+        291.15, - 10300, - 9900, - 9700, - 9300, - 6900, - 3400, - 2800]),
+    redeclare Buildings.Fluid.HeatPumps.ModularReversible.Controls.Safety.Data.Wuellhorst2021 safCtrParEurNor(
       use_minOnTime=false,
       use_minOffTime=true,
-      use_maxCycRat=true)) "Reversible heat pump based on 2D table data"
+      use_maxCycRat=true))
+    "Reversible heat pump based on 2D table data"
     annotation (Placement(transformation(extent={{20,-160},{0,-140}})));
   extends Modelica.Icons.Example;
-
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant one(
+    k=0.5)
+    "Constant"
+    annotation (Placement(transformation(extent={{-40,-70},{-20,-50}})));
 equation
-  connect(heaPum.port_b2, sin.ports[1]) annotation (Line(points={{20,-156},{38,
-          -156},{38,-200},{60,-200}},           color={0,127,255}));
-  connect(heaPum.port_a2, pumHeaPumSou.port_b) annotation (Line(
-        points={{0,-156},{-30,-156},{-30,-170}}, color={0,127,255}));
-  connect(heaPum.port_b1, pumHeaPum.port_a) annotation (Line(points={{0,-144},{
-          -70,-144},{-70,-120}},           color={0,127,255}));
-  connect(heaPum.port_a1, temRet.port_b) annotation (Line(points={{20,-144},{60,
-          -144},{60,-30}},           color={0,127,255}));
-  connect(oneRooRadHeaPumCtr.ySet, heaPum.ySet) annotation (Line(
-        points={{-139,-66},{21.2,-66},{21.2,-148}},                       color=
-         {0,0,127}));
-  connect(heaPum.hea, oneRooRadHeaPumCtr.hea) annotation (Line(
-        points={{21.1,-151.9},{24,-151.9},{24,-152},{26,-152},{26,-76},{-139,-76}},
-                                                  color={255,0,255}));
+  connect(heaPum.port_b2, sin.ports[1])
+    annotation (Line(points={{20,-156},{38,-156},{38,-200},{60,-200}},color={0,127,255}));
+  connect(heaPum.port_a2, pumHeaPumSou.port_b)
+    annotation (Line(points={{0,-156},{-30,-156},{-30,-170}},color={0,127,255}));
+  connect(heaPum.port_b1, pumHeaPum.port_a)
+    annotation (Line(points={{0,-144},{-70,-144},{-70,-120}},color={0,127,255}));
+  connect(heaPum.port_a1, temRet.port_b)
+    annotation (Line(points={{20,-144},{60,-144},{60,-30}},color={0,127,255}));
+  connect(heaPum.hea, oneRooRadHeaPumCtr.hea)
+    annotation (Line(points={{21.1,-151.9},{24,-151.9},{24,-152},{26,-152},{26,-76},{-139,-76}},
+      color={255,0,255}));
+  connect(one.y, heaPum.ySet)
+    annotation (Line(points={{-18,-60},{40,-60},{40,-148},{21.2,-148}},color={0,0,127}));
   annotation (
-   __Dymola_Commands(file=
-     "modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatPumps/ModularReversible/Examples/ReversibleAirToWater2D_OneRoomRadiator.mos"
+    __Dymola_Commands(
+      file=
+        "modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatPumps/ModularReversible/Examples/ReversibleAirToWater2D_OneRoomRadiator.mos"
         "Simulate and plot"),
-  experiment(
+    experiment(
       StartTime=0,
       StopTime=86400,
       Tolerance=1e-08),
-    Documentation(info="<html>
+    Documentation(
+      info="<html>
 <p>
   This example demonstrates how to use the
   <a href=\"modelica://Buildings.Fluid.HeatPumps.ModularReversible.ReversibleAirToWaterTableData2D\">
@@ -73,7 +96,8 @@ equation
   Buildings.Fluid.HeatPumps.ModularReversible.Examples.BaseClasses.PartialOneRoomRadiator</a>
   for further information on the example.
 </p>
-</html>", revisions="<html>
+</html>",
+      revisions="<html>
 <ul>
 <li>
   <i>October 2, 2022</i> by Fabian Wuellhorst:<br/>

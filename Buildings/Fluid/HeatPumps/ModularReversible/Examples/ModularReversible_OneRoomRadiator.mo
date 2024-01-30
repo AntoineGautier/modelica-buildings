@@ -38,8 +38,8 @@ model ModularReversible_OneRoomRadiator
         TAppCon_nominal=0,
         TAppEva_nominal=0),
     redeclare model RefrigerantCycleHeatPumpCooling =
-        Buildings.Fluid.Chillers.ModularReversible.RefrigerantCycle.TableData2D (
-          redeclare
+        Buildings.Fluid.Chillers.ModularReversible.RefrigerantCycle.TableData2D
+        ( redeclare
           Buildings.Fluid.HeatPumps.ModularReversible.RefrigerantCycle.Frosting.NoFrosting iceFacCal,
           datTab=Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08()),
     redeclare Buildings.Fluid.HeatPumps.ModularReversible.Controls.Safety.Data.Wuellhorst2021
