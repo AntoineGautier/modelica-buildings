@@ -1,7 +1,8 @@
 within Buildings.Fluid.HeatPumps.ModularReversible.Examples;
 model ReversibleAirToWater2D_OneRoomRadiator
   "Reversible heat pump with EN 2D data connected to a simple room model with radiator"
-  extends Buildings.Fluid.HeatPumps.ModularReversible.Examples.BaseClasses.PartialOneRoomRadiator(
+  extends
+    Buildings.Fluid.HeatPumps.ModularReversible.Examples.BaseClasses.PartialOneRoomRadiator(
     witCoo=true,
     mEva_flow_nominal=heaPum.mEva_flow_nominal,
     mCon_flow_nominal=heaPum.mCon_flow_nominal,
@@ -13,8 +14,7 @@ model ReversibleAirToWater2D_OneRoomRadiator
     pumHeaPumSou(
       show_T=true,
       redeclare package Medium=MediumAir),
-    sou(
-      T=308.15,
+    sou(T=308.15,
       redeclare package Medium=MediumAir),
     oneRooRadHeaPumCtr(
       TRooSetCoo=296.15),
@@ -37,16 +37,12 @@ model ReversibleAirToWater2D_OneRoomRadiator
     TCon_nominal=TRadSup_nominal,
     dpCon_nominal(
       displayUnit="Pa")=2000,
-    TEva_nominal=sou.T,
+    TEva_nominal=266.15,
     dpEva_nominal(
       displayUnit="Pa")=200,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     redeclare Buildings.Fluid.HeatPumps.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08 datTabHea,
-    redeclare Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08 datTabCoo(
-      tabQEva_flow=[
-        0, 293.15, 298.15, 300.15, 303.15, 308.15, 313.15, 318.15;
-        280.15, - 8500, - 7800, - 7000, - 6000, - 4500, - 3100, - 1900;
-        291.15, - 10300, - 9900, - 9700, - 9300, - 6900, - 3400, - 2800]),
+    redeclare Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.EN14511.Vitocal251A08 datTabCoo,
     redeclare Buildings.Fluid.HeatPumps.ModularReversible.Controls.Safety.Data.Wuellhorst2021 safCtrParEurNor(
       use_minOnTime=false,
       use_minOffTime=true,

@@ -32,7 +32,16 @@ model TableData2D
     constScaFac(final k=scaFac));
   replaceable parameter Buildings.Fluid.Chillers.ModularReversible.Data.TableData2D.Generic datTab
     "Data Table of Chiller" annotation (choicesAllMatching=true);
-
+initial equation
+  Modelica.Utilities.Streams.print("Parameters used to compute QCooNoSca_flow_nominal:");
+  Modelica.Utilities.Streams.print("TEva_nominal=" + String(TEva_nominal));
+  Modelica.Utilities.Streams.print("TCon_nominal=" + String(TCon_nominal));
+  Modelica.Utilities.Streams.print("Result in QCooNoSca_flow_nominal=" + String(QCooNoSca_flow_nominal));
+  Modelica.Utilities.Streams.print("QCooNoSca_flow_nominal computed with TCon_nominal=35 °C and TEva_nominal=7 °C="+
+  String(Modelica.Blocks.Tables.Internal.getTable2DValueNoDer2(
+        tabIdeQUse_flow,
+        7 +273.15,
+        35+273.15) * y_nominal));
 equation
 
   connect(scaFacTimPel.y, PEle) annotation (Line(points={{-40,-9},{-40,-26},{-30,
