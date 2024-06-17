@@ -1,0 +1,44 @@
+{
+  "within": "Buildings.Templates.Plants.Controls",
+  "class_definition": [
+    {
+      "class_prefixes": "package",
+      "class_specifier": {
+        "long_class_specifier": {
+          "identifier": "HeatPumps",
+          "composition": {
+            "annotation": [
+              {
+                "element_modification_or_replaceable": {
+                  "element_modification": {
+                    "name": "Documentation",
+                    "modification": {
+                      "class_modification": [
+                        {
+                          "element_modification_or_replaceable": {
+                            "element_modification": {
+                              "name": "info",
+                              "modification": {
+                                "equal": true,
+                                "expression": {
+                                  "simple_expression": "\"<html>\n<p>\nThis package contains control sequences for heat pump plants.\n</p>\n</html>\""
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "modelicaFile": "Buildings/Templates/Plants/Controls/HeatPumps/package.mo",
+  "fullMoFilePath": "Buildings/Templates/Plants/Controls/HeatPumps/package.mo",
+  "checksum": "0cf3a4e9252208cebc1d217cbf8925b5"
+}
