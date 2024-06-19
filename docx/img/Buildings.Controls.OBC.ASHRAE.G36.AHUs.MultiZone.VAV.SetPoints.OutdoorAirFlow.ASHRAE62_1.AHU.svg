@@ -1,0 +1,345 @@
+<svg version="1.1" baseProfile="full" width="520mm" height="240mm"
+     viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
+
+
+
+
+
+
+<polyline fill="none" points="20,30 60,30 60,34 78,34" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="20,30 60,30 60,34 78,34" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="20,60 60,60 60,46 78,46" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="20,60 60,60 60,46 78,46" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="102,40 140,40 140,54 158,54" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="102,40 140,40 140,54 158,54" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="102,110 140,110 140,66 158,66" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="102,110 140,110 140,66 158,66" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="182,60 210,60 210,30 500,30" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="182,60 210,60 210,30 500,30" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="182,60 210,60 210,134 218,134" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="182,60 210,60 210,134 218,134" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="242,140 258,140" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="242,140 258,140" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="20,190 240,190 240,166 298,166" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="20,190 240,190 240,166 298,166" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="282,140 290,140 290,154 298,154" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="282,140 290,140 290,154 298,154" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="102,110 120,110 120,140 138,140" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="102,110 120,110 120,140 138,140" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="162,140 170,140 170,154 178,154" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="162,140 170,140 170,154 178,154" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="20,160 100,160 100,166 178,166" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="20,160 100,160 100,166 178,166" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="202,160 210,160 210,146 218,146" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="202,160 210,160 210,146 218,146" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="182,60 210,60 210,114 378,114" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="182,60 210,60 210,114 378,114" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="402,60 410,60 410,84 438,84" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="402,60 410,60 410,84 438,84" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="402,120 420,120 420,96 438,96" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="402,120 420,120 420,96 438,96" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="462,90 500,90" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="462,90 500,90" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="462,90 470,90 470,140 380,140 380,174 418,174" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="462,90 470,90 470,140 380,140 380,174 418,174" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="402,60 410,60 410,186 418,186" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="402,60 410,60 410,186 418,186" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="442,180 500,180" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="442,180 500,180" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="442,220 500,220" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="442,220 500,220" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="20,230 100,230 100,214 418,214" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="20,230 100,230 100,214 418,214" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="402,60 410,60 410,226 418,226" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="402,60 410,60 410,226 418,226" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="322,160 330,160 330,154 338,154" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="322,160 330,160 330,154 338,154" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="282,190 330,190 330,166 338,166" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="282,190 330,190 330,166 338,166" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="362,160 370,160 370,126 378,126" stroke="rgb(255,255,255)" stroke-dasharray="1,0" stroke-width="1.25" />
+<polyline fill="none" points="362,160 370,160 370,126 378,126" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+
+<ellipse cx="210" cy="60" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="120" cy="110" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="210" cy="60" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="210" cy="114" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="470" cy="90" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="410" cy="84" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="410" cy="84" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+<ellipse cx="410" cy="186" rx="1" ry="1"  fill="rgb(0,0,127)"  />
+
+<polygon points="20,40 40,30 20,20 20,40"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="20,70 40,60 20,50 20,70"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="20,170 40,160 20,150 20,170"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="20,200 40,190 20,180 20,200"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="20,240 40,230 20,220 20,240"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="480,40 500,30 480,20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="480,100 500,90 480,80"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="480,190 500,180 480,170"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="480,230 500,220 480,210"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+
+<rect x="80" y="100" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="80" y="30" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="160" y="50" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="220" y="130" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="260" y="130" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="300" y="150" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="180" y="150" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="380" y="50" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="380" y="110" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="440" y="80" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="420" y="170" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="420" y="210" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="260" y="180" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+<rect x="340" y="150" width="20" height="20"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)"  stroke-dasharray="1,0" stroke-width="0.03"  />
+
+<ellipse cx="90" cy="40" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="230" cy="140" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="230" cy="137.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="230" cy="142.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="273.8" cy="140.2" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="310" cy="160" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="390" cy="120" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="390" cy="117.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="390" cy="122.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="180" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="177.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="182.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="220" rx="5" ry="5"  fill="rgb(255,255,255)"  stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="217.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+<ellipse cx="430" cy="222.5" rx="0.5" ry="0.5"  fill="rgb(0,0,0)"  stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25"  />
+
+<polyline fill="none" points="82,103.2 82,118" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="81,117 98.2,117" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="82,110 98,110" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="80,34 82.6,37.6 85.6,37.6" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="80,46 82.6,42.8 85.8,42.8" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="95,40 100,40" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="235,140 240,140" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="227,140 233,140" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="220,134 223.4,134 226,137" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="220,146 230,146 230,145" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="264.6,133.4 267.2,137 270.2,137" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="260,140 280,140" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="300,154 302.6,157.6 305.6,157.6" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="300,166 302.6,162.8 305.8,162.8" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="315,160 320,160" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="382,53.2 382,68" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="381,67 398.2,67" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="382,60 398,60" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="395,120 400,120" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="387,120 393,120" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="380,114 383.4,114 386,117" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="380,126 390,126 390,125" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="435,180 440,180" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="427,180 433,180" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="420,174 423.4,174 426,177" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="420,186 430,186 430,185" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="435,220 440,220" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="427,220 433,220" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="420,214 423.4,214 426,217" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="420,226 430,226 430,225" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="262,183.2 262,198" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="261,197 278.2,197" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polyline fill="none" points="262,190 278,190" stroke="rgb(0,0,0)" stroke-dasharray="1,0" stroke-width="0.25" />
+
+<polygon points="82,101 81.2,103.2 82.8,103.2 82,101"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="99,117 96.8,116.2 96.8,117.8 99,117"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="100,111 102,110 100,109"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="78,35 80,34 78,33"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="78,47 80,46 78,45"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="100,41 102,40 100,39"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="158,55 160,54 158,53"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="158,67 160,66 158,65"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="180,61 182,60 180,59"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="218,135 220,134 218,133"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="218,147 220,146 218,145"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="240,141 242,140 240,139"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="258,141 260,140 258,139"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="280,141 282,140 280,139"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="298,155 300,154 298,153"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="298,167 300,166 298,165"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="320,161 322,160 320,159"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="178,155 180,154 178,153"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="178,167 180,166 178,165"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="200,161 202,160 200,159"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="382,51 381.2,53.2 382.8,53.2 382,51"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="399,67 396.8,66.2 396.8,67.8 399,67"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="400,61 402,60 400,59"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="378,115 380,114 378,113"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="378,127 380,126 378,125"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="400,121 402,120 400,119"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="438,85 440,84 438,83"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="438,97 440,96 438,95"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="460,91 462,90 460,89"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="140,150 140,130 160,140 140,150"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="138,141 140,140 138,139"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="160,141 162,140 160,139"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="418,175 420,174 418,173"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="418,187 420,186 418,185"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="440,181 442,180 440,179"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="418,215 420,214 418,213"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="418,227 420,226 418,225"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="440,221 442,220 440,219"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="262,181 261.2,183.2 262.8,183.2 262,181"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="279,197 276.8,196.2 276.8,197.8 279,197"  fill="rgb(192,192,192)" stroke="rgb(192,192,192)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="280,191 282,190 280,189"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="338,155 340,154 338,153"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="338,167 340,166 338,165"  fill="rgb(0,0,127)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+<polygon points="360,161 362,160 360,159"  fill="rgb(255,255,255)" stroke="rgb(0,0,127)" stroke-dasharray="1,0" stroke-width="0.25" />
+
+<text font-family="helvetica" font-size="3.25" x="14.2625" y="15.5" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="14.2625" >VSumAdjPopBreZon_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="14.2625" y="45.5" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="14.2625" >VSumAdjAreBreZon_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="14.2625" y="145.5" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="14.2625" >VSumZonPri_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="14.2625" y="175.5" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="14.2625" >uOutAirFra_max</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="14.2625" y="215.5" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="14.2625" >VAirOut_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="6.5" x="498.525" y="13" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="498.525" >VUncOutAir_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="6.5" x="498.525" y="73" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="498.525" >VEffAirOut_flow_min</tspan>
+</text>
+<text font-family="helvetica" font-size="6.5" x="498.525" y="163" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="498.525" >effOutAir_normalized</tspan>
+</text>
+<text font-family="helvetica" font-size="6.5" x="498.525" y="203" fill="rgb(0,0,127)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="498.525" >outAir_normalized</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="90" y="97" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="90" >uncDesOutAir</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="90" y="123" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="90" >k&#x3D;VUncDesOutAir_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="106.6" y="106.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="106.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="90" y="27" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="90" >add2</tspan>
+</text>
+<text font-family="helvetica" font-size="4.42" x="90.2" y="39.2" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="90.2" >+</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="106.6" y="36.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="106.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="170" y="47" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="170" >min1</tspan>
+</text>
+<text font-family="helvetica" font-size="4.68" x="170" y="60" fill="rgb(160,160,164)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="170" >min()</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="186.6" y="56.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="186.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="230" y="127" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="230" >div1</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="246.6" y="136.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="246.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="270" y="127" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="270" >addPar</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="263.05" y="132.2" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="263.05" >1</tspan>
+</text>
+<text font-family="helvetica" font-size="4.42" x="273.8" y="139.2" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="273.8" >+</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="286.6" y="136.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="286.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="310" y="147" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="310" >sysVenEff</tspan>
+</text>
+<text font-family="helvetica" font-size="4.42" x="310" y="159.4" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="310" >-</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="326.6" y="156.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="326.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="190" y="147" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="190" >max1</tspan>
+</text>
+<text font-family="helvetica" font-size="4.68" x="190" y="160" fill="rgb(160,160,164)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="190" >max()</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="206.6" y="156.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="206.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="390" y="47" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="390" >desOutAir</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="390" y="73" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="390" >k&#x3D;VDesTotOutAir_flow</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="406.6" y="56.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="406.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="390" y="107" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="390" >div2</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="406.6" y="116.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="406.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="450" y="77" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="450" >min2</tspan>
+</text>
+<text font-family="helvetica" font-size="4.68" x="450" y="90" fill="rgb(160,160,164)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="450" >min()</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="466.6" y="86.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="466.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="150" y="152" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="150" >k&#x3D;1E-3</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="150" y="127.6" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="150" >gaiDivZer</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="166.6" y="136.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="166.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="430" y="167" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="430" >norVOutMin</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="446.6" y="176.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="446.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="430" y="207" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="430" >norVOut</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="446.6" y="216.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="446.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="270" y="177" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="270" >neaZer</tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="270" y="203" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="270" >k&#x3D;1E-4</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="286.6" y="186.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="286.6" ></tspan>
+</text>
+<text font-family="helvetica" font-size="2.6" x="350" y="147" fill="rgb(0,0,255)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="350" >max2</tspan>
+</text>
+<text font-family="helvetica" font-size="4.68" x="350" y="160" fill="rgb(160,160,164)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="350" >max()</tspan>
+</text>
+<text font-family="helvetica" font-size="3.25" x="366.6" y="156.5" fill="rgb(0,0,0)" text-anchor="middle" dominant-baseline="central" alignment-baseline="middle">
+<tspan x="366.6" ></tspan>
+</text>
+
+</svg>
