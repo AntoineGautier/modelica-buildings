@@ -79,6 +79,7 @@ equation
     annotation (Line(points={{62,0},{120,0}},color={0,0,127}));
   annotation (
     defaultComponentName="resDpLoc",
+    __cdl(Documentation(include=true)),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

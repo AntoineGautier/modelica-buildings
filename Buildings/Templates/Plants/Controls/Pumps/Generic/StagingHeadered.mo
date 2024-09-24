@@ -319,6 +319,7 @@ equation
           {-132,-8}}, color={0,0,127}));
   annotation (
     defaultComponentName="staPum",
+    __cdl(Documentation(include=true)),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

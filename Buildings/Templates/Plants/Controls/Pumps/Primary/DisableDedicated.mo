@@ -96,6 +96,7 @@ equation
     annotation (Line(points={{62,-20},{66,-20},{66,-6},{70,-6}},color={255,0,255}));
   annotation (
     defaultComponentName="enaDed",
+    __cdl(Documentation(include=true)),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

@@ -326,6 +326,7 @@ equation
     annotation (Line(points={{-128,80},{-100,80},{-100,0},{98,0}},color={255,0,255}));
   annotation (
     defaultComponentName="seqEve",
+    __cdl(Documentation(include=true, section="2.1.2")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

@@ -1147,7 +1147,8 @@ block AirToWater
     final sch=schHea)
     if have_heaWat
     "Heating mode enable"
-    annotation (Placement(transformation(extent={{-110,350},{-90,370}})));
+    annotation (Placement(transformation(extent={{-110,350},{-90,370}})), __cdl(
+        Documentation(section="2.2")));
   Utilities.StageIndex idxStaHea(
     final nSta=nSta,
     final dtRun=dtRunSta)
@@ -1158,7 +1159,8 @@ block AirToWater
     final staEqu=staEqu)
     if have_heaWat
     "Evaluate heating stage availability"
-    annotation (Placement(transformation(extent={{-110,320},{-90,340}})));
+    annotation (Placement(transformation(extent={{-110,320},{-90,340}})),
+    __cdl(Documentation(section="2.5.3.2")));
   StagingRotation.EquipmentEnable enaEquHea(
     final staEqu=staEqu, final nEquAlt=nEquAlt)
     if have_heaWat
@@ -1176,12 +1178,14 @@ block AirToWater
     each final dtVal=dtVal,
     each final dtOff=dtOffHp)
     "Event sequencing"
-    annotation (Placement(transformation(extent={{140,284},{160,312}})));
+    annotation (Placement(transformation(extent={{140,284},{160,312}})),
+    __cdl(Documentation(section="2.2.2")));
   StagingRotation.StageAvailability avaStaCoo(
     final staEqu=staEqu)
     if have_chiWat
     "Evaluate cooling stage availability"
-    annotation (Placement(transformation(extent={{-110,60},{-90,80}})));
+    annotation (Placement(transformation(extent={{-110,60},{-90,80}})),
+    __cdl(Documentation(section="2.4.3.2")));
   StagingRotation.StageChangeCommand chaStaHea(
     typ=Buildings.Templates.Plants.Controls.Types.Application.Heating,
     final have_pumSec=have_pumHeaWatSec,
@@ -1195,13 +1199,13 @@ block AirToWater
     final dT=dTHea,
     final dtPri=dtPri,
     final dtSec=dtSec) if have_heaWat
-    "Generate heating stage transition command"
-    annotation (Placement(transformation(extent={{-40,308},{-20,332}})));
+    "Heating plant staging"
+    annotation (Placement(transformation(extent={{-40,308},{-20,332}})), __cdl(
+        Documentation(section="2.5.1")));
   StagingRotation.SortRuntime sorRunTimHea(
     idxEquAlt=idxEquAlt,
     nin=nHp)
-    if have_heaWat
-    "Sort lead/lag alternate equipment by staging runtime – Heating mode"
+    if have_heaWat "Sort lead/lag alternate equipment by staging runtime"
     annotation (Placement(transformation(extent={{-40,280},{-20,300}})));
   Enabling.Enable enaCoo(
     final typ=Buildings.Templates.Plants.Controls.Types.Application.Cooling,
@@ -1214,7 +1218,8 @@ block AirToWater
     final sch=schCoo)
     if have_chiWat
     "Cooling mode enable"
-    annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
+    annotation (Placement(transformation(extent={{-110,90},{-90,110}})), __cdl(
+        Documentation(section="2.1")));
   StagingRotation.StageChangeCommand chaStaCoo(
     final typ=Buildings.Templates.Plants.Controls.Types.Application.Cooling,
     final have_pumSec=have_pumChiWatSec,
@@ -1228,8 +1233,9 @@ block AirToWater
     final dT=dTCoo,
     final dtPri=dtPri,
     final dtSec=dtSec) if have_chiWat
-    "Generate cooling stage transition command"
-    annotation (Placement(transformation(extent={{-40,50},{-20,74}})));
+    "Cooling plant staging"
+    annotation (Placement(transformation(extent={{-40,50},{-20,74}})),
+    __cdl(Documentation(section="2.4.1")));
   Utilities.StageIndex idxStaCoo(
     final nSta=nSta,
     final dtRun=dtRunSta)
@@ -1246,7 +1252,9 @@ block AirToWater
     each final have_chiWat=have_chiWat,
     each final dtOff=dtOff)
     "Evaluate equipment availability in heating or cooling mode"
-    annotation (Placement(transformation(extent={{-152,210},{-132,230}})));
+    annotation (Placement(transformation(extent={{-152,210},{-132,230}})),
+    __cdl(Documentation(
+    section="2.3.2")));
   Buildings.Controls.OBC.CDL.Logical.Pre y1HeaPre[nHp]
     if have_heaWat and have_chiWat
     "Left-limit of command signal to break algebraic loop"
@@ -1254,8 +1262,7 @@ block AirToWater
   StagingRotation.SortRuntime sorRunTimCoo(
     final idxEquAlt=idxEquAlt,
     nin=nHp)
-    if have_chiWat
-    "Sort lead/lag alternate equipment by staging runtime – Cooling mode"
+    if have_chiWat "Sort lead/lag alternate equipment by staging runtime"
     annotation (Placement(transformation(extent={{-40,20},{-20,40}})));
   Pumps.Generic.StagingHeadered staPumHeaWatPri(
     final is_pri=true,
@@ -1384,7 +1391,8 @@ block AirToWater
     final rsp=rspHeaWat,
     final rsp_max=rspHeaWat_max,
     final tri=triHeaWat) if have_heaWat "HW plant reset"
-    annotation (Placement(transformation(extent={{50,230},{70,250}})));
+    annotation (Placement(transformation(extent={{50,230},{70,250}})), __cdl(
+        Documentation(section="2.5.2")));
   Setpoints.PlantReset resChiWat(
     final TSup_nominal=TChiWatSup_nominal,
     final TSupSetLim=TChiWatSupSet_max,
@@ -1403,7 +1411,8 @@ block AirToWater
     final rsp=rspChiWat,
     final rsp_max=rspChiWat_max,
     final tri=triChiWat) if have_chiWat "CHW plant reset"
-    annotation (Placement(transformation(extent={{50,-50},{70,-30}})));
+    annotation (Placement(transformation(extent={{50,-50},{70,-30}})),
+    __cdl(Documentation(section="2.4.2")));
   Pumps.Primary.VariableSpeed ctlPumPri(
     final have_heaWat=have_heaWat,
     final have_chiWat=have_chiWat,
@@ -1427,7 +1436,8 @@ block AirToWater
     final yPumHeaWatPri_min=yPumHeaWatPri_min)
     if have_pumHeaWatPriVar or have_pumChiWatPriVar
     "Primary pump speed control"
-    annotation (Placement(transformation(extent={{190,70},{210,98}})));
+    annotation (Placement(transformation(extent={{190,70},{210,98}})),
+    __cdl(Documentation(section="2.4.3")));
   Pumps.Generic.ControlDifferentialPressure ctlPumHeaWatSec(
     final have_senDpRemWir=have_senDpHeaWatRemWir,
     final nPum=nPumHeaWatSec,
@@ -1436,7 +1446,8 @@ block AirToWater
     final k=kCtlDpHeaWat,
     final Ti=TiCtlDpHeaWat) if have_pumHeaWatSec and have_pumSecCtlDp
     "Secondary HW pump speed control"
-    annotation (Placement(transformation(extent={{140,-10},{160,10}})));
+    annotation (Placement(transformation(extent={{140,-10},{160,10}})),
+    __cdl(Documentation(section="2.5.4")));
   Pumps.Generic.ControlDifferentialPressure ctlPumChiWatSec(
     final have_senDpRemWir=have_senDpChiWatRemWir,
     final nPum=nPumChiWatSec,
@@ -1445,7 +1456,8 @@ block AirToWater
     final k=kCtlDpChiWat,
     final Ti=TiCtlDpChiWat) if have_pumChiWatSec and have_pumSecCtlDp
     "Secondary CHW pump speed control"
-    annotation (Placement(transformation(extent={{190,-30},{210,-10}})));
+    annotation (Placement(transformation(extent={{190,-30},{210,-10}})),
+    __cdl(Documentation(section="2.4.4")));
   Buildings.Controls.OBC.CDL.Reals.Switch swiTSupSet[nHp]
     if have_heaWat and have_chiWat
     "Select supply temperature setpoint based on operating mode"

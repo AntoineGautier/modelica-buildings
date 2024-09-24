@@ -187,6 +187,7 @@ equation
       color={255,0,255}));
   annotation (
     defaultComponentName="ena",
+    __cdl(Documentation(include=true, section="2.1")),
     Icon(
       graphics={
         Rectangle(
@@ -274,6 +275,10 @@ The plant enable schedule is inactive.
 </ul>
 </html>", revisions="<html>
 <ul>
+<li>
+September 24, 2024, by Antoine Gautier:<br/>
+Add CDL annotation.
+</li>
 <li>
 March 29, 2024, by Antoine Gautier:<br/>
 First implementation.

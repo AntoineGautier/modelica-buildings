@@ -376,6 +376,7 @@ equation
           -140},{180,-80},{220,-80}}, color={255,0,255}));
   annotation (
     defaultComponentName="chaSta",
+    __cdl(Documentation(include=true, section="2.4")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=false,

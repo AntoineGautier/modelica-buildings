@@ -1650,6 +1650,7 @@ setpoints for heating, economizer and cooling, zone air heating and cooling setp
 outdoor and return air damper positions, and valve positions of heating and cooling coils.
 It is implemented according to the ASHRAE Guideline 36, Section 5.18.
 </p>
+<span class=\"cdl\" >
 <p>
 The sequences consist of the following subsequences.
 </p>

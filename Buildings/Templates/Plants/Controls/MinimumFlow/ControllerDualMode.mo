@@ -262,6 +262,7 @@ equation
       color={255,0,255}));
   annotation (
     defaultComponentName="ctlFloMin",
+    __cdl(Documentation(include=true, section="2.3")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

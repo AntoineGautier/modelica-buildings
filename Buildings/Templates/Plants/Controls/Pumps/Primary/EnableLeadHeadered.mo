@@ -114,6 +114,7 @@ equation
     annotation (Line(points={{-58,-40},{-40,-40},{-40,0},{8,0}},color={255,0,255}));
   annotation (
     defaultComponentName="enaLea",
+    __cdl(Documentation(include=true)),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

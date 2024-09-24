@@ -513,6 +513,7 @@ equation
       color={255,0,255}));
   annotation (
     defaultComponentName="ctlPumPri",
+    __cdl(Documentation(include=true, section="2.4.3.2")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

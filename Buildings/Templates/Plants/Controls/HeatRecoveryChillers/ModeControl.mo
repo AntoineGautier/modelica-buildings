@@ -85,6 +85,7 @@ equation
     annotation (Line(points={{120,0},{40,0},{40,-60},{48,-60}},color={255,0,255}));
   annotation (
     defaultComponentName="setMod",
+    __cdl(Documentation(include=true, section="3.2")),
     Documentation(
       info="<html>
 <h4>Mode control</h4>

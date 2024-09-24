@@ -81,6 +81,7 @@ equation
     annotation (Line(points={{52,-40},{60,-40},{60,-6},{68,-6}},color={0,0,127}));
   annotation (
     defaultComponentName="setFloMin",
+    __cdl(Documentation(include=true, section="1.4.1")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

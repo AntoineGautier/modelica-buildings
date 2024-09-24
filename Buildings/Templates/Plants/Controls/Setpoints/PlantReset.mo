@@ -122,7 +122,8 @@ block PlantReset
     final triAmo=tri,
     dtHol=dtHol)
     "Compute plant reset with trim and respond logic "
-    annotation (Placement(transformation(extent={{-10,90},{10,110}})));
+    annotation (Placement(transformation(extent={{-10,90},{10,110}})),
+    __cdl(Documentation(unique=true, section="1.15")));
   Buildings.Controls.OBC.CDL.Reals.Line resTSup
     "Supply temperature reset"
     annotation (Placement(transformation(extent={{80,-70},{100,-50}})));

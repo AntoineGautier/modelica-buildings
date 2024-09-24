@@ -142,6 +142,7 @@ equation
           -40,-20},{120,-20}}, color={0,0,127}));
   annotation (
     defaultComponentName="ctlDp",
+    __cdl(Documentation(include=true)),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,
