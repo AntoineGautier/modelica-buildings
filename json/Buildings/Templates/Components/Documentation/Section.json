@@ -1,0 +1,138 @@
+{
+  "within": "Buildings.Templates.Components.Documentation",
+  "class_definition": [
+    {
+      "class_prefixes": "block",
+      "class_specifier": {
+        "long_class_specifier": {
+          "identifier": "Section",
+          "description_string": "Block used to organize the documentation of control sequences",
+          "composition": {
+            "annotation": [
+              {
+                "element_modification_or_replaceable": {
+                  "element_modification": {
+                    "name": "__cdl",
+                    "modification": {
+                      "class_modification": [
+                        {
+                          "element_modification_or_replaceable": {
+                            "element_modification": {
+                              "name": "Documentation",
+                              "modification": {
+                                "class_modification": [
+                                  {
+                                    "element_modification_or_replaceable": {
+                                      "element_modification": {
+                                        "name": "include",
+                                        "modification": {
+                                          "equal": true,
+                                          "expression": {
+                                            "simple_expression": "true"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "element_modification_or_replaceable": {
+                                      "element_modification": {
+                                        "name": "info",
+                                        "modification": {
+                                          "equal": true,
+                                          "expression": {
+                                            "simple_expression": "\"\""
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "element_modification_or_replaceable": {
+                  "element_modification": {
+                    "name": "Icon",
+                    "modification": {
+                      "class_modification": [
+                        {
+                          "element_modification_or_replaceable": {
+                            "element_modification": {
+                              "coordinateSystem": {
+                                "preserveAspectRatio": "false"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "element_modification_or_replaceable": {
+                            "element_modification": {
+                              "graphics": [
+                                {
+                                  "name": "Rectangle",
+                                  "attribute": {
+                                    "extent": [
+                                      {
+                                        "x": -100,
+                                        "y": 100
+                                      },
+                                      {
+                                        "x": 100,
+                                        "y": -100
+                                      }
+                                    ],
+                                    "lineColor": {
+                                      "r": 0,
+                                      "g": 0,
+                                      "b": 0
+                                    }
+                                  }
+                                },
+                                {
+                                  "name": "Text",
+                                  "attribute": {
+                                    "extent": [
+                                      {
+                                        "x": -150,
+                                        "y": 150
+                                      },
+                                      {
+                                        "x": 150,
+                                        "y": 110
+                                      }
+                                    ],
+                                    "textString": "\"%name\"",
+                                    "textColor": {
+                                      "r": 0,
+                                      "g": 0,
+                                      "b": 255
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "modelicaFile": "Buildings/Templates/Components/Documentation/Section.mo",
+  "fullMoFilePath": "/home/reituag/gitrepo/modelica-buildings/Buildings/Templates/Components/Documentation/Section.mo",
+  "checksum": "55729ac80025bce8eea531857b4e472b"
+}

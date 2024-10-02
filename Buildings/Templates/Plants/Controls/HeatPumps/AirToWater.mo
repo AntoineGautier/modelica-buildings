@@ -1548,6 +1548,20 @@ block AirToWater
   Components.Documentation.Section sec2_5_3 "Primary HW pumps" annotation (
       Placement(transformation(extent={{128,182},{168,222}})), __cdl(
         Documentation(section="2.5.3")));
+  Components.Documentation.Section sec2_5 "Heating plant" annotation (Placement(
+        transformation(extent={{-240,132},{240,394}})), __cdl(Documentation(
+          section="2.5")));
+  Components.Documentation.Section sec2_4 "Cooling plant" annotation (Placement(
+        transformation(extent={{-240,-192},{240,116}})), __cdl(Documentation(
+          section="2.4")));
+  Components.Documentation.Section sec2_5_4 "Secondary HW pumps"
+                                                               annotation (
+      Placement(transformation(extent={{128,-16},{170,58}})),  __cdl(
+        Documentation(section="2.5.4")));
+  Components.Documentation.Section sec2_4_4 "Secondary CHW pumps"
+                                                               annotation (
+      Placement(transformation(extent={{180,-38},{222,36}})),  __cdl(
+        Documentation(section="2.4.4")));
 equation
   connect(u1SchHea, enaHea.u1Sch)
     annotation (Line(points={{-280,380},{-180,380},{-180,364},{-112,364}},color={255,0,255}));

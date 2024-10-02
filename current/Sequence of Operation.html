@@ -1,0 +1,1480 @@
+<html><head><title>Sequence of Operation</title></head><body><h1><a name="1general"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.&nbsp;</span><!--[endif]-->General</h1>
+<h2><a name="1.1block-to-inplement-trim-and"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.1.&nbsp;</span><!--[endif]-->Block to inplement trim and respond logic</h2>
+<p>
+This block implements the trim and respond logic according to Section 5.1.14.3 
+and 5.1.14.4 of ASHRAE Guideline 36, May 2020.
+</p>
+<p>
+For each upstream system or plant set point being controlled by a trim and respond
+loop, define the initial values in system or plant sequences. Values for trim,
+respond, time step, etc. shall be tuned to provide stable control.
+</p>
+<table summary="summary" border="1">
+<tbody><tr><th> Variable </th> <th> Value </th> <th> Definition </th> </tr>
+<tr><td>Device</td><td>AHU Supply Fan</td> <td>Associated device</td></tr>
+<tr><td>SP0</td><td><code>iniSet</code></td><td>Initial setpoint</td></tr>
+<tr><td>SPmin</td><td><code>minSet</code></td><td>Minimum setpoint</td></tr>
+<tr><td>SPmax</td><td><code>maxSet</code></td><td>Maximum setpoint</td></tr>
+<tr><td>Td</td><td><code>delTim</code></td><td>Delay timer</td></tr>
+<tr><td>T</td><td><code>samplePeriod</code></td><td>Time step</td></tr>
+<tr><td>I</td><td><code>numIgnReq</code></td><td>Number of ignored requests</td></tr>
+<tr><td>R</td><td><code>numOfReq</code></td><td>Number of requests</td></tr>
+<tr><td>SPtrim</td><td><code>triAmo</code></td><td>Trim amount</td></tr>
+<tr><td>SPres</td><td><code>resAmo</code></td><td>Respond amount</td></tr>
+<tr><td>SPres_max</td><td><code>maxRes</code></td><td>Maximum response per time interval</td></tr>
+</tbody></table>
+<p>
+The trim and respond logic shall reset setpoint within the range <code>minSet</code> to
+<code>maxSet</code>.
+When the associated device is off (<code>uDevSta=false</code>), the setpoint
+shall be <code>iniSet</code>.
+The reset logic shall be active while the associated device is proven
+on (<code>uDevSta=true</code>), starting <code>delTim</code> after initial
+device start command.
+When active, every time step <code>samplePeriod</code>, trim the setpoint by
+<code>triAmo</code>.
+If there are more than <code>numIgnReq</code> requests, respond by changing
+the setpoint by <code>resAmo*(numOfReq-numIgnReq)</code>, i.e., the number of
+requests minus the number of ignored requests, but no more than <code>maxRes</code>.
+</p>
+<p>
+In other words, every time step <code>samplePeriod</code>:
+</p>
+<ul>
+<li>Change setpoint by <code>triAmo</code>; </li>
+<li>If <code>numOfReq &gt; numIgnReq</code>, <i>also</i> change setpoint by <code>resAmo*(numOfReq
+-numIgnReq)</code> but no more than <code>maxRes</code>.
+</li>
+</ul>
+<h3><a name="1.1.1hold-and-release-loop-out"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.1.1.&nbsp;</span><!--[endif]-->Hold and release loop output</h3>
+
+<p>
+Optionally, if the parameter <code>have_hol</code> is set to true, an additional
+input signal <code>uHol</code> allows for holding the trim and respond loop output
+at a fixed value for the longer of the time the input <code>uHol</code> remains true 
+and the duration specified by the parameter <code>dtHol</code>.
+When <code>uHol</code> switches back to false, the hold is released and resetting
+continues from the previously held value (without reinitializing to <code>iniSet</code>
+or going through a delay time of <code>delTim</code>). 
+</p>
+<p>
+This is typically used in control sequences to freeze the reset logic during the plant
+staging process.
+Consider for example the following specification:<br>
+"When a plant stage change is initiated, the reset logic shall be disabled and value
+fixed at its last value for the longer of <i>15</i> minutes and the time it takes 
+for the plant to successfully stage."<br>
+Using this block with <code>have_hol=true</code> and <code>dtHol=15*60</code> 
+yields the following sequence of events.
+</p>
+<ul>
+<li>0:00 - Stage change is initiated. T&amp;R loop output is at <i>50&nbsp;%</i>.</li>
+<li>0:12 - Stage change is completed. T&amp;R loop output remains at <i>50&nbsp;%</i> 
+since <i>&lt;&nbsp;15&nbsp;</i>minutes have elapsed.</li>
+<li>0:15 - T&amp;R is released and continues resetting from <i>50&nbsp;%</i>.</li>
+</ul>
+<h3><a name="1.1.2examples"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.1.2.&nbsp;</span><!--[endif]-->Examples</h3>
+
+<p>
+The figure below illustrates the trim and respond logic with a negative trim amount,
+comparing scenarios with and without holding the loop output.
+</p>
+<p>
+<img alt="Trend graph for trim and response" src="img/Buildings_Resources_Images_Controls_OBC_ASHRAE_G36_Generic_TrimAndRespond.png">
+</p>
+<p>
+The figure below illustrates the trim and respond logic with a positive trim amount.
+</p>
+<p>
+<img alt="Trend graph for trim and response" src="img/Buildings_Resources_Images_Controls_OBC_ASHRAE_G36_Generic_TrimAndRespond1.png">
+</p>
+<p>
+The figure below illustrates the trim and respond logic with a negative trim amount,
+in a scenario where the equipment switches on and off.
+</p>
+<p>
+<img alt="Trend graph for trim and response" src="img/Buildings_Resources_Images_Controls_OBC_ASHRAE_G36_Generic_TrimAndRespond2.png">
+</p>
+<h2><a name="1.2sort-equipment-by-increasin"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.2.&nbsp;</span><!--[endif]-->Sort equipment by increasing staging runtime</h2>
+<p>
+This block implements the rotation logic for identical parallel
+staged equipment that are lead/lag alternated.
+</p>
+<p>
+Two runtime points are defined for each equipment.
+The Lifetime Runtime is the cumulative runtime of the equipment
+since equipment start-up. This point is not readily resettable by operators.
+Lifetime Runtime should be stored to a software point on the control
+system server so the recorded value is not lost due to controller reset,
+loss of power, programming file update, etc.
+The Staging Runtime is an operator resettable runtime point that stores
+cumulative runtime since the last operator reset.
+</p>
+<p>
+In the case of available equipment,
+when more than one equipment is off or more than one is on,
+the equipment with the most operating hours as determined by
+Staging Runtime is made the last stage equipment and the one
+with the least number of hours is made the lead stage equipment.
+</p>
+<p>
+In the case of unavailable equipment,
+the equipment that alarmed most recently is sent to the last position.
+The equipment in alarm automatically moves up in the staging order
+only if another equipment goes into alarm.
+</p>
+<h3><a name="1.2.1staging-runtime-initializ"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.2.1.&nbsp;</span><!--[endif]-->Staging runtime initialization</h3>
+
+<p>
+When the controller is initialized, the choice of the first equipment to run
+is random since all runtimes are equal to zero.
+So, before this first equipment reports status, all equipment will be
+considered off and only this first equipment will increase runtime and be
+queued in the staging order.
+At next stage change, another equipment will then be staged on instead,
+resulting in the first running equipment being "hot swapped".
+To avoid this behavior, the vector parameter <code>runTim_start</code> is used
+to initialize the staging runtime, which will be fixed at this parameter
+value until it becomes higher.
+The parameter <code>runTim_start</code> should be set to a vector of
+strictly increasing values, where the minimum value is greater than
+the time needed for the equipment to report status.
+</p>
+<h3><a name="1.2.2details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">1.2.2.&nbsp;</span><!--[endif]-->Details</h3>
+
+<p>
+The sorting logic is implemented using the following method.
+</p>
+<ul>
+<li>
+If a unit is on and available, its staging runtime is used as is.
+</li>
+<li>
+If a unit is off and available, its staging runtime is increased 
+by a constant of <i>1E10</i>&nbsp;s.
+</li>
+<li>
+If a unit is unavailable, its staging runtime is replaced by
+the time that has elapsed since the unit became unavailable.
+This time is then increased by a constant of <i>1E20</i>&nbsp;s.
+</li>
+<li>
+A unique instance of the sorting block is then used to order
+the different units.
+</li>
+</ul>
+<p>
+This is effectively the same as sorting the units within
+the three following subsets: units that are on and available, 
+units that are off and available, units that are unavailable.
+In particular, the order index of a given unit remains unchanged
+if it is the only element of a given subset.
+Note that the staging runtime and the time elapsed since an equipment became unavailable
+are both computed from Boolean signals (<code>u1Run</code> and <code>u1Ava</code>).
+These are discrete-time, piecewise constant variables,
+which is why the caveat in the documentation of
+<span style="color: grey;" id="Buildings.Controls.OBC.CDL.Reals.Sort"><a>
+Buildings.Controls.OBC.CDL.Reals.Sort</a></span>
+for purely continuous time-varying variables does not apply here.
+Therefore, no sampling is performed before sorting the equipment runtimes.
+</p>
+<p>
+To facilitate integration into the plant controller, the input vectors
+cover the full set of equipment, including equipment that may not be
+lead/lag alternate.
+The output vectors cover only the subset of lead/lag alternate equipment,
+and the vector of sorted equipment provides indices with respect
+to the input vectors (full set of equipment).
+</p>
+<h1><a name="2two-pipe-air-to-water-heat-pu"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.&nbsp;</span><!--[endif]-->Two-pipe air-to-water heat pump plant</h1>
+<h2><a name="2.1cooling-mode-enable"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.1.&nbsp;</span><!--[endif]-->Cooling mode enable</h2>
+<p>
+The plant is enabled when it has been disabled for at least the duration <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable) and:
+</p>
+<ul>
+<li>
+Number of plant requests &gt; number of ignored requests <code>nReqIgn</code>&nbsp;(0, adjustable), and
+</li>
+<li>
+<b>For cooling systems</b>: outdoor air temperature &gt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(16&nbsp;°C, adjustable), and
+</li>
+<li>
+<b>For heating systems</b>: outdoor air temperature &lt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(16&nbsp;°C, adjustable), and
+</li>
+<li>
+The enable schedule is active.
+</li>
+</ul>
+<p>
+The plant is disabled when it has been enabled for at least the duration 
+<code>dtRun</code>&nbsp;(900&nbsp;s, adjustable) and:
+</p>
+<ul>
+<li>
+Number of plant requests ≤ number of ignored requests <code>nReqIgn</code>&nbsp;(0, adjustable) 
+for at least the duration <code>dtReq</code>&nbsp;(180&nbsp;s, adjustable), or
+</li>
+<li>
+<b>For cooling systems</b>: outdoor air temperature &lt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(16&nbsp;°C, adjustable) minus hysteresis <code>dTOutLck</code>&nbsp;(0.5&nbsp;K, adjustable), or
+</li>
+<li>
+<b>For heating systems</b>: outdoor air temperature &gt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(16&nbsp;°C, adjustable) plus hysteresis <code>dTOutLck</code>&nbsp;(0.5&nbsp;K, adjustable), or
+</li>
+<li>
+The plant enable schedule is inactive.
+</li>
+</ul>
+<h2><a name="2.2heating-mode-enable"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.2.&nbsp;</span><!--[endif]-->Heating mode enable</h2>
+<p>
+The plant is enabled when it has been disabled for at least the duration <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable) and:
+</p>
+<ul>
+<li>
+Number of plant requests &gt; number of ignored requests <code>nReqIgn</code>&nbsp;(0, adjustable), and
+</li>
+<li>
+<b>For cooling systems</b>: outdoor air temperature &gt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(21&nbsp;°C, adjustable), and
+</li>
+<li>
+<b>For heating systems</b>: outdoor air temperature &lt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(21&nbsp;°C, adjustable), and
+</li>
+<li>
+The enable schedule is active.
+</li>
+</ul>
+<p>
+The plant is disabled when it has been enabled for at least the duration 
+<code>dtRun</code>&nbsp;(900&nbsp;s, adjustable) and:
+</p>
+<ul>
+<li>
+Number of plant requests ≤ number of ignored requests <code>nReqIgn</code>&nbsp;(0, adjustable) 
+for at least the duration <code>dtReq</code>&nbsp;(180&nbsp;s, adjustable), or
+</li>
+<li>
+<b>For cooling systems</b>: outdoor air temperature &lt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(21&nbsp;°C, adjustable) minus hysteresis <code>dTOutLck</code>&nbsp;(0.5&nbsp;K, adjustable), or
+</li>
+<li>
+<b>For heating systems</b>: outdoor air temperature &gt; outdoor air lockout 
+temperature <code>TOutLck</code>&nbsp;(21&nbsp;°C, adjustable) plus hysteresis <code>dTOutLck</code>&nbsp;(0.5&nbsp;K, adjustable), or
+</li>
+<li>
+The plant enable schedule is inactive.
+</li>
+</ul>
+<h3><a name="2.2.1event-sequencing"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.2.1.&nbsp;</span><!--[endif]-->Event sequencing</h3>
+<p>
+If a heat pump is commanded on in a desired heating or cooling mode:
+</p>
+<ul>
+<li>
+The isolation valves for desired heating or cooling mode are commanded
+open.
+</li>
+<li>
+<b>Plants with dedicated primary pumps</b>:
+The dedicated primary pumps are commanded on when the 
+associated isolation valves are commanded open.
+</li>
+<li>
+<b>Plants with headered primary pumps</b>:
+The headered primary pumps are commanded on as described in
+<a href="#2.3.4.1primary-chw-pump-stagin" style="white-space: nowrap;">Section 2.3.4.1</a>.
+</li>
+<li>
+Once the isolation valves are fully open (based on nominal valve timing <code>dtVal</code>&nbsp;(90&nbsp;s, adjustable))
+and the lead pumps are proven on, the heat pump is enabled in heating or cooling
+mode.
+</li>
+</ul>
+<p>
+If a heat pump is commanded off:
+</p>
+<ul>
+<li>
+The heat pump is disabled.
+</li>
+<li>
+After the time required for the internal shutdown cycle to time out 
+(<code>dtOff</code>&nbsp;(180&nbsp;s, adjustable) to be determined empirically, defaulting to <i>3</i>&nbsp;min),
+all isolation valves are commanded closed.
+</li>
+<li>
+<b>Plants with dedicated primary pumps</b>:
+The dedicated primary pumps are commanded off when the associated
+isolation valves are commanded closed.
+</li>
+<li>
+<b>Plants with headered primary pumps</b>:
+The headered primary pumps are commanded off as described in
+<a href="#2.3.4.1primary-chw-pump-stagin" style="white-space: nowrap;">Section 2.3.4.1</a>.
+</li>
+</ul>
+<h2><a name="2.3cooling-plant"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.&nbsp;</span><!--[endif]-->Cooling plant</h2>
+<h3><a name="2.3.1cooling-plant-staging"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.1.&nbsp;</span><!--[endif]-->Cooling plant staging</h3>
+<p>
+The plant equipment is staged in part based on required capacity, <i>Qrequired</i>, 
+relative to nominal capacity of a given stage, <i>Qstage</i>. 
+This ratio is the operative part load ratio, <i>OPLR</i>.
+</p>
+<p>
+<i>OPLR = Qrequired / Qstage</i>
+</p>
+<p>
+If both primary and secondary hot water temperatures and flow rates are available, 
+the sensors in the primary loop are used for calculating <i>Qrequired</i>. 
+If a heat recovery chiller is piped into the secondary return, the sensors in the 
+primary loop are used.
+(These conditions are implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.HeatPumps.AirToWater"><a>
+Buildings.Templates.Plants.Controls.HeatPumps.AirToWater</a></span>.)
+</p>
+<p>
+The required capacity is calculated based on return temperature, 
+active supply temperature setpoint and measured flow through the 
+associated circuit flow meter.
+</p>
+<p>
+The required capacity used in logic is a rolling average over a period
+of <code>dtMea</code>&nbsp;(300&nbsp;s, adjustable)
+of instantaneous values sampled at minimum once every <i>30</i>&nbsp;s.
+</p>
+<p>
+When a stage up or stage down transition is initiated, 
+<i>Qrequired</i> is held fixed at its last value until the longer of 
+the successful completion of the stage change 
+and the duration <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</p>
+<p>
+The nominal capacity of a given stage, <i>Qstage</i>, is calculated 
+as the sum of the design capacities of all units enabled in a given stage.
+</p>
+<p>
+Staging is executed per the conditions below subject to the following requirements.
+</p>
+<ul>
+<li>
+Each stage has a minimum runtime of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+(This condition is implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Utilities.StageIndex"><a>
+Buildings.Templates.Plants.Controls.Utilities.StageIndex</a></span>.)
+</li>
+<li>
+Timers are reset to zero at the completion of every stage change.
+</li>
+<li>
+Any unavailable stage is skipped during staging events, 
+but staging conditionals in the current stage are evaluated as per usual.
+</li>
+</ul>
+<p>
+A stage up command is triggered if any of the following is true:
+</p>
+<ul>
+<li>
+Availability condition: The equipment necessary to operate the 
+current stage is unavailable. 
+The availability condition is not subject to the minimum stage runtime requirement.
+(This condition is implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Utilities.StageIndex"><a>
+Buildings.Templates.Plants.Controls.Utilities.StageIndex</a></span>.)
+</li>
+<li>
+Efficiency condition: Current stage <i>OPLR &gt; plrSta</i> for a duration of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</li>
+<li>
+Failsafe condition: see 
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.StagingRotation.FailsafeCondition"><a>
+Buildings.Templates.Plants.Controls.StagingRotation.FailsafeCondition</a></span>.
+</li>
+</ul>
+<p>
+A stage down command is triggered if both of the following are true:
+</p>
+<ul>
+<li>
+Next available lower stage <i>OPLR &lt; plrSta</i> for a duration of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</li>
+<li>
+The failsafe stage up condition is not true.
+</li>
+</ul>
+<h4><a name="2.3.1.1-details-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.1.1.&nbsp;</span><!--[endif]-->
+Details
+</h4>
+
+<p>
+A staging matrix <code>staEqu</code> is required as a parameter. 
+See the documentation of 
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.StagingRotation.EquipmentEnable"><a>
+Buildings.Templates.Plants.Controls.StagingRotation.EquipmentEnable</a></span>
+for the associated definition and requirements.
+</p>
+<p>
+An "if" condition is used to generate the stage up and down command as opposed
+to a "when" condition. This means that the command remains true as long as the
+condition is verified. This is necessary, for example, if no higher stage is
+available when a stage up command is triggered. Using a "when" condition –
+which is only valid at the point in time at which the condition becomes true –
+would prevent the plant from staging when a higher stage becomes available again.
+To avoid multiple consecutive stage changes, the block that receives the stage up
+and down command and computes the stage index must enforce a minimum stage runtime
+of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</p>
+<h3><a name="2.3.2sort-lead/lag-alternate-e"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.2.&nbsp;</span><!--[endif]-->Sort lead/lag alternate equipment by staging runtime</h3>
+<p>See <a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.</p><h3><a name="2.3.3chw-plant-reset"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.&nbsp;</span><!--[endif]-->CHW plant reset</h3>
+<p>
+This logic is used in primary-only and primary-secondary systems
+serving differential pressure controlled pumps.
+</p>
+<h4><a name="2.3.3.1chw-loops-with-differen"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.1.&nbsp;</span><!--[endif]-->CHW loops with differential pressure control</h4>
+
+<p>
+The CHW supply temperature setpoint and pump differential pressure setpoint
+are reset based on the current value of the logic variable called "CHW Plant Reset"
+as shown below and described subsequently.
+</p>
+<p>
+<img alt="CHW plant reset logic diagram" src="img/Buildings_Resources_Images_Templates_Plants_Controls_Setpoints_PlantResetCHW.png">
+</p>
+<h4><a name="2.3.3.2hw-loops-with-different"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.2.&nbsp;</span><!--[endif]-->HW loops with differential pressure control</h4>
+
+<p>
+The HW supply temperature setpoint and pump differential pressure setpoint
+are reset based on the current value of the logic variable called "HW Plant Reset"
+as shown below and described subsequently.
+</p>
+<p>
+<img alt="CHW plant reset logic diagram" src="img/Buildings_Resources_Images_Templates_Plants_Controls_Setpoints_PlantResetHW.png">
+</p>
+<h4><a name="2.3.3.3generic-reset-logic-app"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.3.&nbsp;</span><!--[endif]-->Generic reset logic applicable to all plants</h4>
+
+<p>
+From <i>0&nbsp;%</i> loop output to <code>resDp_max</code>&nbsp;(0.5, adjustable) loop output, reset
+differential pressure setpoint from <code>dpSet_min</code>&nbsp;(34470&nbsp;Pa, adjustable) to <code>dpSet_max</code>.
+</p>
+<p>
+From <code>resTSup_min</code>&nbsp;(0.5, adjustable) loop output to <i>100&nbsp;%</i> loop output, reset supply
+temperature setpoint from <code>TSupSetLim</code>&nbsp;(15&nbsp;°C, adjustable) to <code>TSup_nominal</code>&nbsp;(7&nbsp;°C, adjustable).
+</p>
+<p>
+CHW/HW Plant Reset variable is reset using trim and respond logic with the following parameters:
+</p>
+<table summary="summary" border="1">
+<tbody><tr><th> Variable </th> <th> Value </th> <th> Definition </th> </tr>
+<tr><td>Device</td><td>Any pump distribution loop</td> <td>Associated device</td></tr>
+<tr><td>SP0</td><td><code>res_init</code>&nbsp;(1, adjustable)</td><td>Initial reset value</td></tr>
+<tr><td>SPmin</td><td><code>res_min</code>&nbsp;(0, adjustable)</td><td>Minimum reset value</td></tr>
+<tr><td>SPmax</td><td><code>res_max</code>&nbsp;(1, adjustable)</td><td>Maximum reset value</td></tr>
+<tr><td>Td</td><td><code>dtDel</code>&nbsp;(900&nbsp;s, adjustable)</td><td>Delay time before the reset begins</td></tr>
+<tr><td>T</td><td><code>dtRes</code>&nbsp;(300&nbsp;s, adjustable)</td><td>Time step</td></tr>
+<tr><td>I</td><td><code>nReqResIgn</code>&nbsp;(2, adjustable)</td><td>Number of ignored requests</td></tr>
+<tr><td>R</td><td><code>nReqRes</code></td><td>Number of requests</td></tr>
+<tr><td>SPtrim</td><td><code>tri</code>&nbsp;(-0.02, adjustable)</td><td>Trim amount</td></tr>
+<tr><td>SPres</td><td><code>rsp</code>&nbsp;(0.03, adjustable)</td><td>Respond amount</td></tr>
+<tr><td>SPres_max</td><td><code>rsp_max</code>&nbsp;(0.07, adjustable)</td><td>Maximum response per time interval</td></tr>
+</tbody></table>
+<p>
+The plant reset loop is enabled when the plant is enabled and disabled when the plant is disabled.
+</p>
+<p>
+When a plant stage change is initiated, the plant reset logic is disabled and
+value fixed at its last value for the longer of <code>dtHol</code>&nbsp;(900&nbsp;s, adjustable) and the time it
+takes for the plant to successfully stage.
+</p>
+<h4><a name="2.3.3.4plants-serving-more-tha"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.4.&nbsp;</span><!--[endif]-->Plants serving more than one set of differential pressure controlled pumps</h4>
+
+<p>
+A unique instance of the above reset is used for each set of differential pressure
+controlled pumps.
+</p>
+<ul>
+<li>
+Reset requests from all loads served by a set of pumps are directed to those pumps’ reset loop only.
+</li>
+<li>
+The differential pressure setpoint output from each reset is used in the ∆p control loop
+for the associated set of pumps only, i.e., the ∆p setpoint will not change
+for any other ∆p control loops.
+</li>
+</ul>
+<h4><a name="2.3.3.5plants-where-more-than-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.5.&nbsp;</span><!--[endif]-->Plants where more than one remote ∆p sensor serves a given set of primary or secondary pumps ∆p</h4>
+
+<p>
+Where more than one remote ∆p sensor serves a given set of primary or secondary pumps,
+remote ∆p setpoints for all remote sensors serving those pumps shall increase in unison.
+Note: if remote sensors have different <code>dpSet_max</code> values, then the amount
+each ∆p setpoint changes per percent loop output will differ.
+</p>
+<h4><a name="2.3.3.1compute-plant-reset-wit"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.3.1.&nbsp;</span><!--[endif]-->Compute plant reset with trim and respond logic </h4>
+<p>See <a href="#1.1block-to-inplement-trim-and" style="white-space: nowrap;">Section 1.1</a>.</p><h3><a name="2.3.4primary-chw-pumps"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.&nbsp;</span><!--[endif]-->Primary CHW pumps</h3>
+<h4><a name="2.3.4.1primary-chw-pump-stagin"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.1.&nbsp;</span><!--[endif]-->Primary CHW pump staging</h4>
+<h6><a name="2.3.4.1.1plants-with-headered-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are not controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p>
+<p>
+The number of operating primary pumps matches the number of operating
+equipment.
+</p>
+<h6><a name="2.3.4.1.1.1plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.1.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p><p>
+Primary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h6><a name="2.3.4.1.1.2plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.1.1.2.&nbsp;</span><!--[endif]-->Plants with headered secondary pumps</h6>
+
+<p>
+Secondary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead secondary pump is enabled when the plant is enabled. 
+Otherwise, the lead secondary pump is disabled.
+</p><p>
+Secondary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h5><a name="2.3.4.1.2details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.4.1.2.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>
+To simplify integration into the plant controller this block also
+serves as a pass-through for the dedicated primary pump command signal 
+that is generated in
+<a href="#2.2.1event-sequencing" style="white-space: nowrap;">Section 2.2.1</a>.
+For this purpose, the block includes the parameter <code>is_hdr</code> to
+specify whether the pumps are headered or dedicated.
+</p>
+<p>
+At its current stage of development, this block contains no
+logic for handling faulted equipment. 
+It is therefore assumed that all pumps are available at all times.
+</p>
+<h3><a name="2.3.5secondary-chw-pumps"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.&nbsp;</span><!--[endif]-->Secondary CHW pumps</h3>
+<h4><a name="2.3.5.1secondary-chw-pump-stag"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.&nbsp;</span><!--[endif]-->Secondary CHW pump staging</h4>
+<h6><a name="2.3.5.1.1plants-with-headered-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are not controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p>
+<p>
+The number of operating primary pumps matches the number of operating
+equipment.
+</p>
+<h6><a name="2.3.5.1.1.1plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p><p>
+Primary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h6><a name="2.3.5.1.1.2plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.1.2.&nbsp;</span><!--[endif]-->Plants with headered secondary pumps</h6>
+
+<p>
+Secondary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead secondary pump is enabled when the plant is enabled. 
+Otherwise, the lead secondary pump is disabled.
+</p><p>
+Secondary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h5><a name="2.3.5.1.2details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.2.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>
+To simplify integration into the plant controller this block also
+serves as a pass-through for the dedicated primary pump command signal 
+that is generated in
+<a href="#2.2.1event-sequencing" style="white-space: nowrap;">Section 2.2.1</a>.
+For this purpose, the block includes the parameter <code>is_hdr</code> to
+specify whether the pumps are headered or dedicated.
+</p>
+<p>
+At its current stage of development, this block contains no
+logic for handling faulted equipment. 
+It is therefore assumed that all pumps are available at all times.
+</p>
+<h5><a name="2.3.5.1.1sort-by-increasing-st"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.1.&nbsp;</span><!--[endif]-->Sort by increasing staging runtime</h5>
+<p>See <a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.</p><h5><a name="2.3.5.1.2stage-headered-variab"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.2.&nbsp;</span><!--[endif]-->Stage headered variable speed pumps using ∆p control</h5>
+<p>
+Pumps are staged as a function of the ratio <i>ratV_flow</i>
+of current volume flow rate <i>V_flow</i> to design volume 
+flow rate <i>V_flow_nominal</i>,
+the number of operating pumps <i>nPum_actual</i> 
+and the number of pumps that operate at design conditions
+<i>nPum</i>. 
+Pumps are assumed to be equally sized.
+</p><p>
+<i>FR = V_flow / V_flow_nominal</i>
+</p>
+<p>
+The next lag pump is enabled whenever either:
+</p>
+<ul>
+<li>Efficiency condition:
+<i>FR &gt; nPum_actual / nPum − dVOffUp</i> is true for <code>dtRun</code>&nbsp;(600&nbsp;s, adjustable); or
+</li>
+<li>Failsafe condition:
+Pump speed command &gt; <code>yUp</code>&nbsp;(0.99, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+and loop ∆p &lt; setpoint – <code>dpOff</code>&nbsp;(10000&nbsp;Pa, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+for all hardwired differential pressure sensors.
+</li>
+</ul>
+<p>The last lag pump is disabled whenever either:</p>
+<ul>
+<li>The lag pump was staged on based on the efficiency condition and 
+<i>FR &lt; (nPum_actual - 1) / nPum − dVOffDow</i> is true for <code>dtRun</code>&nbsp;(600&nbsp;s, adjustable); or
+</li>
+<li>The lag pump was staged on based on the failsafe condition, 
+pump speed command &lt; <code>yDow</code>&nbsp;(0.4, adjustable) for <code>dtRunFaiSafLowY</code>&nbsp;(600&nbsp;s, adjustable)
+and loop ∆p &gt; setpoint – <code>dpOff</code>&nbsp;(10000&nbsp;Pa, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+for all hardwired differential pressure sensors.
+</li>
+</ul>
+<p>
+If desired, the stage down flow point <code>dVOffDow</code>&nbsp;(0.03, adjustable) can be
+offset slightly below the stage up point <code>dVOffUp</code>&nbsp;(0.03, adjustable) to
+prevent cycling between pump stages in applications with highly variable loads.
+</p>
+<p>
+The timers are reset to zero when the status of a pump changes.
+This is necessary to ensure the minimum pump runtime with rapidly changing loads.
+</p>
+<h6><a name="2.3.5.1.2.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.2.1.&nbsp;</span><!--[endif]-->Details</h6>
+
+<p>The staging logic based on the efficiency condition (excluding the failsafe condition) 
+is prescribed in ASHRAE, 2021 for:</p>
+<ul>
+<li>
+headered variable speed primary pumps in primary-only chiller
+and boiler plants using differential pressure pump speed control,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller plants
+with one or more sets of secondary loop pumps serving downstream
+control valves,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary boiler
+plants with serving a secondary loop with a flow meter.
+</li>
+</ul>
+<p>
+For other plant configurations, the pumps are staged with the equipment,
+i.e., the number of pumps matches the number of chillers or boilers.
+The actual logic for generating the pump enable commands is part of the
+staging event sequencing.
+</p>
+<h6><a name="2.3.5.1.2.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.1.2.2.&nbsp;</span><!--[endif]-->References</h6>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h4><a name="2.3.5.2secondary-chw-pump-spee"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.2.&nbsp;</span><!--[endif]-->Secondary CHW pump speed control</h4>
+<p>
+For plants where a remote DP sensor(s) is hardwired to the pump controller
+(<code>have_senDpRemHar=true</code>):
+</p>
+<ul>
+<li>
+When any pump is proven on, the pump speed is controlled by a reverse acting PI loop
+maintaining the differential pressure signal at setpoint.
+All pumps receive the same speed signal.
+</li>
+<li>
+Where multiple DP sensors exist, a PI loop runs for each sensor.
+The pumps are controlled to the highest signal output of all DP sensor loops.
+</li>
+</ul>
+<p>
+For plants where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller
+(<code>have_senDpRemHar=false</code>):
+</p>
+<ul>
+<li>
+When any pump is proven on, the pump speed is controlled by a reverse acting PI
+loop maintaining the local DP signal at the DP setpoint output from the
+remote sensor control loop (see
+<a href="#2.3.5.3local-chw-dp-reset" style="white-space: nowrap;">Section 2.3.5.3</a>).
+All pumps receive the same speed signal.
+</li>
+<li>
+Where multiple remote DP sensors exist, a PI loop shall run for each sensor.
+The DP setpoint for the local DP sensor is the highest DP setpoint output
+from each of the remote loops.
+</li>
+</ul>
+<h5><a name="2.3.5.2.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.2.1.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>This logic is prescribed in ASHRAE, 2021 for:
+</p>
+<ul>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is hardwired to the plant controller,
+</li>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler
+plants where a remote DP sensor(s) is hardwired to the secondary pump controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler plants
+where a remote DP sensor is not hardwired to the secondary pump controller,
+but a local DP sensor is hardwired to the secondary pump controller.
+</li>
+</ul>
+<h5><a name="2.3.5.2.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.2.2.&nbsp;</span><!--[endif]-->References</h5>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h4><a name="2.3.5.3local-chw-dp-reset"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.3.&nbsp;</span><!--[endif]-->Local CHW DP reset</h4>
+<p>
+For plants where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+remote DP is maintained at setpoint by a reverse acting PI loop <i>running in the controller
+to which the remote sensor is wired</i>.
+</p>
+<p>
+The loop output is a DP setpoint for the local primary loop DP sensor hardwired to the
+plant controller.
+</p>
+<p>
+The local DP setpoint is reset from <code>dpLocSet_min</code>&nbsp;(34475&nbsp;Pa, adjustable) at <i>0&nbsp;%</i> loop output
+to <code>dpLocSet_max</code>&nbsp;(150000&nbsp;Pa, adjustable) at <i>100&nbsp;%</i> loop output.
+</p>
+<p>
+The minimum local differential pressure setpoint <code>dpLocSet_min</code>&nbsp;(34475&nbsp;Pa, adjustable) is
+dictated by minimum flow control in primary-only plants but has no lower
+limit in primary-secondary plants.
+In primary-only plants, the minimum setpoint needs to be high enough to drive design
+minimum flow for the largest equipment through the minimum flow bypass valve.
+</p>
+<h5><a name="2.3.5.3.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.3.1.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>This logic is prescribed in ASHRAE, 2021 for:
+</p>
+<ul>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler plants
+where a remote DP sensor is not hardwired to the secondary pump controller,
+but a local DP sensor is hardwired to the secondary pump controller.
+</li>
+</ul>
+<h5><a name="2.3.5.3.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.3.5.3.2.&nbsp;</span><!--[endif]-->References</h5>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h2><a name="2.4heating-plant"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.&nbsp;</span><!--[endif]-->Heating plant</h2>
+<h3><a name="2.4.1heating-plant-staging"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.1.&nbsp;</span><!--[endif]-->Heating plant staging</h3>
+<p>
+The plant equipment is staged in part based on required capacity, <i>Qrequired</i>, 
+relative to nominal capacity of a given stage, <i>Qstage</i>. 
+This ratio is the operative part load ratio, <i>OPLR</i>.
+</p>
+<p>
+<i>OPLR = Qrequired / Qstage</i>
+</p>
+<p>
+If both primary and secondary hot water temperatures and flow rates are available, 
+the sensors in the primary loop are used for calculating <i>Qrequired</i>. 
+If a heat recovery chiller is piped into the secondary return, the sensors in the 
+primary loop are used.
+(These conditions are implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.HeatPumps.AirToWater"><a>
+Buildings.Templates.Plants.Controls.HeatPumps.AirToWater</a></span>.)
+</p>
+<p>
+The required capacity is calculated based on return temperature, 
+active supply temperature setpoint and measured flow through the 
+associated circuit flow meter.
+</p>
+<p>
+The required capacity used in logic is a rolling average over a period
+of <code>dtMea</code>&nbsp;(300&nbsp;s, adjustable)
+of instantaneous values sampled at minimum once every <i>30</i>&nbsp;s.
+</p>
+<p>
+When a stage up or stage down transition is initiated, 
+<i>Qrequired</i> is held fixed at its last value until the longer of 
+the successful completion of the stage change 
+and the duration <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</p>
+<p>
+The nominal capacity of a given stage, <i>Qstage</i>, is calculated 
+as the sum of the design capacities of all units enabled in a given stage.
+</p>
+<p>
+Staging is executed per the conditions below subject to the following requirements.
+</p>
+<ul>
+<li>
+Each stage has a minimum runtime of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+(This condition is implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Utilities.StageIndex"><a>
+Buildings.Templates.Plants.Controls.Utilities.StageIndex</a></span>.)
+</li>
+<li>
+Timers are reset to zero at the completion of every stage change.
+</li>
+<li>
+Any unavailable stage is skipped during staging events, 
+but staging conditionals in the current stage are evaluated as per usual.
+</li>
+</ul>
+<p>
+A stage up command is triggered if any of the following is true:
+</p>
+<ul>
+<li>
+Availability condition: The equipment necessary to operate the 
+current stage is unavailable. 
+The availability condition is not subject to the minimum stage runtime requirement.
+(This condition is implemented in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Utilities.StageIndex"><a>
+Buildings.Templates.Plants.Controls.Utilities.StageIndex</a></span>.)
+</li>
+<li>
+Efficiency condition: Current stage <i>OPLR &gt; plrSta</i> for a duration of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</li>
+<li>
+Failsafe condition: see 
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.StagingRotation.FailsafeCondition"><a>
+Buildings.Templates.Plants.Controls.StagingRotation.FailsafeCondition</a></span>.
+</li>
+</ul>
+<p>
+A stage down command is triggered if both of the following are true:
+</p>
+<ul>
+<li>
+Next available lower stage <i>OPLR &lt; plrSta</i> for a duration of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</li>
+<li>
+The failsafe stage up condition is not true.
+</li>
+</ul>
+<h4><a name="2.4.1.1-details-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.1.1.&nbsp;</span><!--[endif]-->
+Details
+</h4>
+
+<p>
+A staging matrix <code>staEqu</code> is required as a parameter. 
+See the documentation of 
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.StagingRotation.EquipmentEnable"><a>
+Buildings.Templates.Plants.Controls.StagingRotation.EquipmentEnable</a></span>
+for the associated definition and requirements.
+</p>
+<p>
+An "if" condition is used to generate the stage up and down command as opposed
+to a "when" condition. This means that the command remains true as long as the
+condition is verified. This is necessary, for example, if no higher stage is
+available when a stage up command is triggered. Using a "when" condition –
+which is only valid at the point in time at which the condition becomes true –
+would prevent the plant from staging when a higher stage becomes available again.
+To avoid multiple consecutive stage changes, the block that receives the stage up
+and down command and computes the stage index must enforce a minimum stage runtime
+of <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).
+</p>
+<h3><a name="2.4.2sort-lead/lag-alternate-e"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.2.&nbsp;</span><!--[endif]-->Sort lead/lag alternate equipment by staging runtime</h3>
+<p>See <a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.</p><h3><a name="2.4.3hw-plant-reset"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.&nbsp;</span><!--[endif]-->HW plant reset</h3>
+<p>
+This logic is used in primary-only and primary-secondary systems
+serving differential pressure controlled pumps.
+</p>
+<h4><a name="2.4.3.1chw-loops-with-differen"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.1.&nbsp;</span><!--[endif]-->CHW loops with differential pressure control</h4>
+
+<p>
+The CHW supply temperature setpoint and pump differential pressure setpoint
+are reset based on the current value of the logic variable called "CHW Plant Reset"
+as shown below and described subsequently.
+</p>
+<p>
+<img alt="CHW plant reset logic diagram" src="img/Buildings_Resources_Images_Templates_Plants_Controls_Setpoints_PlantResetCHW.png">
+</p>
+<h4><a name="2.4.3.2hw-loops-with-different"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.2.&nbsp;</span><!--[endif]-->HW loops with differential pressure control</h4>
+
+<p>
+The HW supply temperature setpoint and pump differential pressure setpoint
+are reset based on the current value of the logic variable called "HW Plant Reset"
+as shown below and described subsequently.
+</p>
+<p>
+<img alt="CHW plant reset logic diagram" src="img/Buildings_Resources_Images_Templates_Plants_Controls_Setpoints_PlantResetHW.png">
+</p>
+<h4><a name="2.4.3.3generic-reset-logic-app"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.3.&nbsp;</span><!--[endif]-->Generic reset logic applicable to all plants</h4>
+
+<p>
+From <i>0&nbsp;%</i> loop output to <code>resDp_max</code>&nbsp;(0.5, adjustable) loop output, reset
+differential pressure setpoint from <code>dpSet_min</code>&nbsp;(34470&nbsp;Pa, adjustable) to <code>dpSet_max</code>.
+</p>
+<p>
+From <code>resTSup_min</code>&nbsp;(0.5, adjustable) loop output to <i>100&nbsp;%</i> loop output, reset supply
+temperature setpoint from <code>TSupSetLim</code>&nbsp;(25&nbsp;°C, adjustable) to <code>TSup_nominal</code>&nbsp;(50&nbsp;°C, adjustable).
+</p>
+<p>
+CHW/HW Plant Reset variable is reset using trim and respond logic with the following parameters:
+</p>
+<table summary="summary" border="1">
+<tbody><tr><th> Variable </th> <th> Value </th> <th> Definition </th> </tr>
+<tr><td>Device</td><td>Any pump distribution loop</td> <td>Associated device</td></tr>
+<tr><td>SP0</td><td><code>res_init</code>&nbsp;(1, adjustable)</td><td>Initial reset value</td></tr>
+<tr><td>SPmin</td><td><code>res_min</code>&nbsp;(0, adjustable)</td><td>Minimum reset value</td></tr>
+<tr><td>SPmax</td><td><code>res_max</code>&nbsp;(1, adjustable)</td><td>Maximum reset value</td></tr>
+<tr><td>Td</td><td><code>dtDel</code>&nbsp;(900&nbsp;s, adjustable)</td><td>Delay time before the reset begins</td></tr>
+<tr><td>T</td><td><code>dtRes</code>&nbsp;(300&nbsp;s, adjustable)</td><td>Time step</td></tr>
+<tr><td>I</td><td><code>nReqResIgn</code>&nbsp;(2, adjustable)</td><td>Number of ignored requests</td></tr>
+<tr><td>R</td><td><code>nReqRes</code></td><td>Number of requests</td></tr>
+<tr><td>SPtrim</td><td><code>tri</code>&nbsp;(-0.02, adjustable)</td><td>Trim amount</td></tr>
+<tr><td>SPres</td><td><code>rsp</code>&nbsp;(0.03, adjustable)</td><td>Respond amount</td></tr>
+<tr><td>SPres_max</td><td><code>rsp_max</code>&nbsp;(0.07, adjustable)</td><td>Maximum response per time interval</td></tr>
+</tbody></table>
+<p>
+The plant reset loop is enabled when the plant is enabled and disabled when the plant is disabled.
+</p>
+<p>
+When a plant stage change is initiated, the plant reset logic is disabled and
+value fixed at its last value for the longer of <code>dtHol</code>&nbsp;(900&nbsp;s, adjustable) and the time it
+takes for the plant to successfully stage.
+</p>
+<h4><a name="2.4.3.4plants-serving-more-tha"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.4.&nbsp;</span><!--[endif]-->Plants serving more than one set of differential pressure controlled pumps</h4>
+
+<p>
+A unique instance of the above reset is used for each set of differential pressure
+controlled pumps.
+</p>
+<ul>
+<li>
+Reset requests from all loads served by a set of pumps are directed to those pumps’ reset loop only.
+</li>
+<li>
+The differential pressure setpoint output from each reset is used in the ∆p control loop
+for the associated set of pumps only, i.e., the ∆p setpoint will not change
+for any other ∆p control loops.
+</li>
+</ul>
+<h4><a name="2.4.3.5plants-where-more-than-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.5.&nbsp;</span><!--[endif]-->Plants where more than one remote ∆p sensor serves a given set of primary or secondary pumps ∆p</h4>
+
+<p>
+Where more than one remote ∆p sensor serves a given set of primary or secondary pumps,
+remote ∆p setpoints for all remote sensors serving those pumps shall increase in unison.
+Note: if remote sensors have different <code>dpSet_max</code> values, then the amount
+each ∆p setpoint changes per percent loop output will differ.
+</p>
+<h4><a name="2.4.3.1compute-plant-reset-wit"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.3.1.&nbsp;</span><!--[endif]-->Compute plant reset with trim and respond logic </h4>
+<p>See <a href="#1.1block-to-inplement-trim-and" style="white-space: nowrap;">Section 1.1</a>.</p><h3><a name="2.4.4primary-hw-pumps"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.&nbsp;</span><!--[endif]-->Primary HW pumps</h3>
+<h4><a name="2.4.4.1primary-hw-pump-staging"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.1.&nbsp;</span><!--[endif]-->Primary HW pump staging</h4>
+<h6><a name="2.4.4.1.1plants-with-headered-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are not controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p>
+<p>
+The number of operating primary pumps matches the number of operating
+equipment.
+</p>
+<h6><a name="2.4.4.1.1.1plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.1.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p><p>
+Primary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h6><a name="2.4.4.1.1.2plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.1.1.2.&nbsp;</span><!--[endif]-->Plants with headered secondary pumps</h6>
+
+<p>
+Secondary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead secondary pump is enabled when the plant is enabled. 
+Otherwise, the lead secondary pump is disabled.
+</p><p>
+Secondary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h5><a name="2.4.4.1.2details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.4.1.2.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>
+To simplify integration into the plant controller this block also
+serves as a pass-through for the dedicated primary pump command signal 
+that is generated in
+<a href="#2.2.1event-sequencing" style="white-space: nowrap;">Section 2.2.1</a>.
+For this purpose, the block includes the parameter <code>is_hdr</code> to
+specify whether the pumps are headered or dedicated.
+</p>
+<p>
+At its current stage of development, this block contains no
+logic for handling faulted equipment. 
+It is therefore assumed that all pumps are available at all times.
+</p>
+<h3><a name="2.4.5secondary-hw-pumps"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.&nbsp;</span><!--[endif]-->Secondary HW pumps</h3>
+<h4><a name="2.4.5.1secondary-hw-pump-stagi"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.&nbsp;</span><!--[endif]-->Secondary HW pump staging</h4>
+<h6><a name="2.4.5.1.1plants-with-headered-"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are not controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p>
+<p>
+The number of operating primary pumps matches the number of operating
+equipment.
+</p>
+<h6><a name="2.4.5.1.1.1plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.1.1.&nbsp;</span><!--[endif]-->Plants with headered primary pumps that are controlled to maintain differential pressure or flow setpoint</h6>
+
+<p>
+Primary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead primary pump is enabled as described in
+<span style="color: grey;" id="Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered"><a>
+Buildings.Templates.Plants.Controls.Pumps.Primary.EnableLeadHeadered</a></span>.
+</p><p>
+Primary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h6><a name="2.4.5.1.1.2plants-with-headere"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.1.2.&nbsp;</span><!--[endif]-->Plants with headered secondary pumps</h6>
+
+<p>
+Secondary pumps are lead/lag alternated as described in
+<a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.
+</p>
+<p>
+The lead secondary pump is enabled when the plant is enabled. 
+Otherwise, the lead secondary pump is disabled.
+</p><p>
+Secondary pumps are staged as described in
+<a href="#2.3.5.1.2stage-headered-variab" style="white-space: nowrap;">Section 2.3.5.1.2</a>.
+</p>
+<h5><a name="2.4.5.1.2details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.2.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>
+To simplify integration into the plant controller this block also
+serves as a pass-through for the dedicated primary pump command signal 
+that is generated in
+<a href="#2.2.1event-sequencing" style="white-space: nowrap;">Section 2.2.1</a>.
+For this purpose, the block includes the parameter <code>is_hdr</code> to
+specify whether the pumps are headered or dedicated.
+</p>
+<p>
+At its current stage of development, this block contains no
+logic for handling faulted equipment. 
+It is therefore assumed that all pumps are available at all times.
+</p>
+<h5><a name="2.4.5.1.1sort-by-increasing-st"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.1.&nbsp;</span><!--[endif]-->Sort by increasing staging runtime</h5>
+<p>See <a href="#1.2sort-equipment-by-increasin" style="white-space: nowrap;">Section 1.2</a>.</p><h5><a name="2.4.5.1.2stage-headered-variab"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.2.&nbsp;</span><!--[endif]-->Stage headered variable speed pumps using ∆p control</h5>
+<p>
+Pumps are staged as a function of the ratio <i>ratV_flow</i>
+of current volume flow rate <i>V_flow</i> to design volume 
+flow rate <i>V_flow_nominal</i>,
+the number of operating pumps <i>nPum_actual</i> 
+and the number of pumps that operate at design conditions
+<i>nPum</i>. 
+Pumps are assumed to be equally sized.
+</p><p>
+<i>FR = V_flow / V_flow_nominal</i>
+</p>
+<p>
+The next lag pump is enabled whenever either:
+</p>
+<ul>
+<li>Efficiency condition:
+<i>FR &gt; nPum_actual / nPum − dVOffUp</i> is true for <code>dtRun</code>&nbsp;(600&nbsp;s, adjustable); or
+</li>
+<li>Failsafe condition:
+Pump speed command &gt; <code>yUp</code>&nbsp;(0.99, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+and loop ∆p &lt; setpoint – <code>dpOff</code>&nbsp;(10000&nbsp;Pa, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+for all hardwired differential pressure sensors.
+</li>
+</ul>
+<p>The last lag pump is disabled whenever either:</p>
+<ul>
+<li>The lag pump was staged on based on the efficiency condition and 
+<i>FR &lt; (nPum_actual - 1) / nPum − dVOffDow</i> is true for <code>dtRun</code>&nbsp;(600&nbsp;s, adjustable); or
+</li>
+<li>The lag pump was staged on based on the failsafe condition, 
+pump speed command &lt; <code>yDow</code>&nbsp;(0.4, adjustable) for <code>dtRunFaiSafLowY</code>&nbsp;(600&nbsp;s, adjustable)
+and loop ∆p &gt; setpoint – <code>dpOff</code>&nbsp;(10000&nbsp;Pa, adjustable) for <code>dtRunFaiSaf</code>&nbsp;(300&nbsp;s, adjustable)
+for all hardwired differential pressure sensors.
+</li>
+</ul>
+<p>
+If desired, the stage down flow point <code>dVOffDow</code>&nbsp;(0.03, adjustable) can be
+offset slightly below the stage up point <code>dVOffUp</code>&nbsp;(0.03, adjustable) to
+prevent cycling between pump stages in applications with highly variable loads.
+</p>
+<p>
+The timers are reset to zero when the status of a pump changes.
+This is necessary to ensure the minimum pump runtime with rapidly changing loads.
+</p>
+<h6><a name="2.4.5.1.2.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.2.1.&nbsp;</span><!--[endif]-->Details</h6>
+
+<p>The staging logic based on the efficiency condition (excluding the failsafe condition) 
+is prescribed in ASHRAE, 2021 for:</p>
+<ul>
+<li>
+headered variable speed primary pumps in primary-only chiller
+and boiler plants using differential pressure pump speed control,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller plants
+with one or more sets of secondary loop pumps serving downstream
+control valves,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary boiler
+plants with serving a secondary loop with a flow meter.
+</li>
+</ul>
+<p>
+For other plant configurations, the pumps are staged with the equipment,
+i.e., the number of pumps matches the number of chillers or boilers.
+The actual logic for generating the pump enable commands is part of the
+staging event sequencing.
+</p>
+<h6><a name="2.4.5.1.2.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.1.2.2.&nbsp;</span><!--[endif]-->References</h6>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h4><a name="2.4.5.2secondary-hw-pump-speed"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.2.&nbsp;</span><!--[endif]-->Secondary HW pump speed control</h4>
+<p>
+For plants where a remote DP sensor(s) is hardwired to the pump controller
+(<code>have_senDpRemHar=true</code>):
+</p>
+<ul>
+<li>
+When any pump is proven on, the pump speed is controlled by a reverse acting PI loop
+maintaining the differential pressure signal at setpoint.
+All pumps receive the same speed signal.
+</li>
+<li>
+Where multiple DP sensors exist, a PI loop runs for each sensor.
+The pumps are controlled to the highest signal output of all DP sensor loops.
+</li>
+</ul>
+<p>
+For plants where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller
+(<code>have_senDpRemHar=false</code>):
+</p>
+<ul>
+<li>
+When any pump is proven on, the pump speed is controlled by a reverse acting PI
+loop maintaining the local DP signal at the DP setpoint output from the
+remote sensor control loop (see
+<a href="#2.3.5.3local-chw-dp-reset" style="white-space: nowrap;">Section 2.3.5.3</a>).
+All pumps receive the same speed signal.
+</li>
+<li>
+Where multiple remote DP sensors exist, a PI loop shall run for each sensor.
+The DP setpoint for the local DP sensor is the highest DP setpoint output
+from each of the remote loops.
+</li>
+</ul>
+<h5><a name="2.4.5.2.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.2.1.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>This logic is prescribed in ASHRAE, 2021 for:
+</p>
+<ul>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is hardwired to the plant controller,
+</li>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler
+plants where a remote DP sensor(s) is hardwired to the secondary pump controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler plants
+where a remote DP sensor is not hardwired to the secondary pump controller,
+but a local DP sensor is hardwired to the secondary pump controller.
+</li>
+</ul>
+<h5><a name="2.4.5.2.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.2.2.&nbsp;</span><!--[endif]-->References</h5>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h4><a name="2.4.5.3local-hw-dp-reset"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.3.&nbsp;</span><!--[endif]-->Local HW DP reset</h4>
+<p>
+For plants where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+remote DP is maintained at setpoint by a reverse acting PI loop <i>running in the controller
+to which the remote sensor is wired</i>.
+</p>
+<p>
+The loop output is a DP setpoint for the local primary loop DP sensor hardwired to the
+plant controller.
+</p>
+<p>
+The local DP setpoint is reset from <code>dpLocSet_min</code>&nbsp;(34475&nbsp;Pa, adjustable) at <i>0&nbsp;%</i> loop output
+to <code>dpLocSet_max</code>&nbsp;(200000&nbsp;Pa, adjustable) at <i>100&nbsp;%</i> loop output.
+</p>
+<p>
+The minimum local differential pressure setpoint <code>dpLocSet_min</code>&nbsp;(34475&nbsp;Pa, adjustable) is
+dictated by minimum flow control in primary-only plants but has no lower
+limit in primary-secondary plants.
+In primary-only plants, the minimum setpoint needs to be high enough to drive design
+minimum flow for the largest equipment through the minimum flow bypass valve.
+</p>
+<h5><a name="2.4.5.3.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.3.1.&nbsp;</span><!--[endif]-->Details</h5>
+
+<p>This logic is prescribed in ASHRAE, 2021 for:
+</p>
+<ul>
+<li>
+variable speed primary pumps in primary-only chiller and boiler plants
+where the remote DP sensor(s) is not hardwired to the plant controller, but
+a local DP sensor is hardwired to the plant controller,
+</li>
+<li>
+variable speed secondary pumps in primary-secondary chiller and boiler plants
+where a remote DP sensor is not hardwired to the secondary pump controller,
+but a local DP sensor is hardwired to the secondary pump controller.
+</li>
+</ul>
+<h5><a name="2.4.5.3.2references"></a><!--[if !supportLists]--><span style="mso-list:Ignore">2.4.5.3.2.&nbsp;</span><!--[endif]-->References</h5>
+
+<ul>
+<li id="ASHRAE2021">
+ASHRAE, 2021. Guideline 36-2021, High-Performance Sequences of Operation
+for HVAC Systems. Atlanta, GA.
+</li>
+</ul>
+
+<h1><a name="3sidestream-heat-recovery-chil"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.&nbsp;</span><!--[endif]-->Sidestream heat recovery chiller</h1>
+<h2><a name="3.1compute-enable-command"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.1.&nbsp;</span><!--[endif]-->Compute enable command</h2>
+<p>
+The available CHW load <code>QChiWatReq_flow</code> is calculated based on secondary
+CHW temperature immediately upstream of the heat recovery chiller, 
+active CHW supply temperature setpoint and secondary CHW loop flow. 
+</p>
+<p>
+The available HW load <code>QHeaWatReq_flow</code> is calculated based on secondary
+HW temperature immediately upstream of the heat recovery chiller, 
+active HW supply temperature setpoint and secondary HW loop flow. 
+</p>
+<p>
+The available CHW and HW loads used in logic are rolling averages 
+over a period of <code>dtMea</code>
+of instantaneous values sampled at minimum once every <i>30</i>&nbsp;s.
+</p>
+<p>
+The heat recovery chiller is enabled when all of the following are true:
+</p>
+<ul>
+<li>CHW plant has been enabled for <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).</li>
+<li><code>QChiWatReq_flow &gt;&nbsp;capCooHrc_min</code> for <code>dtLoa</code>&nbsp;(600&nbsp;s, adjustable).</li>
+<li>HW plant has been enabled for <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).</li>
+<li><code>QHeaWatReq_flow &gt;&nbsp;capHeaHrc_min</code> for <code>dtLoa</code>&nbsp;(600&nbsp;s, adjustable).</li>
+<li>HRC has been disabled for at least <code>dtRun</code>&nbsp;(900&nbsp;s, adjustable).</li>
+</ul>
+<p>
+The heat recovery chiller is disabled when any of the following are true:
+</p>
+<ul>
+<li>CHW plant is disabled.</li>
+<li>HW plant is disabled.</li>
+<li>
+The heat recovery chiller cycles off (chiller is enabled but status changes from Run to Off) 
+under low load conditions and either <code>QChiWatReq_flow&nbsp;&lt;&nbsp;capCooHrc_min</code> 
+or <code>QHeaWatReq_flow&nbsp;&lt;&nbsp;capHeaHrc_min</code>.
+</li>
+<li>
+If the HRC is in heating mode and CHW supply temperature leaving the 
+heat recovery chiller as measured either through the chiller’s network interface 
+or immediately downstream of the chiller is <code>&lt;&nbsp;TChiWatSupSet_min&nbsp;+&nbsp;1</code> 
+for <code>dtTem1</code>&nbsp;(180&nbsp;s, adjustable) or <code>&lt;&nbsp;TChiWatSupSet_min</code> for <code>dtTem2</code>&nbsp;(60&nbsp;s, adjustable).
+</li>
+<li>
+If the HRC is in cooling mode and HW supply temperature leaving the 
+heat recovery chiller as measured either through the chiller’s network interface 
+or immediately downstream of the chiller is <code>&gt;&nbsp;THeaWatSupSet_max&nbsp;-&nbsp;1.5</code> 
+for <code>dtTem1</code>&nbsp;(180&nbsp;s, adjustable) or <code>&gt;&nbsp;THeaWatSupSet_max</code> for <code>dtTem2</code>&nbsp;(60&nbsp;s, adjustable).
+</li>
+</ul>
+<h3><a name="3.1.1pump-control"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.1.1.&nbsp;</span><!--[endif]-->Pump control</h3>
+
+<p>
+Sidestream HRC HW and CHW pumps are enabled when the heat recovery chiller is enabled.
+</p>
+<h2><a name="3.2chw-pump-control"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.2.&nbsp;</span><!--[endif]-->CHW pump control</h2>
+<p>
+The pump is disabled when the associated plant equipment is disabled and:
+</p>
+<ul>
+<li>
+if the equipment has a flow request network point
+(<code>have_req=true</code>): either the equipment has been proven 
+off for <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable) or is not requesting flow.
+</li>
+<li>
+otherwise (<code>have_req=false</code>): the equipment has been 
+proven off for <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable).
+</li>
+</ul>
+<p>
+When the flow request point is available, the default value for the pump
+disable delay <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable) is increased from <i>3</i>&nbsp;min
+to <i>10</i>&nbsp;min to ensure that flow is not cut off too soon.
+</p>
+<h3><a name="3.2.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.2.1.&nbsp;</span><!--[endif]-->Details</h3>
+
+<p>Used in Guideline 36 for disabling
+dedicated primary pumps in chiller and boiler plants.
+</p>
+<p>
+The enable signal <code>u1</code> is yielded by the staging event sequencing logic.
+</p>
+<h2><a name="3.3hw-pump-control"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.3.&nbsp;</span><!--[endif]-->HW pump control</h2>
+<p>
+The pump is disabled when the associated plant equipment is disabled and:
+</p>
+<ul>
+<li>
+if the equipment has a flow request network point
+(<code>have_req=true</code>): either the equipment has been proven 
+off for <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable) or is not requesting flow.
+</li>
+<li>
+otherwise (<code>have_req=false</code>): the equipment has been 
+proven off for <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable).
+</li>
+</ul>
+<p>
+When the flow request point is available, the default value for the pump
+disable delay <code>dtOff</code>&nbsp;(180&nbsp;s, adjustable) is increased from <i>3</i>&nbsp;min
+to <i>10</i>&nbsp;min to ensure that flow is not cut off too soon.
+</p>
+<h3><a name="3.3.1details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.3.1.&nbsp;</span><!--[endif]-->Details</h3>
+
+<p>Used in Guideline 36 for disabling
+dedicated primary pumps in chiller and boiler plants.
+</p>
+<p>
+The enable signal <code>u1</code> is yielded by the staging event sequencing logic.
+</p>
+<h2><a name="3.4set-mode"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.4.&nbsp;</span><!--[endif]-->Set mode</h2>
+<h3><a name="3.4.1mode-control"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.4.1.&nbsp;</span><!--[endif]-->Mode control</h3>
+
+<p>
+If the following equation is true prior to enabling the HRC, set the 
+control mode to heating. Otherwise, set the control mode to cooling.
+</p>
+<p>
+<code>QChiWatReq_flow &gt; QHeaWat_flow * (1 - 1 / COPHea_nominal)</code>
+</p>
+<p>
+Write mode via the chiller’s BACnet interface prior to sending the chiller 
+an enable command.
+</p>
+<h3><a name="3.4.2setpoint"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.4.2.&nbsp;</span><!--[endif]-->Setpoint</h3>
+
+<p>
+When the control mode is cooling, the active setpoint shall be 
+the CHW supply temperature setpoint.
+When the control mode is heating, the active setpoint shall be 
+the HW supply temperature setpoint.
+</p>
+<h3><a name="3.4.3details"></a><!--[if !supportLists]--><span style="mso-list:Ignore">3.4.3.&nbsp;</span><!--[endif]-->Details</h3>
+
+<p>
+The condition "prior to enabling the HRC" is evaluated in the block
+<a href="#3.1compute-enable-command" style="white-space: nowrap;">Section 3.1</a>.
+</p>
+</body></html>
