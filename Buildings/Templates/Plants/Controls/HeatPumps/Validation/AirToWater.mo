@@ -187,12 +187,14 @@ model AirToWater
     each dpLocSet_max=20E4)
     if ctl.have_heaWat
     "Local HW DP reset"
-    annotation (Placement(transformation(extent={{-40,-150},{-20,-130}})));
+    annotation (Placement(transformation(extent={{-40,-150},{-20,-130}})),
+    __cdl(Documentation(section="2.5.4.5")));
   Pumps.Generic.ResetLocalDifferentialPressure resDpChiWatLoc[1](
     each dpLocSet_max=15E4)
     if ctl.have_chiWat
     "Local CHW DP reset"
-    annotation (Placement(transformation(extent={{-40,-190},{-20,-170}})));
+    annotation (Placement(transformation(extent={{-40,-190},{-20,-170}})),
+    __cdl(Documentation(section="2.4.4.5")));
   Buildings.Controls.OBC.CDL.Reals.Sources.Sin sin1[1](
     amplitude=0.1 * ctl.dpChiWatRemSet_max,
     freqHz={3 / 8000},

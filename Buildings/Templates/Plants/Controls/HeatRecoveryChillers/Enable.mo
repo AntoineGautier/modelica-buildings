@@ -338,7 +338,7 @@ equation
     annotation (Line(points={{-88,-20},{20,-20},{20,-140},{30,-140}},color={255,0,255}));
   annotation (
     defaultComponentName="ena",
-    __cdl(Documentation(include=true, section="3.1")),
+    __cdl(Documentation(include=true, section="1")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

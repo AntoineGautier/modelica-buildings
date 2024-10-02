@@ -14,7 +14,8 @@ block Enable
     annotation (Dialog(enable=not have_inpSch));
   parameter Real TOutLck(
     final min=100,
-    final unit="K")=if typ == Buildings.Templates.Plants.Controls.Types.Application.Heating
+    final unit="K",
+    displayUnit="degC")=if typ == Buildings.Templates.Plants.Controls.Types.Application.Heating
     then 18 + 273.15 else 15 + 273.15
     "Outdoor air lockout temperature";
   parameter Real dTOutLck(

@@ -196,7 +196,7 @@ equation
       color={0,0,127}));
   annotation (
     defaultComponentName="sorRunTim",
-    __cdl(Documentation(include=true, section="1.16", unique=true)),
+    __cdl(Documentation(include=true, unique="1.16", section="1")),
     Icon(
       coordinateSystem(
         preserveAspectRatio=true,

@@ -165,7 +165,7 @@ block Controller
     "Active supply temperature setpoint"
     annotation (Placement(transformation(extent={{120,-100},{160,-60}}),
       iconTransformation(extent={{100,-20},{140,20}})));
-  Enable ena(
+  Buildings.Templates.Plants.Controls.HeatRecoveryChillers.Enable ena(
     final TChiWatSup_min=TChiWatSup_min,
     final THeaWatSup_max=THeaWatSup_max,
     final capCoo_min=capCoo_min,
@@ -263,6 +263,7 @@ equation
     Diagram(
       coordinateSystem(
         extent={{-120,-220},{120,220}})),
+    __cdl(Documentation(include=true, info="")),
     defaultComponentName="ctlHrc",
     Icon(
       coordinateSystem(

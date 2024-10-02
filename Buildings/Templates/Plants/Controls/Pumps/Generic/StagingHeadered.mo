@@ -129,12 +129,14 @@ block StagingHeadered "Generic staging logic for headered pumps"
     final yUp=yUp)
     if is_hdr and is_ctlDp
     "Stage headered variable speed pumps using ∆p control"
-    annotation (Placement(transformation(extent={{-130,-10},{-110,10}})));
+    annotation (Placement(transformation(extent={{-130,-10},{-110,10}})),
+    __cdl(Documentation(section="3")));
   StagingRotation.SortRuntime sorRunTimHdr(
     nin=nPum)
     if is_hdr
     "Sort by increasing staging runtime"
-    annotation (Placement(transformation(extent={{-10,30},{10,50}})));
+    annotation (Placement(transformation(extent={{-10,30},{10,50}})),
+    __cdl(Documentation(section="1")));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToInteger booToInt[nEqu](
     each final integerTrue=1,
     each final integerFalse=0)
@@ -194,7 +196,8 @@ block StagingHeadered "Generic staging logic for headered pumps"
     final nValIso=2 * nEqu)
     if is_pri and is_hdr
     "Enable/disable lead primary headered pump"
-    annotation (Placement(transformation(extent={{-70,-110},{-50,-90}})));
+    annotation (Placement(transformation(extent={{-70,-110},{-50,-90}})),
+    __cdl(Documentation(section="2")));
   Utilities.PlaceholderLogical phValInlIso[nEqu](each final have_inp=
         have_valInlIso, each final have_inpPh=true) if is_pri and is_hdr
     "Placeholder value if signal is not available"
@@ -223,7 +226,8 @@ block StagingHeadered "Generic staging logic for headered pumps"
     final staEqu=staPum)
     if is_hdr
     "Enable headered pumps"
-    annotation (Placement(transformation(extent={{50,-10},{70,10}})));
+    annotation (Placement(transformation(extent={{50,-10},{70,10}})),
+    __cdl(Documentation(section="2")));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput y(final unit="1")
     if is_hdr and is_ctlDp
     "Pump speed command" annotation (Placement(transformation(extent={{-200,-80},
