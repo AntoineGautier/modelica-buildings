@@ -9,14 +9,16 @@ model LaBrulatte
   parameter Modelica.Units.SI.Temperature TRet_nominal = 50 + 273.15;
   parameter Modelica.Units.SI.Temperature TPlcSup_nominal = 40 + 273.15;
   parameter Modelica.Units.SI.Temperature TPlcRet_nominal = 35 + 273.15;
-  parameter Modelica.Units.SI.HeatFlowRate QBoi_flow_nominal = 85E3;
+  parameter Modelica.Units.SI.HeatFlowRate QBoi_flow_nominal =
+    85E3 / (5160 / 3600 / 1000 * Medium.d_const) * mPri_flow_nominal
+    "Boiler capacity (scaled down from 85E3)";
   parameter Modelica.Units.SI.MassFlowRate mBoi_flow_nominal =
     QBoi_flow_nominal / (TSup_nominal - TRet_nominal) /
     Medium.cp_const
     "Boiler flow";
   parameter Modelica.Units.SI.MassFlowRate mPri_flow_nominal =
-    5160 / 3600 / 1000 * Medium.d_const
-    "Mass flow from schematics - Primary";
+    mSdf_flow_nominal + mBibMai_flow_nominal
+    "Mass flow from schematics - Primary (scaled down from 5160)";
   parameter Modelica.Units.SI.MassFlowRate mSdf_flow_nominal =
     2150 / 3600 / 1000 * Medium.d_const
     "Mass flow from schematics - SDF";
@@ -40,6 +42,7 @@ model LaBrulatte
     dpBibMai1_nominal;
   parameter Modelica.Units.SI.PressureDifference dpMai2_nominal =
     dpBibMai1_nominal;
+  parameter Real dpPerDl(final unit="Pa/m") = 700;
 
   PassiveNetworks.SingleMixing con(
     redeclare final package Medium = Medium,
@@ -126,30 +129,6 @@ model LaBrulatte
     final m_flow_nominal=mSdf_flow_nominal,
     dp_nominal=dpSdf2_nominal)
     annotation (Placement(transformation(extent={{90,-70},{110,-50}})));
-  FixedResistances.HydraulicDiameter dn40(
-    redeclare final package Medium = Medium,
-    m_flow_nominal=mPri_flow_nominal,
-    show_T=true,
-    dh=42.5E-3,
-    length=30) annotation (Placement(transformation(extent={{-20,30},{0,50}})));
-  FixedResistances.HydraulicDiameter dn40Ret(
-    redeclare final package Medium = Medium,
-    m_flow_nominal=dn40.m_flow_nominal,
-    dh=dn40.dh,
-    length=dn40.length)
-               annotation (Placement(transformation(extent={{0,10},{-20,30}})));
-  FixedResistances.HydraulicDiameter dn32(
-    redeclare final package Medium = Medium,
-    m_flow_nominal=mPri_flow_nominal - mBibMai_flow_nominal,
-    dh=36.6E-3,
-    length=20)
-    annotation (Placement(transformation(extent={{20,-70},{40,-50}})));
-  FixedResistances.HydraulicDiameter dn32Ret(
-    redeclare final package Medium = Medium,
-    m_flow_nominal=dn32.m_flow_nominal,
-    dh=dn32.dh,
-    length=dn32.length)
-    annotation (Placement(transformation(extent={{20,-90},{40,-70}})));
   Movers.Preconfigured.SpeedControlled_y pumMai2(
     redeclare final package Medium = Medium,
     addPowerToMedium=false,
@@ -174,9 +153,10 @@ model LaBrulatte
         origin={-200,-60})));
   PassiveNetworks.DualMixing conBib(
     redeclare final package Medium = Medium,
-    m1_flow_nominal=0.9*mBib_flow_nominal,
+    m1_flow_nominal=mBib_flow_nominal*(TPlcSup_nominal - TPlcRet_nominal)/(
+        TSup_nominal - TPlcRet_nominal),
     m2_flow_nominal=mBib_flow_nominal,
-    dp1_nominal=0,
+    dp1_nominal=500,
     dp2_nominal=dpBib2_nominal,
     typCtl=Buildings.Fluid.HydronicConfigurations.Types.Control.Heating)
     annotation (Placement(transformation(
@@ -197,6 +177,30 @@ model LaBrulatte
         origin={180,70})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con4(k=TPlcSup_nominal)
     annotation (Placement(transformation(extent={{-310,90},{-290,110}})));
+  DHC.Networks.Pipes.PipeAutosize pipSup(
+    redeclare final package Medium = Medium,
+    m_flow_nominal=mPri_flow_nominal,
+    dp_length_nominal=dpPerDl,
+    length=30)
+    annotation (Placement(transformation(extent={{-20,30},{0,50}})));
+  DHC.Networks.Pipes.PipeAutosize pipRet(
+    redeclare final package Medium = Medium,
+    m_flow_nominal=mPri_flow_nominal,
+    dp_length_nominal=dpPerDl,
+    length=30)
+    annotation (Placement(transformation(extent={{-20,-130},{0,-110}})));
+  DHC.Networks.Pipes.PipeAutosize pipSup1(
+    redeclare final package Medium = Medium,
+    m_flow_nominal=mPri_flow_nominal-mBibMai_flow_nominal,
+    dp_length_nominal=dpPerDl,
+    length=30)
+    annotation (Placement(transformation(extent={{20,-70},{40,-50}})));
+  DHC.Networks.Pipes.PipeAutosize pipRet1(
+    redeclare final package Medium = Medium,
+    m_flow_nominal=mPri_flow_nominal-mBibMai_flow_nominal,
+    dp_length_nominal=dpPerDl,
+    length=30)
+    annotation (Placement(transformation(extent={{20,-110},{40,-90}})));
 equation
   connect(con1.y, con.set)
     annotation (Line(points={{-288,200},{-242,200},{-242,38},{-116,38},{-116,-18}},
@@ -239,22 +243,6 @@ equation
     annotation (Line(points={{110,-60},{140,-60}}, color={0,127,255}));
   connect(intToRea.y, pumSdf2.y) annotation (Line(points={{-248,180},{40,180},{40,
           -40},{100,-40},{100,-48}}, color={0,0,127}));
-  connect(mPriSup.port_b, dn40.port_a) annotation (Line(points={{-70,0},{-60,0},
-          {-60,40},{-20,40}}, color={0,127,255}));
-  connect(dn40.port_b, subBibMai.port_a1)
-    annotation (Line(points={{0,40},{60,40},{60,36}}, color={0,127,255}));
-  connect(dn40Ret.port_b, TRet.port_a) annotation (Line(points={{-20,20},{-50,20},
-          {-50,-40},{-90,-40}}, color={0,127,255}));
-  connect(dn32.port_b, subSdf.port_a1)
-    annotation (Line(points={{40,-60},{60,-60},{60,-64}}, color={0,127,255}));
-  connect(subSdf.port_b2, dn32Ret.port_b)
-    annotation (Line(points={{60,-76},{60,-80},{40,-80}}, color={0,127,255}));
-  connect(subBibMai.port_b2, dn40Ret.port_a)
-    annotation (Line(points={{60,24},{60,20},{0,20}}, color={0,127,255}));
-  connect(dn32Ret.port_a, dn40Ret.port_a)
-    annotation (Line(points={{20,-80},{0,-80},{0,20}}, color={0,127,255}));
-  connect(dn32.port_a, dn40.port_b)
-    annotation (Line(points={{20,-60},{20,40},{0,40}}, color={0,127,255}));
   connect(intToRea.y, subBibMai.y) annotation (Line(points={{-248,180},{40,180},
           {40,54},{64,54},{64,42}}, color={0,0,127}));
   connect(intToRea.y, loaMai.u)
@@ -296,6 +284,22 @@ equation
           {184,82}}, color={255,127,0}));
   connect(intToRea.y, loaBib.u)
     annotation (Line(points={{-248,180},{188,180},{188,82}}, color={0,0,127}));
+  connect(pipSup1.port_b, subSdf.port_a1)
+    annotation (Line(points={{40,-60},{60,-60},{60,-64}}, color={0,127,255}));
+  connect(subSdf.port_b2, pipRet1.port_b)
+    annotation (Line(points={{60,-76},{40,-76},{40,-100}}, color={0,127,255}));
+  connect(pipRet1.port_a, pipRet.port_b)
+    annotation (Line(points={{20,-100},{0,-100},{0,-120}}, color={0,127,255}));
+  connect(pipSup.port_b, pipSup1.port_a) annotation (Line(points={{0,40},{10,40},
+          {10,-60},{20,-60}}, color={0,127,255}));
+  connect(pipSup.port_b, subBibMai.port_a1)
+    annotation (Line(points={{0,40},{60,40},{60,36}}, color={0,127,255}));
+  connect(mPriSup.port_b, pipSup.port_a) annotation (Line(points={{-70,0},{-60,0},
+          {-60,40},{-20,40}}, color={0,127,255}));
+  connect(subBibMai.port_b2, pipRet.port_b)
+    annotation (Line(points={{60,24},{0,24},{0,-120}}, color={0,127,255}));
+  connect(pipRet.port_a, TRet.port_a) annotation (Line(points={{-20,-120},{-60,-120},
+          {-60,-40},{-90,-40}}, color={0,127,255}));
  annotation(  experiment(
     StopTime=86400,
     Tolerance=1e-6),
