@@ -1,0 +1,127 @@
+simulateModel(
+  "Buildings.Fluid.HydronicConfigurations.Examples.LaBrulatte",
+  method="CVode",
+  stopTime=86400,
+  tolerance=1e-06,
+  resultFile="LaBrulatte");
+
+createPlot(
+  id=1,
+  position={5, 5, 400, 600},
+  y={"TSup.T", "TRet.T", "TRetBoi.T", "TSup_nominal", "TRet_nominal"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=1,
+  subPlot=2,
+  y={"boi.m_flow", "tanBoi.m_flow", "mBoi_flow_nominal", "mPri_flow_nominal"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=1,
+  subPlot=3,
+  y={"con.yVal_actual"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=2,
+  position={415, 5, 400, 600},
+  y={"loaBibMai.loa.TLiqEnt.T", "loaBibMai.loa.TLiqLvg.T"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=2,
+  subPlot=2,
+  y={"subBibMai.pum.m_flow", "pumBibMai2.m_flow", "subBibMai.tan.m_flow", "mBibMai_flow_nominal"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=2,
+  subPlot=3,
+  y={"loaBibMai.yVal_actual", "loaBibMai.yLoa_actual"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=3,
+  position={825, 5, 400, 600},
+  y={"loaSdf.loa.TLiqEnt.T", "loaSdf.loa.TLiqLvg.T"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=3,
+  subPlot=2,
+  y={"subSdf.pum.m_flow", "pumSdf2.m_flow", "subSdf.tan.m_flow", "mSdf_flow_nominal"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=3,
+  subPlot=3,
+  y={"loaSdf.yVal_actual", "loaSdf.yLoa_actual"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=4,
+  position={875, 35, 400, 600},
+  y={"tanBoi.heaPorTop.T", "tanBoi.heaPorBot.T"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=4,
+  subPlot=2,
+  y={"subBibMai.tan.heaPorTop.T", "subBibMai.tan.heaPorBot.T"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=4,
+  subPlot=3,
+  y={"subSdf.tan.heaPorTop.T", "subSdf.tan.heaPorBot.T"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
