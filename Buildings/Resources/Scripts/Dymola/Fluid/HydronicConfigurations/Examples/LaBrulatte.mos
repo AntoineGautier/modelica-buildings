@@ -8,7 +8,7 @@ simulateModel(
 createPlot(
   id=1,
   position={5, 5, 400, 600},
-  y={"TSup.T", "TRet.T", "TRetBoi.T", "TSup_nominal", "TRet_nominal"},
+  y={"TSup.T", "TRet.T", "TBoiRet.T", "TSup_nominal", "TRet_nominal"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -18,7 +18,7 @@ createPlot(
 createPlot(
   id=1,
   subPlot=2,
-  y={"boi.m_flow", "tanBoi.m_flow", "mBoi_flow_nominal", "mPri_flow_nominal"},
+  y={"boi.m_flow", "mPriSup.m_flow", "tanBoi.m_flow", "mBoi_flow_nominal", "mPri_flow_nominal"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -35,10 +35,12 @@ createPlot(
   grid=true,
   color=true
 );
+plotExpression(apply(LaBrulatte[end].QPri_flow.dH_flow/LaBrulatte[end].QBoi_flow_nominal), false, "yLoaPri", 1);
+plotExpression(apply(LaBrulatte[end].boi.Q_flow/LaBrulatte[end].QBoi_flow_nominal), false, "yLoaBoi", 1);
 createPlot(
   id=2,
-  position={415, 5, 400, 600},
-  y={"loaBibMai.loa.TLiqEnt.T", "loaBibMai.loa.TLiqLvg.T"},
+  position={415, 5, 400, 700},
+  y={"loaBib.loa.TLiqEnt.T", "loaBib.loa.TLiqLvg.T", "loaMai.loa.TLiqEnt.T", "loaMai.loa.TLiqLvg.T"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -48,7 +50,17 @@ createPlot(
 createPlot(
   id=2,
   subPlot=2,
-  y={"subBibMai.pum.m_flow", "pumBibMai2.m_flow", "subBibMai.tan.m_flow", "mBibMai_flow_nominal"},
+  y={"subBibMai.pum.m_flow", "mBibMai_flow_nominal"},
+  timeUnit="h",
+  erase=true,
+  autoscale=true,
+  grid=true,
+  color=true
+);
+createPlot(
+  id=2,
+  subPlot=2,
+  y={"conBib.pum.m_flow", "mBib_flow_nominal", "pumMai2.m_flow", "mMai_flow_nominal"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -58,7 +70,7 @@ createPlot(
 createPlot(
   id=2,
   subPlot=3,
-  y={"loaBibMai.yVal_actual", "loaBibMai.yLoa_actual"},
+  y={"loaBib.yLoa_actual", "loaMai.yLoa_actual"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -88,7 +100,7 @@ createPlot(
 createPlot(
   id=3,
   subPlot=3,
-  y={"loaSdf.yVal_actual", "loaSdf.yLoa_actual"},
+  y={"loaSdf.yLoa_actual"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -97,8 +109,8 @@ createPlot(
 );
 createPlot(
   id=4,
-  position={875, 35, 400, 600},
-  y={"tanBoi.heaPorTop.T", "tanBoi.heaPorBot.T"},
+  position={50, 50, 400, 600},
+  y={"tanBoi.heaPorVol[1].T", "tanBoi.heaPorVol[4].T"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -108,7 +120,7 @@ createPlot(
 createPlot(
   id=4,
   subPlot=2,
-  y={"subBibMai.tan.heaPorTop.T", "subBibMai.tan.heaPorBot.T"},
+  y={"subBibMai.tan.heaPorVol[1].T", "subBibMai.tan.heaPorVol[4].T"},
   timeUnit="h",
   erase=true,
   autoscale=true,
@@ -118,7 +130,7 @@ createPlot(
 createPlot(
   id=4,
   subPlot=3,
-  y={"subSdf.tan.heaPorTop.T", "subSdf.tan.heaPorBot.T"},
+  y={"subSdf.tan.heaPorVol[1].T", "subSdf.tan.heaPorVol[4].T"},
   timeUnit="h",
   erase=true,
   autoscale=true,
