@@ -6,7 +6,7 @@ model LaBrulatte
   package MediumAir = Buildings.Media.Air
     "Medium model for air";
 
-  parameter Boolean have_valSub = false
+  parameter Boolean have_valSub=false
     annotation(Evaluate=true);
   parameter Boolean have_tanSub=true
     annotation(Evaluate=true);
@@ -16,7 +16,7 @@ model LaBrulatte
   parameter Modelica.Units.SI.Temperature TPlcSup_nominal=313.15;
   parameter Modelica.Units.SI.Temperature TPlcRet_nominal=308.15;
   parameter Modelica.Units.SI.HeatFlowRate QBoi_flow_nominal =
-    85E3 / (5160 / 3600 / 1000 * Medium.d_const) * mPri_flow_nominal
+    1.1*(QSdf_flow_nominal+QMai_flow_nominal+QBib_flow_nominal)
     "Boiler capacity (scaled down from 85E3)";
   parameter Modelica.Units.SI.MassFlowRate mBoi_flow_nominal =
     QBoi_flow_nominal / (TSup_nominal - TRet_nominal) /
@@ -37,6 +37,15 @@ model LaBrulatte
   parameter Modelica.Units.SI.MassFlowRate mBib_flow_nominal =
     576 / 3600 / 1000 * Medium.d_const
     "Mass flow from schematics";
+  parameter Modelica.Units.SI.HeatFlowRate QSdf_flow_nominal =
+    mSdf_flow_nominal*Medium.cp_const*(TSup_nominal-TRet_nominal)
+    "Mass flow from schematics - SDF";
+  parameter Modelica.Units.SI.HeatFlowRate QMai_flow_nominal =
+    mMai_flow_nominal*Medium.cp_const*(TSup_nominal-TRet_nominal)
+    "Mass flow from schematics";
+  parameter Modelica.Units.SI.HeatFlowRate QBib_flow_nominal =
+    mBib_flow_nominal*Medium.cp_const*(TPlcSup_nominal-TPlcRet_nominal)
+    "Mass flow from schematics";
   parameter Modelica.Units.SI.PressureDifference dpBoi_nominal=2000;
   parameter Modelica.Units.SI.PressureDifference dpTan_nominal=1000;
   parameter Modelica.Units.SI.PressureDifference dpSdf1_nominal =
@@ -49,7 +58,7 @@ model LaBrulatte
   parameter Modelica.Units.SI.PressureDifference dpMai2_nominal =
     dpBibMai1_nominal;
   parameter Modelica.Units.SI.Velocity vPip_nominal=1.1;
-  parameter Modelica.Units.SI.Length lPip=25;
+  parameter Modelica.Units.SI.Length lPip=20;
 
   PassiveNetworks.SingleMixing con(
     redeclare final package Medium = Medium,
@@ -103,7 +112,9 @@ model LaBrulatte
     dpTer_nominal=dpSdf2_nominal/3,
     dpBal1_nominal=dpSdf2_nominal/3,
     redeclare final package MediumLiq=Medium,
-    redeclare final package MediumAir=MediumAir)
+    redeclare final package MediumAir=MediumAir,
+    TLiqEnt_nominal=TSup_nominal,
+    TLiqLvg_nominal=TRet_nominal)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={140,-70})));
@@ -379,7 +390,7 @@ equation
 Pompe sous-station avec plancher chauffant surdimensionnée : 
 charge ballon permanente :
 ex. 
-Biblio PCH	576
+Biblio PCH        576
 Biblio PCH db1 96
 </p>
 <p>

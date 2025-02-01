@@ -59,7 +59,7 @@ createPlot(
 );
 createPlot(
   id=2,
-  subPlot=2,
+  subPlot=3,
   y={"conBib.pum.m_flow", "mBib_flow_nominal", "pumMai2.m_flow", "mMai_flow_nominal"},
   timeUnit="h",
   erase=true,
@@ -69,7 +69,7 @@ createPlot(
 );
 createPlot(
   id=2,
-  subPlot=3,
+  subPlot=4,
   y={"loaBib.yLoa_actual", "loaMai.yLoa_actual"},
   timeUnit="h",
   erase=true,
@@ -100,7 +100,7 @@ createPlot(
 createPlot(
   id=3,
   subPlot=3,
-  y={"loaSdf.yLoa_actual"},
+  y={"loaSdf.yLoa_actual", "loaSdf.yVal_actual"},
   timeUnit="h",
   erase=true,
   autoscale=true,
