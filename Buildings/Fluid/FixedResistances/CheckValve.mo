@@ -27,6 +27,13 @@ model CheckValve "Check valve that avoids flow reversal"
     else 0
     "Flow coefficient of fixed resistance that may be in series with valve,
     k=m_flow/sqrt(dp), with unit=(kg.m)^(1/2).";
+
+  parameter Modelica.Units.SI.Time tau(min=0) = 1
+    "Time constant for relaxation; 0 = purely algebraic"
+    annotation(Dialog(tab="Dynamics"));
+
+  Modelica.Units.SI.MassFlowRate m_flow_relaxed(fixed=tau > 0, start=0)
+    "Regularized mass flow rate";
 protected
   parameter Real k_min=if dpFixed_nominal > Modelica.Constants.eps then
     sqrt(1 / (1 / kFixed ^ 2 + 1 /(l * Kv_SI) ^ 2)) else l * Kv_SI
@@ -36,12 +43,20 @@ protected
     "Maximum flow coefficient (valve fully open)";
   parameter Modelica.Units.SI.MassFlowRate m1_flow = 0
     "Flow rate through closed valve with zero pressure drop";
+  // Kv_SI is used instead of k_max below because dpValve_closing is for the valve only,
+  // fixed resistance excluded
   parameter Modelica.Units.SI.MassFlowRate m2_flow =
     Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp(
       dp=dpValve_closing,
-      k=k_max,
+      k=Kv_SI,
       m_flow_turbulent=m_flow_turbulent)
     "Flow rate through fully open valve exposed to dpValve_closing";
+  parameter Modelica.Units.SI.PressureDifference dp_closing =
+    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_m_flow(
+      m_flow=m2_flow,
+      k=k_max,
+      m_flow_turbulent=m_flow_turbulent)
+    "Total pressure drop across fully open valve + fixed resistance when starting to close";
   parameter Real dm1_flow_dp =
     Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der(
       dp=0,
@@ -51,27 +66,11 @@ protected
     "Derivative of closed valve flow function at dp=0";
   parameter Real dm2_flow_dp =
     Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der(
-      dp=dpValve_closing,
+      dp=dp_closing,
       k=k_max,
       m_flow_turbulent=m_flow_turbulent,
       dp_der=1)
-    "Derivative of open valve flow function at dp=dpValve_closing";
-  parameter Real d2m1_flow_dp =
-    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der2(
-      dp=0,
-      k=k_min,
-      m_flow_turbulent=m_flow_turbulent,
-      dp_der=1,
-      dp_der2=0)
-    "Second derivative of closed valve flow function at dp=0";
-  parameter Real d2m2_flow_dp =
-    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der2(
-      dp=dpValve_closing,
-      k=k_max,
-      m_flow_turbulent=m_flow_turbulent,
-      dp_der=1,
-      dp_der2=0)
-    "Second derivative of open valve flow function at dp=dpValve_closing";
+    "Derivative of open valve flow function at dp=dp_closing";
   Modelica.Units.SI.MassFlowRate m_flow_smooth
     "Smooth interpolation result between two flow regimes";
 initial equation
@@ -86,26 +85,29 @@ equation
       dp=dp,
       k=k_min,
       m_flow_turbulent=m_flow_turbulent)
-    elseif dp >= dpValve_closing then Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp(
+    elseif dp >= dp_closing then Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp(
       dp=dp,
       k=k_max,
       m_flow_turbulent=m_flow_turbulent)
-    else Buildings.Utilities.Math.Functions.quinticHermite(
+    else Buildings.Utilities.Math.Functions.cubicHermiteLinearExtrapolation(
       x=dp,
       x1=0,
-      x2=dpValve_closing,
+      x2=dp_closing,
       y1=0,
       y2=m2_flow,
       y1d=dm1_flow_dp,
-      y2d=dm2_flow_dp,
-      y1dd=d2m1_flow_dp,
-      y2dd=d2m2_flow_dp)));
+      y2d=dm2_flow_dp)));
+  if tau > Modelica.Constants.eps then
+    tau * der(m_flow_relaxed) = m_flow_smooth - m_flow_relaxed;
+  else
+    m_flow_relaxed = m_flow_smooth;
+  end if;
   if homotopyInitialization then
     m_flow=homotopy(
-      actual=m_flow_smooth,
+      actual=m_flow_relaxed,
       simplified=m_flow_nominal_pos * dp / dp_nominal_pos);
   else
-    m_flow=m_flow_smooth;
+    m_flow=m_flow_relaxed;
   end if;
   annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},
             {100,100}}), graphics={

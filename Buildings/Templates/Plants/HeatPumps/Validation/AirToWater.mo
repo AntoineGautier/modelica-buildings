@@ -39,6 +39,8 @@ model AirToWater
     final dat=datAll.pla,
     final have_chiWat=have_chiWat,
     nHp=3,
+    typDis_select1=Buildings.Templates.Plants.HeatPumps.Types.Distribution.Variable1Only,
+    typArrPumPri=Buildings.Templates.Components.Types.PumpArrangement.Headered,
     typPumHeaWatPri_select1=Buildings.Templates.Plants.HeatPumps.Types.PumpsPrimary.Constant,
     final allowFlowReversal=allowFlowReversal,
     linearized=true,

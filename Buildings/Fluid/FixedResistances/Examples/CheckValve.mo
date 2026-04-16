@@ -13,7 +13,7 @@ model CheckValve "Example model for check valve"
     redeclare package Medium = Medium,
     T=273.15 + 20,
     use_p_in=true,
-    nPorts=2)
+    nPorts=3)
     "Pressure boundary condition"
     annotation (Placement(transformation(
           extent={{-50,-10},{-30,10}})));
@@ -21,27 +21,29 @@ model CheckValve "Example model for check valve"
     redeclare package Medium = Medium,
     T=273.15 + 10,
     p(displayUnit="bar") = 500000,
-    nPorts=3)
+    nPorts=4)
     "Pressure boundary condition"
     annotation (Placement(transformation(
           extent={{50,-10},{30,10}})));
   Buildings.Fluid.FixedResistances.CheckValve checkValve(
     redeclare package Medium = Buildings.Media.Water,
     m_flow_nominal=2,
-    dpValve_nominal=3600)
-    "Check valve"
+    dpValve_nominal=3600,
+    tau=0) "Check valve"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
   Buildings.Fluid.FixedResistances.CheckValve checkValveDpFix(
     redeclare package Medium = Media.Water,
     m_flow_nominal=2,
     dpValve_nominal=3600,
-    dpFixed_nominal=1e4)
+    dpFixed_nominal=1e4,
+    tau=0)
     "Check valve with series resistance"
     annotation (Placement(transformation(extent={{-10,20},{10,40}})));
   Buildings.Fluid.FixedResistances.CheckValve checkValve_m_flow(
     redeclare package Medium = Media.Water,
     m_flow_nominal=2,
-    dpValve_nominal=3600)
+    dpValve_nominal=3600,
+    tau=0)
     "Check valve where the flow rate is prescribed"
     annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
   Sources.MassFlowSource_T bou(
@@ -57,26 +59,36 @@ model CheckValve "Example model for check valve"
     startTime=0)
     "Ramp flow rate signal"
     annotation (Placement(transformation(extent={{-90,-50},{-70,-30}})));
+  Buildings.Fluid.FixedResistances.CheckValve checkValveRel(
+    m_flow_nominal=2,
+    dpValve_nominal=3600,
+    tau=0.1,
+    redeclare package Medium = Medium) "Check valve with flow relaxation"
+    annotation (Placement(transformation(extent={{-10,50},{10,70}})));
 equation
   connect(P_dp.y, sou.p_in)
     annotation (Line(points={{-71,8},{-52,8}}, color={0,0,127}));
   connect(sou.ports[1], checkValve.port_a)
-    annotation (Line(points={{-30,2},{-20,2},{-20,0},{-10,0}},
+    annotation (Line(points={{-30,-1.33333},{-20,-1.33333},{-20,0},{-10,0}},
                                                color={0,127,255}));
   connect(checkValve.port_b, sin.ports[1])
-    annotation (Line(points={{10,0},{20,0},{20,2.66667},{30,2.66667}},
+    annotation (Line(points={{10,0},{20,0},{20,-1.5},{30,-1.5}},
                                              color={0,127,255}));
   connect(sou.ports[2], checkValveDpFix.port_a)
-    annotation (Line(points={{-30,-2},{-30,30},{-10,30}}, color={0,127,255}));
+    annotation (Line(points={{-30,0},{-30,30},{-10,30}},  color={0,127,255}));
   connect(checkValveDpFix.port_b, sin.ports[2])
-    annotation (Line(points={{10,30},{30,30},{30,-2.22045e-16}},
+    annotation (Line(points={{10,30},{30,30},{30,-0.5}},
                                                        color={0,127,255}));
   connect(bou.ports[1], checkValve_m_flow.port_a)
     annotation (Line(points={{-30,-40},{-10,-40}}, color={0,127,255}));
   connect(P_m_flow.y, bou.m_flow_in) annotation (Line(points={{-69,-40},{-64,-40},
           {-64,-32},{-52,-32}}, color={0,0,127}));
   connect(checkValve_m_flow.port_b, sin.ports[3]) annotation (Line(points={{10,-40},
-          {30,-40},{30,-2.66667}}, color={0,127,255}));
+          {30,-40},{30,0.5}},      color={0,127,255}));
+  connect(sou.ports[3], checkValveRel.port_a) annotation (Line(points={{-30,
+          1.33333},{-30,60},{-10,60}}, color={0,127,255}));
+  connect(checkValveRel.port_b, sin.ports[4]) annotation (Line(points={{10,60},
+          {30,60},{30,1.5},{30,1.5}}, color={0,127,255}));
   annotation (experiment(Tolerance=1e-06, StopTime=1),
       __Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/FixedResistances/Examples/CheckValve.mos"
         "Simulate and plot"),
