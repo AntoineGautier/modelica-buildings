@@ -319,7 +319,7 @@ model Valve
     if is_twoWay
       and chaTwo ==
         Buildings.Templates.Components.Types.ValveCharacteristicTwoWay.Table
-    "Pressure independent two-way valve"
+    "Two-way valve with table-specified characteristic"
     annotation(__ctrlFlow(enable=false),
       Placement(transformation(extent={{-10,-50},{10,-30}},
         rotation=0)));

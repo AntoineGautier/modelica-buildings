@@ -262,7 +262,7 @@ model PumpsPrimaryDedicated
       -datPumHeaWat.m_flow_nominal[i],
       -datPumChiWat.m_flow_nominal[i]} for i in 1:nHp},
     dp_nominal=fill(fill(0, 3), nHp),
-    each final energyDynamics=energyDynamics,
+    each final energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
     each final portFlowDirection_1=if allowFlowReversal
       then Modelica.Fluid.Types.PortFlowDirection.Bidirectional
       else Modelica.Fluid.Types.PortFlowDirection.Entering,
