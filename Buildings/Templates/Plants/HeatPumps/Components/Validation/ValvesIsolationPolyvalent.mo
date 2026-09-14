@@ -205,6 +205,8 @@ model ValvesIsolationPolyvalent
     have_valHpInlIso=true,
     have_valHpOutIso=true,
     have_pumChiWatDedHp=false,
+    pHeaWat_start=supHeaWat.p,
+    pChiWat_start=supChiWat.p,
     final mHeaWatUni_flow_nominal=cat(
       1,
       fill(datHpPhp.mHeaWatHp_flow_nominal, nHp),
@@ -247,6 +249,8 @@ model ValvesIsolationPolyvalent
     have_valHpInlIso=true,
     have_valPhpOutIso=true,
     have_pumChiWatDedHp=true,
+    pHeaWat_start=supHeaWat1.p,
+    pChiWat_start=supHeaWat1.p,
     final mHeaWatUni_flow_nominal=cat(
       1,
       fill(datHpPhp.mHeaWatHp_flow_nominal, nHp),

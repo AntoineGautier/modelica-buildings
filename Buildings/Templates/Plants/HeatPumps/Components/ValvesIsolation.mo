@@ -265,6 +265,20 @@ model ValvesIsolation
       group="Nominal condition",
       enable=energyDynamics <> Modelica.Fluid.Types.Dynamics.SteadyState),
       __ctrlFlow(enable=false));
+  parameter Real C(final unit="kg/Pa", final min=0) = 1E-5
+    "Hydraulic capacitance of nodes that may be isolated by closed valves"
+    annotation(Dialog(tab="Dynamics",
+      group="Nominal condition"),
+      __ctrlFlow(enable=false));
+  parameter Modelica.Units.SI.AbsolutePressure pHeaWat_start = Medium.p_default
+    "Start value of pressure at HW supply junction"
+    annotation(Dialog(tab="Initialization"),
+      __ctrlFlow(enable=false));
+  parameter Modelica.Units.SI.AbsolutePressure pChiWat_start = Medium.p_default
+    "Start value of pressure at CHW supply junction"
+    annotation(Dialog(tab="Initialization",
+      enable=have_chiWat),
+      __ctrlFlow(enable=false));
   parameter Boolean allowFlowReversal = true
     "Set to false to simplify equations, assuming, but not enforcing, no flow reversal"
     annotation(Dialog(tab="Assumptions"),
@@ -490,6 +504,21 @@ model ValvesIsolation
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=0,
       origin={-80,70})));
+  Buildings.Templates.Components.Routing.Compliance comHeaWatSup(
+    redeclare final package Medium=Medium,
+    final C=C,
+    final massDynamics=energyDynamics,
+    final p_start=pHeaWat_start)
+    "Compliance at HW supply junction"
+    annotation(Placement(transformation(extent={{-150,80},{-130,100}})));
+  Buildings.Templates.Components.Routing.Compliance comChiWatSup(
+    redeclare final package Medium=Medium,
+    final C=C,
+    final massDynamics=energyDynamics,
+    final p_start=pChiWat_start)
+    if have_chiWat
+    "Compliance at CHW supply junction"
+    annotation(Placement(transformation(extent={{-70,80},{-50,100}})));
   Fluid.Delays.DelayFirstOrder junHeaWatRet(
     redeclare final package Medium=Medium,
     final tau=tau,
@@ -678,6 +707,12 @@ equation
       color={0,127,255}));
   connect(port_bChiWat, junChiWatSup.ports[nHp + nPhp + 1])
     annotation(Line(points={{-100,200},{-100,60},{-80,60}},
+      color={0,127,255}));
+  connect(comHeaWatSup.port_a, port_bHeaWat)
+    annotation(Line(points={{-140,80},{-140,60},{-180,60},{-180,200}},
+      color={0,127,255}));
+  connect(comChiWatSup.port_a, port_bChiWat)
+    annotation(Line(points={{-60,80},{-60,60},{-100,60},{-100,200}},
       color={0,127,255}));
   connect(port_aHeaWat, junHeaWatRet.ports[nHp + nPhp + 1])
     annotation(Line(points={{100,200},{100,60},{80,60}},

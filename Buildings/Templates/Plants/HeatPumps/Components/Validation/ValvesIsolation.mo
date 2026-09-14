@@ -223,6 +223,8 @@ model ValvesIsolation
     dpHeaWatUni_nominal=fill(datHp.dpHeaWatHp_nominal, valIsoCom.nHp),
     mChiWatUni_flow_nominal=fill(datHp.mChiWatHp_flow_nominal, valIsoCom.nHp),
     final energyDynamics=energyDynamics,
+    pHeaWat_start=supHeaWat.p,
+    pChiWat_start=supChiWat.p,
     y_start=0)
     "Isolation valves - Heating and cooling system with common dedicated primary HW and CHW pumps"
     annotation(Placement(transformation(extent={{-240,220},{240,360}})));
@@ -273,6 +275,7 @@ model ValvesIsolation
     dpHeaWatUni_nominal=fill(datHp.dpHeaWatHp_nominal, valIsoCom.nHp),
     mChiWatUni_flow_nominal=fill(datHp.mChiWatHp_flow_nominal, valIsoCom.nHp),
     final energyDynamics=energyDynamics,
+    pHeaWat_start=supHeaWat1.p,
     y_start=0)
     "Isolation valves - Heating-only system with isolation valves at HP inlet"
     annotation(Placement(transformation(extent={{-240,-40},{240,100}})));
@@ -307,6 +310,8 @@ model ValvesIsolation
     have_valHpInlIso=true,
     have_valHpOutIso=false,
     have_pumChiWatDedHp=true,
+    pHeaWat_start=supHeaWat2.p,
+    pChiWat_start=supHeaWat2.p,
     final mHeaWatUni_flow_nominal=fill(datHp.mHeaWatHp_flow_nominal, valIsoCom.nHp),
     dpHeaWatUni_nominal=fill(datHp.dpHeaWatHp_nominal, valIsoCom.nHp),
     mChiWatUni_flow_nominal=fill(datHp.mChiWatHp_flow_nominal, valIsoCom.nHp),

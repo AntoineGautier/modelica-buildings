@@ -396,6 +396,10 @@ model AirToWater
     final have_valPhpInlIso=have_valPhpInlIso,
     final have_valPhpOutIso=have_valPhpOutIso,
     final have_pumChiWatDedHp=have_pumChiWatPriDedHp,
+    final pHeaWat_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325,
+    final pChiWat_start=if typ == Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+      then Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325
+      else Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325,
     final mHeaWatUni_flow_nominal=cat(
       1,
       fill(dat.hp.mHeaWatHp_flow_nominal, nHp),
