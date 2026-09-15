@@ -282,6 +282,9 @@ model ChillersToPrimaryPumps
     "CHW return from CHW distribution"
     annotation(Placement(transformation(extent={{190,-110},{210,-90}}),
       iconTransformation(extent={{190,-1310},{210,-1290}})));
+  Buildings.Templates.Components.Routing.Compliance com(
+    redeclare package Medium=MediumChiWat)
+    annotation(Placement(transformation(extent={{-10,160},{10,180}})));
 initial equation
   if typEco <> Buildings.Templates.Plants.Chillers.Types.Economizer.None then
     assert(
@@ -369,6 +372,9 @@ equation
       color={0,127,255}));
   connect(VChiWatPri_flow.port_b, TChiWatPlaRet.port_a)
     annotation(Line(points={{110,-100},{90,-100}},
+      color={0,127,255}));
+  connect(com.port_a, rouSupPar.port_aComLeg)
+    annotation(Line(points={{0,160},{0,120}},
       color={0,127,255}));
 annotation(defaultComponentName="int",
   Icon(coordinateSystem(preserveAspectRatio=false,
