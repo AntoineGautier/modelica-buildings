@@ -180,8 +180,6 @@ protected
   Buildings.Utilities.Psychrometrics.pW_X pWIn(
     final X_w=X_wAirIn,
     final p_in=pAir);
-  Buildings.Utilities.Psychrometrics.TDewPoi_pW TDewIn(
-    final p_w=pWIn.p_w);
 
   //-- Values for fuzzy logics
   Real mu_FW(final unit="1", min=0, max=1), mu_FD(unit="1",min=0, max=1)
@@ -191,7 +189,9 @@ protected
 
 equation
 
-  TAirInDewPoi=TDewIn.T;
+  TAirInDewPoi=Buildings.Utilities.Psychrometrics.Functions.TDewPoi_pW(
+    p_w=Buildings.Utilities.Math.Functions.smoothMax(
+      x1=pWIn.p_w, x2=1, deltaX=0.1));
 
   mu_FW= Buildings.Utilities.Math.Functions.spliceFunction(
     pos=0,neg=1,x=fullyWet.TSurAirIn-TAirInDewPoi,
