@@ -3,6 +3,8 @@ AirToWaterReversibleHeatRecovery
 AirToWaterReversiblePolyvalent
 UserProject
 HardCase1
+HardCase1Leakage
 HardCase1Linearized
-HardCase1WithCompliance
+HardCase1Compliance
+HardCase1ComplianceFixWarn
 Reproducer
