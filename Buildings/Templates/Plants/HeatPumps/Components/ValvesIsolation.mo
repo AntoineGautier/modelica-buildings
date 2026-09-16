@@ -6,6 +6,9 @@ model ValvesIsolation
     "Medium model"
     annotation(__ctrlFlow(enable=false));
 
+  parameter Boolean use_cpl = false
+    "Set to true to use compliance components"
+    annotation(Evaluate=true);
   final parameter Buildings.Templates.Components.Types.Valve typValHpInlIso =
     if have_valHpInlIso
     then Buildings.Templates.Components.Types.Valve.TwoWayTwoPosition
@@ -508,15 +511,14 @@ model ValvesIsolation
     redeclare final package Medium=Medium,
     final C=C,
     final massDynamics=energyDynamics,
-    final p_start=pHeaWat_start)
+    final p_start=pHeaWat_start) if use_cpl
     "Compliance at HW supply junction"
     annotation(Placement(transformation(extent={{-150,80},{-130,100}})));
   Buildings.Templates.Components.Routing.Compliance comChiWatSup(
     redeclare final package Medium=Medium,
     final C=C,
     final massDynamics=energyDynamics,
-    final p_start=pChiWat_start)
-    if have_chiWat
+    final p_start=pChiWat_start) if have_chiWat and use_cpl
     "Compliance at CHW supply junction"
     annotation(Placement(transformation(extent={{-70,80},{-50,100}})));
   Fluid.Delays.DelayFirstOrder junHeaWatRet(
@@ -651,7 +653,7 @@ equation
           color={255,204,51},
           thickness=0.5));
       connect(busValHeaWatHpOutIso[i], valHeaWatUniOutIso[i].bus)
-        annotation(Line(points={{-40,120},{-140,120},{-140,0},{-150,0}},
+        annotation(Line(points={{-40,120},{-126,120},{-126,0},{-150,0}},
           color={255,204,51},
           thickness=0.5));
       connect(busValChiWatHpOutIso[i], valChiWatUniOutIso[i].bus)
@@ -675,7 +677,7 @@ equation
           color={255,204,51},
           thickness=0.5));
       connect(busValHeaWatPhpOutIso[i], valHeaWatUniOutIso[nHp + i].bus)
-        annotation(Line(points={{-40,100},{-140,100},{-140,0},{-150,0}},
+        annotation(Line(points={{-40,100},{-126,100},{-126,0},{-150,0}},
           color={255,204,51},
           thickness=0.5));
     end for;
@@ -776,7 +778,8 @@ annotation(defaultComponentName="valIso",
   Diagram(coordinateSystem(extent={{-200,-200},{200,200}})),
   Icon(coordinateSystem(preserveAspectRatio=false,
     extent={{-2400,-700},{2400,700}}),
-    graphics={Line(points={{240,150},{0,150},{0,-50}},
+    graphics={
+              Line(points={{240,150},{0,150},{0,-50}},
       color={0,0,0},
       thickness=5,
       visible=have_chiWat and not have_pumChiWatDedHp and nHp >= 1,

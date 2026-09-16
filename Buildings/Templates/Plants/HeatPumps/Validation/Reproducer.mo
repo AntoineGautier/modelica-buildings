@@ -6,6 +6,9 @@ model Reproducer
     constrainedby Modelica.Media.Interfaces.PartialMedium
     "Main medium (common for CHW and HW)";
 
+  parameter Boolean use_cpl = false
+    "Set to true to use compliance components"
+    annotation(Evaluate=true);
   parameter Modelica.Units.SI.PressureDifference dpTer_nominal(
     displayUnit="Pa") = 3E4
     "Liquid pressure drop across terminal unit at design conditions";
@@ -148,10 +151,12 @@ model Reproducer
   Buildings.Templates.Components.Routing.Compliance com(
     redeclare package Medium=Medium,
     p_start=bou.p)
+    if use_cpl
     annotation(Placement(transformation(extent={{80,-50},{100,-30}})));
   Buildings.Templates.Components.Routing.Compliance com1(
     redeclare package Medium=Medium,
     p_start=bou.p)
+    if use_cpl
     annotation(Placement(transformation(extent={{80,-10},{100,10}})));
 equation
   connect(pumHw.port_b, cheValHw.port_a)
