@@ -32,28 +32,28 @@ model Reproducer
     m_flow_nominal=20,
     dp_nominal=loaHw.dpTer_nominal + loaHw.dpValve_nominal +
       valHw.dpFixed_nominal + valHw.dpValve_nominal)
-    annotation(Placement(transformation(extent={{10,-70},{30,-50}})));
+    annotation(Placement(transformation(extent={{10,-90},{30,-70}})));
   Fluid.FixedResistances.CheckValve cheValHw(
     redeclare package Medium=Medium,
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValChe)
-    annotation(Placement(transformation(extent={{40,-70},{60,-50}})));
+    annotation(Placement(transformation(extent={{40,-90},{60,-70}})));
   Fluid.Actuators.Valves.TwoWayLinear valHw(
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValIso,
     dpFixed_nominal=Buildings.Templates.Data.Defaults.dpHeaWatHp,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-110,-70},{-90,-50}})));
+    annotation(Placement(transformation(extent={{-110,-90},{-90,-70}})));
   Fluid.Actuators.Valves.TwoWayLinear valChw(
     final m_flow_nominal=pumChw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValIso,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-110,-30},{-90,-10}})));
+    annotation(Placement(transformation(extent={{-110,-50},{-90,-30}})));
   Fluid.FixedResistances.PressureDrop hp0dp(
     m_flow_nominal=pumHw.m_flow_nominal,
     dp_nominal=0,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-60,-70},{-40,-50}})));
+    annotation(Placement(transformation(extent={{-60,-90},{-40,-70}})));
   Fluid.Movers.Preconfigured.FlowControlled_m_flow pumChw(
     redeclare final package Medium=Medium,
     final allowFlowReversal=allowFlowReversal,
@@ -61,17 +61,17 @@ model Reproducer
     m_flow_nominal=20,
     dp_nominal=loaChw.dpTer_nominal + loaChw.dpValve_nominal +
       valChw.dpFixed_nominal + valChw.dpValve_nominal)
-    annotation(Placement(transformation(extent={{10,-30},{30,-10}})));
+    annotation(Placement(transformation(extent={{10,-50},{30,-30}})));
   Fluid.FixedResistances.CheckValve cheValChw(
     redeclare package Medium=Medium,
     final m_flow_nominal=pumChw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValChe)
-    annotation(Placement(transformation(extent={{40,-30},{60,-10}})));
+    annotation(Placement(transformation(extent={{40,-50},{60,-30}})));
   Buildings.Templates.Components.Loads.LoadTwoWayValve loaHw(
     redeclare package MediumLiq=Medium,
     typ=Buildings.Fluid.HydronicConfigurations.Types.Control.Heating,
     mLiq_flow_nominal=sum({pumHw.m_flow_nominal, pumHw1.m_flow_nominal}))
-    annotation(Placement(transformation(extent={{140,-70},{160,-50}})));
+    annotation(Placement(transformation(extent={{140,-90},{160,-70}})));
   Fluid.Movers.Preconfigured.FlowControlled_m_flow pumHw1(
     redeclare final package Medium=Medium,
     final allowFlowReversal=allowFlowReversal,
@@ -79,28 +79,28 @@ model Reproducer
     m_flow_nominal=20,
     dp_nominal=loaHw.dpTer_nominal + loaHw.dpValve_nominal +
       valHw.dpFixed_nominal + valHw.dpValve_nominal)
-    annotation(Placement(transformation(extent={{10,10},{30,30}})));
+    annotation(Placement(transformation(extent={{10,-10},{30,10}})));
   Fluid.FixedResistances.CheckValve cheValHw1(
     redeclare package Medium=Medium,
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValChe)
-    annotation(Placement(transformation(extent={{40,10},{60,30}})));
+    annotation(Placement(transformation(extent={{40,-10},{60,10}})));
   Fluid.Actuators.Valves.TwoWayLinear valHw1(
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValIso,
     dpFixed_nominal=Buildings.Templates.Data.Defaults.dpHeaWatHp,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-110,10},{-90,30}})));
+    annotation(Placement(transformation(extent={{-110,-10},{-90,10}})));
   Fluid.Actuators.Valves.TwoWayLinear valChw1(
     final m_flow_nominal=pumChw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValIso,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-110,50},{-90,70}})));
+    annotation(Placement(transformation(extent={{-110,30},{-90,50}})));
   Fluid.FixedResistances.PressureDrop hp0dp1(
     m_flow_nominal=pumHw.m_flow_nominal,
     dp_nominal=0,
     redeclare package Medium=Medium)
-    annotation(Placement(transformation(extent={{-60,10},{-40,30}})));
+    annotation(Placement(transformation(extent={{-60,-10},{-40,10}})));
   Fluid.Movers.Preconfigured.FlowControlled_m_flow pumChw1(
     redeclare final package Medium=Medium,
     final allowFlowReversal=allowFlowReversal,
@@ -108,187 +108,168 @@ model Reproducer
     m_flow_nominal=20,
     dp_nominal=loaChw.dpTer_nominal + loaChw.dpValve_nominal +
       valChw.dpFixed_nominal + valChw.dpValve_nominal)
-    annotation(Placement(transformation(extent={{10,50},{30,70}})));
+    annotation(Placement(transformation(extent={{10,30},{30,50}})));
   Fluid.FixedResistances.CheckValve cheValChw1(
     redeclare package Medium=Medium,
     final m_flow_nominal=pumChw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValChe)
-    annotation(Placement(transformation(extent={{40,50},{60,70}})));
+    annotation(Placement(transformation(extent={{40,30},{60,50}})));
   Fluid.Actuators.Valves.TwoWayLinear valHwBypMin(
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValBypMin,
     redeclare package Medium=Medium)
     annotation(Placement(transformation(extent={{-10,10},{10,-10}},
       rotation=-90,
-      origin={100,-100})));
+      origin={100,-120})));
   Buildings.Templates.Components.Loads.LoadTwoWayValve loaChw(
     redeclare package MediumLiq=Medium,
     typ=Buildings.Fluid.HydronicConfigurations.Types.Control.Cooling,
     mLiq_flow_nominal=sum({pumChw.m_flow_nominal, pumChw1.m_flow_nominal}))
-    annotation(Placement(transformation(extent={{140,-30},{160,-10}})));
-  Fluid.Actuators.Valves.TwoWayLinear valHwBypMin1(
+    annotation(Placement(transformation(extent={{140,-50},{160,-30}})));
+  Fluid.Actuators.Valves.TwoWayLinear valChwBypMin(
     final m_flow_nominal=pumHw.m_flow_nominal,
     dpValve_nominal=Buildings.Templates.Data.Defaults.dpValBypMin,
     redeclare package Medium=Medium)
     annotation(Placement(transformation(extent={{10,10},{-10,-10}},
       rotation=-90,
-      origin={100,30})));
+      origin={100,10})));
   Fluid.Sources.Boundary_pT bou(
     p=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal,
     redeclare package Medium=Medium,
     nPorts=1)
-    annotation(Placement(transformation(extent={{-10,-10},{10,10}},
+    annotation(Placement(transformation(extent={{10,-10},{-10,10}},
       rotation=90,
-      origin={-60,-100})));
+      origin={-100,-120})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Pulse one(period=1200)
-    annotation(Placement(transformation(extent={{-192,130},{-172,150}})));
+    annotation(Placement(transformation(extent={{-192,110},{-172,130}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant zer(k=0)
-    annotation(Placement(transformation(extent={{-192,90},{-172,110}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant p5(k=0.5)
-    annotation(Placement(transformation(extent={{-160,110},{-140,130}})));
-  Buildings.Controls.OBC.CDL.Logical.Sources.Constant one1(k=true)
-    annotation(Placement(transformation(extent={{-160,148},{-140,168}})));
-  Buildings.Templates.Components.Routing.Compliance com(
-    redeclare package Medium=Medium,
-    p_start=bou.p)
-    if use_cpl
-    annotation(Placement(transformation(extent={{80,-50},{100,-30}})));
-  Buildings.Templates.Components.Routing.Compliance com1(
-    redeclare package Medium=Medium,
-    p_start=bou.p)
-    if use_cpl
-    annotation(Placement(transformation(extent={{80,-10},{100,10}})));
+    annotation(Placement(transformation(extent={{-192,70},{-172,90}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant p5(k=1)
+    annotation(Placement(transformation(extent={{-160,90},{-140,110}})));
+  Buildings.Controls.OBC.CDL.Logical.Sources.Constant tru(k=true)
+    annotation (Placement(transformation(extent={{-160,130},{-140,150}})));
+  Buildings.Controls.OBC.CDL.Logical.Sources.Constant fal(k=false)
+    annotation (Placement(transformation(extent={{-130,150},{-110,170}})));
+  Buildings.Templates.Components.Routing.Compliance com(redeclare package
+      Medium = Medium, p_start=bou.p) if use_cpl
+    annotation (Placement(transformation(extent={{80,-30},{100,-10}})));
+  Buildings.Templates.Components.Routing.Compliance com1(redeclare package
+      Medium = Medium, p_start=bou.p) if use_cpl
+    annotation (Placement(transformation(extent={{80,-70},{100,-50}})));
 equation
   connect(pumHw.port_b, cheValHw.port_a)
-    annotation(Line(points={{30,-60},{40,-60}},
+    annotation(Line(points={{30,-80},{40,-80}},
       color={0,127,255}));
   connect(hp0dp.port_b, pumHw.port_a)
-    annotation(Line(points={{-40,-60},{10,-60}},
+    annotation(Line(points={{-40,-80},{10,-80}},
       color={0,127,255}));
   connect(valHw.port_b, hp0dp.port_a)
-    annotation(Line(points={{-90,-60},{-60,-60}},
+    annotation(Line(points={{-90,-80},{-60,-80}},
       color={0,127,255}));
   connect(valChw.port_b, hp0dp.port_a)
-    annotation(Line(points={{-90,-20},{-80,-20},{-80,-60},{-60,-60}},
+    annotation(Line(points={{-90,-40},{-80,-40},{-80,-80},{-60,-80}},
       color={0,127,255}));
   connect(pumChw.port_b, cheValChw.port_a)
-    annotation(Line(points={{30,-20},{40,-20}},
+    annotation(Line(points={{30,-40},{40,-40}},
       color={0,127,255}));
   connect(hp0dp.port_b, pumChw.port_a)
-    annotation(Line(points={{-40,-60},{0,-60},{0,-20},{10,-20}},
+    annotation(Line(points={{-40,-80},{0,-80},{0,-40},{10,-40}},
       color={0,127,255}));
   connect(pumHw1.port_b, cheValHw1.port_a)
-    annotation(Line(points={{30,20},{40,20}},
+    annotation(Line(points={{30,0},{40,0}},
       color={0,127,255}));
   connect(hp0dp1.port_b, pumHw1.port_a)
-    annotation(Line(points={{-40,20},{10,20}},
+    annotation(Line(points={{-40,0},{10,0}},
       color={0,127,255}));
   connect(valHw1.port_b, hp0dp1.port_a)
-    annotation(Line(points={{-90,20},{-60,20}},
+    annotation(Line(points={{-90,0},{-60,0}},
       color={0,127,255}));
   connect(valChw1.port_b, hp0dp1.port_a)
-    annotation(Line(points={{-90,60},{-80,60},{-80,20},{-60,20}},
+    annotation(Line(points={{-90,40},{-80,40},{-80,0},{-60,0}},
       color={0,127,255}));
   connect(pumChw1.port_b, cheValChw1.port_a)
-    annotation(Line(points={{30,60},{40,60}},
+    annotation(Line(points={{30,40},{40,40}},
       color={0,127,255}));
   connect(hp0dp1.port_b, pumChw1.port_a)
-    annotation(Line(points={{-40,20},{0,20},{0,60},{10,60}},
+    annotation(Line(points={{-40,0},{0,0},{0,40},{10,40}},
       color={0,127,255}));
   connect(cheValHw.port_b, valHwBypMin.port_a)
-    annotation(Line(points={{60,-60},{100,-60},{100,-90}},
+    annotation(Line(points={{60,-80},{100,-80},{100,-110}},
       color={0,127,255}));
   connect(cheValHw.port_b, loaHw.port_a)
-    annotation(Line(points={{60,-60},{140,-60}},
+    annotation(Line(points={{60,-80},{140,-80}},
       color={0,127,255}));
   connect(cheValHw1.port_b, cheValHw.port_b)
-    annotation(Line(points={{60,20},{80,20},{80,-60},{60,-60}},
+    annotation(Line(points={{60,0},{80,0},{80,-80},{60,-80}},
       color={0,127,255}));
   connect(cheValChw.port_b, loaChw.port_a)
-    annotation(Line(points={{60,-20},{140,-20}},
+    annotation(Line(points={{60,-40},{140,-40}},
       color={0,127,255}));
   connect(cheValChw1.port_b, cheValChw.port_b)
-    annotation(Line(points={{60,60},{68,60},{68,-20},{60,-20}},
+    annotation(Line(points={{60,40},{68,40},{68,-40},{60,-40}},
       color={0,127,255}));
   connect(loaChw.port_b, valChw.port_a)
     annotation(Line(
-      points={{160,-20},{180,-20},{180,80},{-140,80},{-140,-20},{-110,-20}},
+      points={{160,-40},{180,-40},{180,60},{-140,60},{-140,-40},{-110,-40}},
       color={0,127,255}));
   connect(valChw.port_a, valChw1.port_a)
-    annotation(Line(points={{-110,-20},{-140,-20},{-140,60},{-110,60}},
+    annotation(Line(points={{-110,-40},{-140,-40},{-140,40},{-110,40}},
       color={0,127,255}));
   connect(loaHw.port_b, valHw.port_a)
     annotation(Line(
-      points={{160,-60},{180,-60},{180,-140},{-150,-140},{-150,-60},{-110,-60}},
+      points={{160,-80},{180,-80},{180,-160},{-150,-160},{-150,-80},{-110,-80}},
       color={0,127,255}));
   connect(valHw.port_a, valHw1.port_a)
-    annotation(Line(points={{-110,-60},{-150,-60},{-150,20},{-110,20}},
+    annotation(Line(points={{-110,-80},{-150,-80},{-150,0},{-110,0}},
       color={0,127,255}));
   connect(valHwBypMin.port_b, valHw.port_a)
     annotation(Line(
-      points={{100,-110},{100,-140},{-150,-140},{-150,-60},{-110,-60}},
+      points={{100,-130},{100,-160},{-150,-160},{-150,-80},{-110,-80}},
       color={0,127,255}));
-  connect(cheValChw.port_b, valHwBypMin1.port_a)
-    annotation(Line(points={{60,-20},{100,-20},{100,20}},
+  connect(cheValChw.port_b,valChwBypMin. port_a)
+    annotation(Line(points={{60,-40},{100,-40},{100,0}},
       color={0,127,255}));
-  connect(valHwBypMin1.port_b, valChw.port_a)
-    annotation(Line(points={{100,40},{100,80},{-140,80},{-140,-20},{-110,-20}},
+  connect(valChwBypMin.port_b, valChw.port_a)
+    annotation(Line(points={{100,20},{100,60},{-140,60},{-140,-40},{-110,-40}},
       color={0,127,255}));
-  connect(one.y, pumChw1.m_flow_in)
-    annotation(Line(points={{-170,140},{-12,140},{-12,76},{20,76},{20,72}},
-      color={0,0,127}));
-  connect(one.y, valChw1.y)
-    annotation(Line(
-      points={{-170,140},{-124,140},{-124,76},{-100,76},{-100,72}},
-      color={0,0,127}));
-  connect(zer.y, valHwBypMin1.y)
-    annotation(Line(
-      points={{-170,100},{-20,100},{-20,40},{80,40},{80,30},{88,30}},
-      color={0,0,127}));
   connect(zer.y, valHwBypMin.y)
-    annotation(Line(points={{-170,100},{-20,100},{-20,-100},{88,-100}},
-      color={0,0,127}));
-  connect(zer.y, valHw1.y)
-    annotation(Line(
-      points={{-170,100},{-118,100},{-118,40},{-100,40},{-100,32}},
+    annotation(Line(points={{-170,80},{-20,80},{-20,-120},{88,-120}},
       color={0,0,127}));
   connect(zer.y, valChw.y)
-    annotation(Line(points={{-170,100},{-118,100},{-118,0},{-100,0},{-100,-8}},
-      color={0,0,127}));
-  connect(one.y, valHw.y)
-    annotation(Line(
-      points={{-170,140},{-124,140},{-124,-40},{-100,-40},{-100,-48}},
-      color={0,0,127}));
-  connect(one.y, pumHw.m_flow_in)
-    annotation(Line(points={{-170,140},{-12,140},{-12,-40},{20,-40},{20,-48}},
-      color={0,0,127}));
-  connect(zer.y, pumHw1.m_flow_in)
-    annotation(Line(points={{-170,100},{-20,100},{-20,40},{20,40},{20,32}},
+    annotation(Line(points={{-170,80},{-20,80},{-20,-20},{-100,-20},{-100,-28}},
       color={0,0,127}));
   connect(zer.y, pumChw.m_flow_in)
-    annotation(Line(points={{-170,100},{-20,100},{-20,0},{20,0},{20,-8}},
-      color={0,0,127}));
-  connect(p5.y, loaChw.u)
-    annotation(Line(points={{-138,120},{120,120},{120,-12},{138,-12}},
+    annotation(Line(points={{-170,80},{-20,80},{-20,-20},{20,-20},{20,-28}},
       color={0,0,127}));
   connect(p5.y, loaHw.u)
-    annotation(Line(points={{-138,120},{120,120},{120,-52},{138,-52}},
+    annotation(Line(points={{-138,100},{120,100},{120,-72},{138,-72}},
       color={0,0,127}));
-  connect(one1.y, loaChw.u1)
-    annotation(Line(points={{-138,158},{128,158},{128,-16},{138,-16}},
-      color={255,0,255}));
-  connect(one1.y, loaHw.u1)
-    annotation(Line(points={{-138,158},{128,158},{128,-56},{138,-56}},
-      color={255,0,255}));
-  connect(bou.ports[1], hp0dp.port_a)
-    annotation(Line(points={{-60,-90},{-60,-60}},
-      color={0,127,255}));
-  connect(com.port_a, cheValHw.port_b)
-    annotation(Line(points={{90,-50},{90,-60},{60,-60}},
-      color={0,127,255}));
-  connect(com1.port_a, cheValChw.port_b)
-    annotation(Line(points={{90,-10},{90,-20},{60,-20}},
-      color={0,127,255}));
+  connect(tru.y, loaHw.u1) annotation (Line(points={{-138,140},{128,140},{128,
+          -76},{138,-76}}, color={255,0,255}));
+  connect(zer.y, pumChw1.m_flow_in) annotation (Line(points={{-170,80},{-20,80},
+          {-20,66},{20,66},{20,52}}, color={0,0,127}));
+  connect(zer.y, valChw1.y) annotation (Line(points={{-170,80},{-20,80},{-20,66},
+          {-100,66},{-100,52}}, color={0,0,127}));
+  connect(fal.y, loaChw.u1) annotation (Line(points={{-108,160},{126,160},{126,
+          -36},{138,-36}}, color={255,0,255}));
+  connect(zer.y, loaChw.u) annotation (Line(points={{-170,80},{124,80},{124,-32},
+          {138,-32}}, color={0,0,127}));
+  connect(p5.y, valChwBypMin.y) annotation (Line(points={{-138,100},{80,100},{
+          80,10},{88,10}}, color={0,0,127}));
+  connect(one.y, valHw1.y) annotation (Line(points={{-170,120},{-12,120},{-12,
+          20},{-100,20},{-100,12}}, color={0,0,127}));
+  connect(one.y, pumHw1.m_flow_in) annotation (Line(points={{-170,120},{-12,120},
+          {-12,20},{20,20},{20,12}}, color={0,0,127}));
+  connect(zer.y, pumHw.m_flow_in) annotation (Line(points={{-170,80},{-20,80},{
+          -20,-60},{20,-60},{20,-68}}, color={0,0,127}));
+  connect(zer.y, valHw.y) annotation (Line(points={{-170,80},{-20,80},{-20,-60},
+          {-100,-60},{-100,-68}}, color={0,0,127}));
+  connect(bou.ports[1], valHwBypMin.port_b) annotation (Line(points={{-100,-130},
+          {-100,-160},{100,-160},{100,-130}}, color={0,127,255}));
+  connect(com.port_a, cheValChw.port_b)
+    annotation (Line(points={{90,-30},{90,-40},{60,-40}}, color={0,127,255}));
+  connect(com1.port_a, cheValHw.port_b)
+    annotation (Line(points={{90,-70},{90,-80},{60,-80}}, color={0,127,255}));
 annotation(experiment(StopTime=10000,
   Tolerance=1e-06,
   __Dymola_Algorithm="Cvode"),

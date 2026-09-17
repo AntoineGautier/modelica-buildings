@@ -5,6 +5,9 @@ model ChillersToPrimaryPumps
     constrainedby Modelica.Media.Interfaces.PartialMedium
     "CHW medium";
 
+  parameter Boolean use_cpl = false
+    "Set to true to use compliance components"
+    annotation(Evaluate=true);
   parameter Integer nChi
     "Number of chillers"
     annotation(Evaluate=true,
@@ -283,7 +286,7 @@ model ChillersToPrimaryPumps
     annotation(Placement(transformation(extent={{190,-110},{210,-90}}),
       iconTransformation(extent={{190,-1310},{210,-1290}})));
   Buildings.Templates.Components.Routing.Compliance com(
-    redeclare package Medium=MediumChiWat)
+    redeclare package Medium=MediumChiWat) if use_cpl
     annotation(Placement(transformation(extent={{-10,160},{10,180}})));
 initial equation
   if typEco <> Buildings.Templates.Plants.Chillers.Types.Economizer.None then
