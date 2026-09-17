@@ -7,4 +7,5 @@ HardCase1Leakage
 HardCase1Linearized
 HardCase1Compliance
 HardCase1ComplianceFixWarn
+HardCase1ComplianceHighC
 Reproducer
