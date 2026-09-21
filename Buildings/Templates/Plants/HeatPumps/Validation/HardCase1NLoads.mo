@@ -33,7 +33,6 @@ model HardCase1NLoads
     nHp_select=3,
     typArrPumPri_select=Buildings.Templates.Components.Types.PumpArrangement.Dedicated,
     have_pumPriDedComHp_select=false,
-    typPumPri_select=Buildings.Templates.Plants.HeatPumps.Types.PumpsPrimary.Constant,
     typDis_select1=Buildings.Templates.Plants.HeatPumps.Types.Distribution.Variable1Only,
     nPumHeaWatSec_select=2,
     nPumChiWatSec_select=2,
@@ -123,8 +122,7 @@ model HardCase1NLoads
       16, 0, 1;
       18, 0, 0.6;
       22, 0.1, 0.1;
-      24, 0, 0
-    ],
+      24, 0, 0],
     timeScale=3600)
     "Fraction of design load – Index 1 for heating, 2 for cooling"
     annotation(Placement(transformation(extent={{-180,30},{-160,50}})));

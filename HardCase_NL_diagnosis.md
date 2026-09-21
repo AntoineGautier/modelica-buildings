@@ -1,5 +1,12 @@
 # NL convergence failures in Templates
 
+TODO:
+- Mention alternatives:
+  - Leakage: sensitivity to event grid (e.g. suppressing assert blocks!), or NL scale (HardCase1NLoadsLeakage failing)
+
+
+----
+
 The analysis is based on the three plant templates from
 
 - https://github.com/lbl-srg/modelica-buildings/pull/4657: AWHP plant
@@ -295,6 +302,21 @@ Zero NL failures; 3.3 residuals and 1.0 Jacobians per call.
 | Compliance `C=1E-4` | 4.07    | 20188    | 1004     | 30992   | 1522 | 1005              | OK                   |
 
 `Leakage` raises `l` from 1e-4 to 1e-3 on the isolation and bypass valves only (the load valve keeps 1e-4): the singular column of §3a grows 100×, `R_load` is unchanged, and the run passes — consistent with the column, not the steep row, being the operative defect. Per simulated second Compliance costs ~25 % more f-evaluations than the Leakage/Linearized variants. `C = 1e-4` is not better (more rejected steps, Jacobians and convergence failures); `C = 1e-5` stays the default. The initialization improvement is real in iteration count but free in time (init CPU 0.31–0.33 s for every variant).
+
+### Cost with a distributed load — `HardCase1NLoads`, 12 terminal units per loop
+
+The table above uses one aggregated load per loop. `HardCase1NLoads` replaces it with `nLoa=12` throttled terminal units tapped off supply/return mains, remote ∆p sensed just upstream of the last unit; sizing is preserved so the design operating point is identical for any `nLoa`.
+
+| variant (`nLoa=12`)  | CPU (s) | accepted | rejected | f-evals | Jac  | NL conv. failures | Newton failures         | outcome |
+| -------------------- | ------- | -------- | -------- | ------- | ---- | ----------------- | ----------------------- | ------- |
+| baseline             | 37.7    | 16895    | 518      | 25879   | 1363 | 887               | 1 init + 12 sim         | OK      |
+| Compliance `C=1E-5`  | 32.6    | 19306    | 722      | 29191   | 1427 | 946               | 0                       | OK      |
+
+**The overhead is not bounded to the plant.** Nothing between the plant supply junction and the terminal valves carries a pressure state, so every branch takeoff adds algebraic pressure nodes to the *same* block: the torn `simulation.nonlinear[1]` goes 8 (aggregated) → 10 (`nLoa=1`) → 13 (`nLoa=4`) → 31 (`nLoa=12`), roughly two iteration variables per terminal unit, and CPU goes 3–4 s → 33–38 s. The `nLoa=12` iteration set is 5 plant unknowns (`valIso.valHeaWatUniInlIso[i].port_b.p`, `pumPri.pum*.valChe[i].dp`, …) plus 25 distribution `dp`/`m_flow` variables.
+
+**The baseline no longer fails.** All 12 `simulation.nonlinear[1]` Newton failures (cond. 5e6–1.6e14, same near-singular signature as §3a) are recovered by CVode step reduction; only initialization keeps an unrecovered `nonlinear[25]` residual. This is the event-grid luck of §1 — at `nLoa=1` the same defect kills the run at 22015.9 s, at `nLoa=12` it does not.
+
+**Compliance reverses sign at scale.** With one aggregated load it costs ~20 % CPU; at `nLoa=12` it *saves* 14 % (32.6 vs 37.7 s) despite taking more steps, more f-evaluations and more Jacobians. The gain is per-evaluation, not per-step: the compliance gives the CHW and HW supply nodes their own pressure states, which cuts the single 31-variable block into two smaller independent ones, and cost per f-evaluation drops from 1.46 to 1.12 ms (−23 %). Newton failures drop to zero. So the more components are exposed to the plant supply pressure, the more the compliance pays for itself — the `nLoa=1` penalty is the worst case, not the trend.
 
 ### Side note — would `from_dp=false` in `CheckValve.mo` help?
 

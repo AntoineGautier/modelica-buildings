@@ -10,5 +10,7 @@ HardCase1ComplianceFixWarn
 HardCase1ComplianceHighC
 HardCase1NLoads
 HardCase1NLoadsCompliance
+HardCase1NLoadsLeakage
+HardCase1NLoadsLinearized
 HardCase2
 Reproducer
