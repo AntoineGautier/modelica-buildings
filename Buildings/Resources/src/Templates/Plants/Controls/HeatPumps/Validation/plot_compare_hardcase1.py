@@ -15,11 +15,11 @@ import plotly.graph_objects as go
 from buildingspy.io.outputfile import Reader
 from plotly.subplots import make_subplots
 
-RUN_A = ("Buildings/HardCase1.mat", "Base")
+RUN_A = ("HardCase1.mat", "Base")
 RUN_B = ("HardCase1Leakage.mat", "Leakage")
 RUN_B = ("HardCase1Linearized.mat", "Linearized")
 RUN_B = ("HardCase1Compliance.mat", "Compliance")
-OUT = "AirToWaterReversibleHeatRecovery_compare.html"
+OUT = "compare.html"
 PORT = 8051
 
 K = 273.15
@@ -117,6 +117,16 @@ PANELS = [
         ("pla.valIso.valChiWatUniInlIso[2].m_flow", "valChiWatUniInlIso[2]"),
         ("pla.valIso.valChiWatUniInlIso[3].m_flow", "valChiWatUniInlIso[3]"),
     ], 0, 1),
+    ("Primary HW pump check valve flow", "kg/s", "lin", [
+        ("pla.pumPri.pumHeaWat.valChe[1].m_flow", "valChe[1]", "[1]"),
+        ("pla.pumPri.pumHeaWat.valChe[2].m_flow", "valChe[2]", "[2]"),
+        ("pla.pumPri.pumHeaWat.valChe[3].m_flow", "valChe[3]", "[3]"),
+    ], 0, 1),
+    ("Primary CHW pump check valve flow", "kg/s", "lin", [
+        ("pla.pumPri.pumChiWat.valChe[1].m_flow", "valChe[1]", "[1]"),
+        ("pla.pumPri.pumChiWat.valChe[2].m_flow", "valChe[2]", "[2]"),
+        ("pla.pumPri.pumChiWat.valChe[3].m_flow", "valChe[3]", "[3]"),
+    ], 0, 1),
     ("Heat pump flow", "kg/s", "lin", [
         ("pla.hp.hp[1].m_flow", "hp[1].m_flow"),
         ("pla.hp.hp[2].m_flow", "hp[2].m_flow"),
@@ -137,9 +147,9 @@ PANELS = [
         ("pla.bus.TChiWatPriSup", "TChiWatPriSup"),
         ("pla.bus.TChiWatPriRet", "TChiWatPriRet"),
     ], -K, 1),
-    ("Minimum flow bypass valve", "", "lin", [
-        ("pla.valChiWatMinByp.y_actual.y", "valChiWatMinByp.y_actual"),
-        ("pla.valHeaWatMinByp.y_actual.y", "valHeaWatMinByp.y_actual"),
+    ("Minimum flow bypass valve opening", "", "lin", [
+        ("pla.valChiWatMinByp.y_actual.y", "valChiWatMinByp"),
+        ("pla.valHeaWatMinByp.y_actual.y", "valHeaWatMinByp"),
     ], 0, 1),
 ]
 
