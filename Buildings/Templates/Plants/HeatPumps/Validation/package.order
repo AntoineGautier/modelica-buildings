@@ -6,6 +6,7 @@ HardCase1
 HardCase1Leakage
 HardCase1Linearized
 HardCase1Compliance
+HardCase1ComplianceCHW
 HardCase1ComplianceFixWarn
 HardCase1ComplianceHighC
 HardCase1NLoads

@@ -7,7 +7,10 @@ model ValvesIsolation
     annotation(__ctrlFlow(enable=false));
 
   parameter Boolean use_cpl = false
-    "Set to true to use compliance components"
+    "Set to true to use compliance component on CHW loop"
+    annotation(Evaluate=true);
+  parameter Boolean use_cplHw = use_cpl
+    "Set to true to use compliance component HW loop"
     annotation(Evaluate=true);
   final parameter Buildings.Templates.Components.Types.Valve typValHpInlIso =
     if have_valHpInlIso
@@ -511,16 +514,16 @@ model ValvesIsolation
     redeclare final package Medium=Medium,
     final C=C,
     final massDynamics=energyDynamics,
-    final p_start=pHeaWat_start) if use_cpl
+    final p_start=pHeaWat_start) if use_cplHw
     "Compliance at HW supply junction"
-    annotation(Placement(transformation(extent={{-150,80},{-130,100}})));
+    annotation(Placement(transformation(extent={{-170,140},{-150,160}})));
   Buildings.Templates.Components.Routing.Compliance comChiWatSup(
     redeclare final package Medium=Medium,
     final C=C,
     final massDynamics=energyDynamics,
     final p_start=pChiWat_start) if have_chiWat and use_cpl
     "Compliance at CHW supply junction"
-    annotation(Placement(transformation(extent={{-70,80},{-50,100}})));
+    annotation(Placement(transformation(extent={{-150,140},{-130,160}})));
   Fluid.Delays.DelayFirstOrder junHeaWatRet(
     redeclare final package Medium=Medium,
     final tau=tau,
@@ -711,10 +714,10 @@ equation
     annotation(Line(points={{-100,200},{-100,60},{-80,60}},
       color={0,127,255}));
   connect(comHeaWatSup.port_a, port_bHeaWat)
-    annotation(Line(points={{-140,80},{-140,60},{-180,60},{-180,200}},
+    annotation(Line(points={{-160,140},{-180,140},{-180,200}},
       color={0,127,255}));
   connect(comChiWatSup.port_a, port_bChiWat)
-    annotation(Line(points={{-60,80},{-60,60},{-100,60},{-100,200}},
+    annotation(Line(points={{-140,140},{-100,140},{-100,200}},
       color={0,127,255}));
   connect(port_aHeaWat, junHeaWatRet.ports[nHp + nPhp + 1])
     annotation(Line(points={{100,200},{100,60},{80,60}},
