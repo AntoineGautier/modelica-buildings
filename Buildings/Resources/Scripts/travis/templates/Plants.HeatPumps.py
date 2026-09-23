@@ -213,19 +213,6 @@ REMOVE_MODIF[
 
 # See docstring of `apply_experiment_modifications` function for the structure of EXPERIMENT_MODIF.
 EXPERIMENT_MODIF = {
-    'Buildings.Templates.Plants.HeatPumps.Validation.AirToWaterReversibleHeatRecovery': [
-        (
-            [
-                'typDis_select1=Buildings.Templates.Plants.HeatPumps.Types.Distribution.Variable1Only',
-                'typArrPumPri_select=Buildings.Templates.Components.Types.PumpArrangement.Headered',
-                'have_senDpHeaWatRemWir=false',
-                'typ=Buildings.Templates.Plants.Controls.Types.PlantHeatPump.ReversibleHeatRecovery',
-            ],
-            {
-                'method': 'dassl',
-            },
-        ),
-    ],
 }
 
 if __name__ == '__main__':

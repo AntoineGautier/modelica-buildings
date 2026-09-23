@@ -13,6 +13,9 @@ model AirToWater
         final yPumChiWatPriDedPhpSet=yPumChiWatPriDedPhpSet,
         final yPumChiWatPriHdrSet=yPumChiWatPriHdrSet)),
     final typHp=Buildings.Templates.Components.Types.HeatPump.AirToWater);
+  parameter Boolean use_cpl = false
+    "Set to true to use compliance component"
+    annotation(Evaluate=true);
   parameter Boolean is_dpBalYPumSetCal = false
     "Set to true to automatically size balancing valves or evaluate pump speed providing design flow"
     annotation(__ctrlFlow(enable=false),
@@ -1075,6 +1078,20 @@ model AirToWater
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=90,
       origin={0,-22})));
+  Buildings.Templates.Components.Routing.Compliance comChiWatSup(
+    redeclare final package Medium = MediumChiWat,
+    final C=1E-5,
+    final massDynamics=energyDynamics,
+    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal +
+        101325)                  if use_cpl "Compliance"
+    annotation(Placement(transformation(extent={{10,100},{30,120}})));
+  Buildings.Templates.Components.Routing.Compliance comHeaWatSup(
+    redeclare final package Medium = MediumHeaWat,
+    final C=1E-5,
+    final massDynamics=energyDynamics,
+    final p_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal +
+        101325) if use_cpl                  "Compliance"
+    annotation (Placement(transformation(extent={{10,-260},{30,-240}})));
 initial equation
   // Calculation of pump speed providing design flow
   if have_heaWat then
@@ -1644,6 +1661,10 @@ equation
   connect(pumPri.ports_aHeaWat, valIso.ports_bHeaWatPhp)
     annotation(Line(points={{-250,-50},{-250,-50}},
       color={0,127,255}));
+  connect(comChiWatSup.port_a, outPumChiWatPri.port_b)
+    annotation (Line(points={{20,100},{20,80}}, color={0,127,255}));
+  connect(comHeaWatSup.port_a, outPumHeaWatPri.port_b)
+    annotation (Line(points={{20,-260},{20,-280}}, color={0,127,255}));
 annotation(defaultComponentName="pla",
   Documentation(
     info="<html>

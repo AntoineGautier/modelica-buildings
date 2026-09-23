@@ -5,7 +5,7 @@ model HardCase2 "Validation of AWHP plant template"
   // with linearized=false: simulation SUCCEEDS on native amd64 Linux as well.
   extends Buildings.Templates.Plants.HeatPumps.Validation.AirToWaterReversibleHeatRecovery(
     pla(
-      linearized=true,
+      linearized=false,
       typ=Buildings.Templates.Plants.Controls.Types.PlantHeatPump.ReversibleHeatRecovery,
       typDis_select1=Buildings.Templates.Plants.HeatPumps.Types.Distribution.Variable1Only,
       typArrPumPri_select=Buildings.Templates.Components.Types.PumpArrangement.Headered,

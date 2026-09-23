@@ -14,4 +14,8 @@ HardCase1NLoadsCompliance
 HardCase1NLoadsLeakage
 HardCase1NLoadsLinearized
 HardCase2
+HardCase2Compliance
+HardCase2ComplianceAfterCheck
+HardCase3
+HardCase3Compliance
 Reproducer

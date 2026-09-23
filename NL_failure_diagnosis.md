@@ -1,9 +1,19 @@
 # NL convergence failures in Templates
 
 TODO:
-- Mention alternatives:
-  - Leakage: not robust solution due to sensitivity to event grid (e.g. suppressing assert blocks!), or NL scale (HardCase1NLoadsLeakage failing) or structure (Chillers.Validation.HardCase1Leakage failing) + impact of leakage flow (0.2 kg/s ) on HP inlet temperatures
-  - Linearize valve flow functions: significant impact on trajectories e.g. when primary pumps are maxed out before staging up, the loop ∆p is no more feedback controlled but rather driven by pump VS valve characteristic, which impacts load valve opening, CHW/HW requests, temperature reset, capacity requirement, HP staging
+
+Mention alternatives:
+- Leakage:
+
+  - not robust solution due to sensitivity to event grid (e.g. suppressing assert blocks!), or NL scale (HardCase1NLoadsLeakage failing) or structure (Chillers.Validation.HardCase1Leakage failing)
+  - impact of leakage flow (0.2 kg/s ) on HP inlet temperatures (0.6 K)
+
+- Linearize valve flow functions:
+
+  - impact on trajectories e.g. when primary pumps are maxed out before staging up, the loop ∆p is no more feedback controlled but rather driven by pump VS valve characteristic, which impacts load valve opening, CHW/HW requests, temperature reset, capacity requirement, HP staging
+  - may be detrimental in some cases: Buildings.Templates.Plants.HeatPumps.Validation.HardCase2
+
+
 
 
 ----
@@ -32,6 +42,8 @@ After that, two types of configuration still fail.
 
 ## 1. AWHP plant template
 
+#### State at failure
+
 ```
 Warning: Failed to solve nonlinear system using Newton solver.
   Time: 22015.93464026791
@@ -52,30 +64,53 @@ Warning: Failed to solve nonlinear system using Newton solver.
 SUNDIALS: CVODE CVode At t = 22015.9 repeated recoverable right-hand side function errors.
 ```
 
-All three HPs are in heating mode for the whole run: CHW isolation valves and CHW load valve closed, CHW pumps off.
+All three HPs are in heating mode during the whole run: CHW isolation valves and CHW load valve closed, CHW pumps off, CHW minimum flow bypass valve fully open.
 
-### NL block
+> [!warning]
+> Insert plot
 
-`simulation.nonlinear[1]` is the torn 8×8 system of the isolation/check-valve network. Its structure is fixed; which of its entries are small or large depends on which valves are open.
+### Block at cause
 
-From `dsmodel.mof` (idle-loop items flagged):
+`simulation.nonlinear[1]` is a 8×8 system of the isolation/check valve network. From `dsmodel.mof`:
 
 ```
-Iteration variables                                    Residual equations (all flow balances, kg/s)
-1  valIso.valHeaWatUniInlIso[1].port_b.p               1  junHeaWatSup.ports[1].m_flow - m_che(pumHeaWat.valChe[1].dp)
-2  pumPri.pumChiWat.valChe[3].dp             <-- idle  2  junHeaWatSup.ports[3].m_flow - m_che(pumHeaWat.valChe[3].dp)
-3  valIso.valHeaWatUniInlIso[3].port_b.p               3  pumPri.ports_bChiWat[1].m_flow + m_che(pumChiWat.valChe[1].dp)               <-- idle
-4  VHeaWat_flow.port_a.m_flow                          4  pumPri.ports_bChiWat[2].m_flow + m_che(pumChiWat.valChe[2].dp)               <-- idle
-5  pumPri.pumHeaWat.valChe[2].dp                       5  junHeaWatRet.ports[2].m_flow + m_flow_dp(valHeaWatUniInlIso[2].lin.dp, ...)
-6  valIso.port_bHeaWat.m_flow                          6  junChiWatRet.ports[2].m_flow + m_flow_dp(valChiWatUniInlIso[2].lin.dp, ...) <-- idle
-7  valIso.port_aChiWat.m_flow                <-- idle  7  junChiWatBypSup.port_3.m_flow + m_flow_dp(valChiWatMinByp.lin.dp, ...)     <-- idle
-8  port_aChiWat.m_flow                       <-- idle  8  junHeaWatBypSup.port_3.m_flow + m_flow_dp(valHeaWatMinByp.lin.dp, ...)
+Iteration variables                        Residual equations (all flow balances, kg/s)
+1  valIso.valHeaWatUniInlIso[1].port_b.p   1  junHeaWatSup.ports[1].m_flow - m_che(pumHeaWat.valChe[1].dp)
+2  pumPri.pumChiWat.valChe[3].dp           2  junHeaWatSup.ports[3].m_flow - m_che(pumHeaWat.valChe[3].dp)
+3  valIso.valHeaWatUniInlIso[3].port_b.p   3  pumPri.ports_bChiWat[1].m_flow + m_che(pumChiWat.valChe[1].dp)
+4  VHeaWat_flow.port_a.m_flow              4  pumPri.ports_bChiWat[2].m_flow + m_che(pumChiWat.valChe[2].dp)
+5  pumPri.pumHeaWat.valChe[2].dp           5  junHeaWatRet.ports[2].m_flow + m_flow_dp(valHeaWatUniInlIso[2].lin.dp, ...)
+6  valIso.port_bHeaWat.m_flow              6  junChiWatRet.ports[2].m_flow + m_flow_dp(valChiWatUniInlIso[2].lin.dp, ...)
+7  valIso.port_aChiWat.m_flow              7  junChiWatBypSup.port_3.m_flow + m_flow_dp(valChiWatMinByp.lin.dp, ...)
+8  port_aChiWat.m_flow                     8  junHeaWatBypSup.port_3.m_flow + m_flow_dp(valHeaWatMinByp.lin.dp, ...)
+
+Torn part, assignments from port_aChiWat.m_flow to residual 7:
+pipChiWat.dp := basicFlowFunction_m_flow(port_aChiWat.m_flow, 0.2267, 21.51)
+loaCoo.con.val.valEqu.dp := basicFlowFunction_m_flow(port_aChiWat.m_flow, loaCoo.con.val.valEqu.k, loaCoo.con.val.valEqu.m_flow_turbulent)
+valChiWatMinByp.lin.dp := pipChiWat.dp + loaCoo.con.val.valEqu.dp
+junChiWatBypSup.port_3.m_flow := port_aChiWat.m_flow - valIso.port_aChiWat.m_flow
+
+Torn part, assignments from pumChiWat.valChe[3].dp to residuals 1–3, through the reverse flow of check valve 3:
+pumPri.ports_bChiWat[3].m_flow := -m_che(pumChiWat.valChe[3].dp)
+junHeaWatSup.ports[1].m_flow := -(junHeaWatSup.ports[2].m_flow - (junChiWatRet.ports[3].m_flow + junHeaWatRet.ports[3].m_flow - pumPri.ports_bChiWat[3].m_flow) + port_bHeaWat.m_flow)
+junHeaWatSup.ports[3].m_flow := -(junChiWatRet.ports[3].m_flow + junHeaWatRet.ports[3].m_flow - pumPri.ports_bChiWat[3].m_flow)
+pumPri.ports_bChiWat[1].m_flow := junChiWatRet.ports[1].m_flow + junChiWatRet.ports[3].m_flow + ... - pumPri.ports_bChiWat[3].m_flow
+
+Torn part, assignments from pumChiWat.valChe[3].dp to residuals 1–4 and 6, through the isolation valve ∆p:
+valChiWatUniInlIso[2].lin.dp := pumChiWat.pum[3].dpMachine - (pipChiWat.dp + pumChiWat.valChe[3].dp + loaCoo.con.val.valEqu.dp + valHeaWatUniInlIso[2].port_b.p) + valHeaWatUniInlIso[3].port_b.p
+valChiWatUniInlIso[1|3].lin.dp := valChiWatUniInlIso[2].lin.dp + valHeaWatUniInlIso[2].port_b.p - valHeaWatUniInlIso[1|3].port_b.p
+junChiWatRet.ports[1|3].m_flow := -m_flow_dp(valChiWatUniInlIso[1|3].lin.dp, ...)
+pumChiWat.valChe[1].dp := pumChiWat.pum[1].dpMachine - (pipChiWat.dp + loaCoo.con.val.valEqu.dp + valChiWatUniInlIso[2].lin.dp + valHeaWatUniInlIso[2].port_b.p) + valHeaWatUniInlIso[1].port_b.p
+pumChiWat.valChe[2].dp := pumChiWat.pum[2].dpMachine - (pipChiWat.dp + loaCoo.con.val.valEqu.dp + valChiWatUniInlIso[2].lin.dp)
 ```
 
-With the CHW isolation valves and load valve closed and the CHW pumps off, two iteration variables are tied to the residuals only through closed elements, one defect each:
+With the CHW isolation valves and load valve closed and the CHW pumps off, two iteration variables are tied to the residuals only through closed elements one defect each:
 
-- **A. `port_aChiWat.m_flow` is the flow of the closed branch of a parallel pair.** The load valve (closed) and the minimum-flow bypass (open) are in parallel. The tearing gets their common ∆p from the inverse law of the closed load valve, `valChiWatMinByp.lin.dp ≈ R_load · port_aChiWat.m_flow` with `R_load = 0.375 · deltaM · Δp_nom / (l² · ṁ_nom) = 3.14e8 Pa/(kg/s)` (`l = 1e-4`, `ṁ_nom = 71.7`, `Δp_nom = 3e4`), and evaluates the bypass flow forward from it. Row 7 therefore sees the loop flow with gain `1 + g_byp · R_load`: 1.4e5 at a bypass ∆p of 20 kPa, 1.7e7 inside the bypass's regularization band (∆p < 14 Pa, loop flow < 4.5e-8 kg/s). The solution, a loop flow of zero, lies in that band.
-- **B. `valChe[3].dp` is determined by leak laws only.** It reaches rows 1–4 and 6 through the reverse flow of check valve 3 and through the isolation-valve ∆p's (linear in `valChe[3].dp`), which feed the leak laws of the three isolation valves and of check valves 1 and 2. Leak conductance `g = 1.40625 · l² · ṁ_nom / (deltaM · Δp_nom)`: 1.7e-7 kg/s/Pa for a reverse-biased check valve (`l = 1e-3`), 1.7e-8 for a closed isolation valve (`l = 1e-4`). Its Jacobian column is O(1e-7) against row norms of 17–1200.
+- **A. `port_aChiWat.m_flow` is the CHW loop flow = closed branch of two parallel branches.**
+  The load valve (closed) and the minimum flow bypass (open) are in parallel.
+  Tearing selects the flow through the *closed* load valve as the iteration variable (`port_aChiWat.m_flow`) and computes the parallel branch ∆p from the inverse flow function of the valve, `valChiWatMinByp.lin.dp ≈ R_load · port_aChiWat.m_flow` with `R_load = 0.375 · deltaM · Δp_nom / (l² · ṁ_nom) = 3.14e8 Pa/(kg/s)`. The flow through the open bypass valve is calculated from that ∆p.
+  Row 7 therefore sees the loop flow with gain `1 + g_byp · R_load`: 1.4e5 at a bypass ∆p of 20 kPa, 1.7e7 inside the bypass's regularization band. The solution, a loop flow of zero, lies in that band.
+- **B. `valChe[3].dp` is determined by leakage equations.** It reaches rows 1–4 and 6 through the reverse flow of check valve 3 and through the isolation valve ∆p, which feed the leak laws of the three isolation valves and of check valves 1 and 2. Leak conductance `g = 1.40625 · l² · ṁ_nom / (deltaM · Δp_nom)` = 1.7e-7 kg/s/Pa for a closed check valve (`l = 1e-3` by default), 1.7e-8 for a closed isolation valve (`l = 1e-4` by default). Its Jacobian column is O(1e-7) against row norms of 17–1200. So the residuals barely constrain `valChe[3].dp`, and the Jacobian is close to rank-deficient in that direction.
 
 ### NL log
 
@@ -97,11 +132,64 @@ Each call starts from the previous solution, so its initial residual comes from 
 
 Small residuals are recovered because a smaller CVode step shrinks them. The nine fatal calls start with the same 26 kg/s residual whatever the step size, down to 0.1 ms, so CVode gives up.
 
-**3. Defect B also blocks the recovery.** After the first step, `valChe[3].dp` stays about 2.5 kPa away from its solution, so the closed isolation valves leak into the CHW loop. With that leak, rows 6 and 7 cannot both be satisfied: the isolation-valve balance (row 6) needs a small loop flow, the bypass balance (row 7) needs none. Only moving `valChe[3].dp` back reconciles them, and Newton does not do it: in 94 % of its steps the change of `valChe[3].dp` is exactly zero. It moves the loop flow back and forth between the two values instead, until the call budget is spent. Why the solver leaves `valChe[3].dp` out is not in the log; it is consistent with its near-zero Jacobian column being treated as zero.
+**3. Defect B also blocks the recovery.** After the first step, `valChe[3].dp` stays about 2.5 kPa away from its solution, so the closed isolation valves leak into the CHW loop. With that leak, rows 6 and 7 cannot both be satisfied: the isolation-valve balance (row 6) needs a small loop flow, the bypass balance (row 7) needs none. Only moving `valChe[3].dp` back reconciles them, and Newton does not do it: in 94 % of its steps the change of `valChe[3].dp` is exactly zero. It moves the loop flow back and forth between the two values instead, until the call budget is spent.
 
 Defect A makes that back-and-forth erratic, since the slope of the bypass row changes by three orders of magnitude between the two loop flows, and it makes the printed residual look large: the 15.9 kg/s of the error message is row 7 alone. It is not what blocks: `Leakage` (below) leaves defect A intact and completes.
 
+## 2. Chiller plant template
 
+### State at failure
+
+```
+Warning: Failed to solve nonlinear system using Newton solver.
+  Time: 30820.79078302091
+  Tag: simulation.nonlinear[1]
+
+  Jacobian inverse norm estimate: 2.9724e+08
+  Condition number estimate: 5.14083e+08
+  1-norm of the residual = 227.344
+  The estimates indicate that the Jacobian is close to singular, suggesting that there is no solution.
+
+  Last value of the solution:
+    pla.pumChiWatPri.valChe[2].dp = -57435.3
+    pla.port_a.m_flow = 7.96592
+    pla.intChi.valChiWatChiBypPar.port_a.m_flow = 0.000552757
+  Last value of the residual:
+    { 208.826, -14.7577, -3.75946 }
+
+Previous problem occured when evaluating crossing function, reducing step-size
+SUNDIALS: CVODE cvRcheck3 At t = 30820.7, the rootfinding routine failed in an unrecoverable manner.
+```
+
+WSE-only operation from ~30000 s. Chiller 1 is enabled: its isolation valve opens 30600–30700, then the chiller bypass closes 30800–30821, and the run dies when `kVal` reaches the leakage limit `l·k_nom = 3.0e-4`:
+
+> [!warning]
+>
+> Plot
+
+### Block at cause
+
+`simulation.nonlinear[1]` is a 3x3 system of the chiller bypass/check valve network. From `dsmodel.mof`:
+
+```
+Iteration variables                                   Residuals
+ 1  pla.pumChiWatPri.valChe[2].dp                     1  0 = pum[2].dpMachine - (valChe[2].dp + valChiWatMinByp.lin.dp + valChiWatChiIsoPar[1].lin.dp)
+ 2  pla.port_a.m_flow                                 2  0 = intChi.ports_bSup[1].m_flow + m_che(valChe[1].dp)
+ 3  pla.intChi.valChiWatChiBypPar.port_a.m_flow       3  0 = eco.hex.port_a2.m_flow - port_a.m_flow + eco.valChiWatByp.port_a.m_flow
+
+Torn part, first assignment:
+pla.chi.valChiWatChiIsoPar[1].lin.dp := basicFlowFunction_m_flow(valChiWatChiBypPar.port_a.m_flow, valChiWatChiBypPar.lin.kVal, ...)
+```
+
+Chiller bypass valve, chiller #1 and chiller #2 are in parallel. Tearing selects the flow through the *closed* chiller bypass valve as the group's iteration variable and computes the group ∆p from the inverse flow function of the valve. The flow through the open chiller #1 isolation valve, the mininum flow bypass valve ∆p, `valChe[1].dp` and the economizer ∆p all follow forward: defect A. That assignment's slope is `R_byp = 0.375 · m_turb / kVal²`, which grows by `1/l² = 1e8` as the valve closes, from 0.08 to 7.8e6 Pa/(kg/s), and every quantity derived from the group ∆p inherits the factor:
+
+```
+∂r1/∂m_byp ≈ R_byp · (1 + R_minByp · g_iso1) = 7.8e6 · (1 + 1.5e4 · 2.1e-3) = 2.7e8      (log: J_sum row 1 = 2.1e8)
+```
+
+#### NL log
+
+The log confirms the timing: the block's condition estimate is 2e3–5e4 for the last half of the run and reaches 5e8 only in the final Jacobians as `kVal` hits its floor. A 2e-5 kg/s change in the bypass iterate moves the group ∆p by 157 Pa, the chiller #1 flow by 0.33 kg/s and `valChe[1].dp` by 5.2 kPa, walking check valve 1 across its whole 0–5000 Pa blend region (`J_sum` row 2 alternates 1.3e4 ↔ 2.4e6 between consecutive Jacobians). After row scaling all three rows are ≈ `e_{m_byp}`, hence `cond = 5e8` and Dymola's "no solution", a misreading: the system is well posed, the Jacobian is scaled by the `1/l²` of one torn assignment.
 
 ### Tested workarounds
 
@@ -111,7 +199,7 @@ Three options tested:
    - Solves the AWHP case, but not the chiller case (below).
    -
 2. Linearize the flow characteristic: setting `linearized=true` for the isolation valves.
-3. Introduce a pressure state so that the check-valve ∆p's are fixed by pressure sums instead of leak laws (defect B): using a component with hydraulic capacitance (compliance), sized to represent a typical expansion vessel (C range 1E-4 - 1E-5 kg/Pa).
+3. Introduce a pressure state so that the check valve ∆p's are fixed by pressure sums instead of leak laws (defect B): using a component with hydraulic capacitance (compliance), sized to represent a typical expansion vessel (C range 1E-4 - 1E-5 kg/Pa).
 
 
 **Why `Leakage` passes.** Raising `l` from 1e-4 to 1e-3 on the isolation and bypass valves only multiplies the `valChe[3].dp` column by 100. Defect A is untouched: the load valve keeps `l = 1e-4`, so `R_load` is unchanged, and the bypass is open, so its `l` plays no role. The run completes: in this run defect A alone does not cause a failure.
@@ -139,6 +227,16 @@ Nonlinear systems             {52, 43, 43, 3,3,3}   {45, 3, 43, 43, 3,3,3}
  simulation.nonlinear[1]    : 96022 calls, 317424 residues, 96155 Jacobians   (3.3 residuals, 1.0 Jacobian per call; 0 NL failures)
  initialization.nonlinear[1..6]: 1 call each, 2–9 residues                     (baseline: init.nonlinear[3] 1225 residues, failed)
 ```
+
+#### Why compliance is also effective for the chiller case?
+
+With `use_cpl=true` the primary pump suction pressure is a state and the group ∆p is solved by a pressure sum `bouChiWat.p − com.p` (boundary value minus a state).
+Bypass and chiller flows are evaluated forward (`m = m_flow_dp(Δp, k)`).
+The bypass flow leaves the iteration set and residual 1 is linear in `valChe[2].dp`.
+
+The simulation with the compliance component passes through the identical transition (`kVal` reaches leakage value) and completes the day with no NL solver failure.
+The Leakage variant fails.
+Steering the tearing with `__Dymola_SimulationIterationVariables` is untested.
 
 ### Cost (NL debug logging off; the debug log itself inflates CPU 15–21× and non-uniformly)
 
@@ -168,60 +266,23 @@ Per simulated second Compliance costs ~25 % more f-evaluations than Leakage/Line
 
 ---
 
-## 2. Chiller plant template
 
-### State at failure
-
-WSE-only operation from ~30000 s. Chiller 1 is enabled: its isolation valve opens 30600–30700, then the chiller bypass closes 30800–30821, and the run dies when `kVal` reaches the leakage limit `l·k_nom = 3.0e-4`:
-
-```
-                    30700      30800      30815    30819 (base)  | 30821 (Compliance)
-byp.kVal            3.023      0.2505    0.03053    0.03053      |  0.0003023  ← floor l·k_nom
-byp.m               13.4       7.42      1.63       1.65         |  0.00025
-iso1.m              0.89       6.86      12.57      12.56        | 14.23
-che2.dp            -52870    -52110    -52810     -52810         |    —        ← pump 2 off, reverse
-p_suc / com.p      351.3k     350.5k    348.4k     348.4k        | 347.6k
-```
-
-Nothing floats: the pump suction header is tied to the return header through the open chiller-1 isolation valve at 12.6 kg/s, and both ends of the closing bypass are pressurized.
-
-### Block at cause
-
-```
-Iteration variables                                   Residuals
- 1  pla.pumChiWatPri.valChe[2].dp                     1  0 = pum[2].dpMachine - (valChe[2].dp + valChiWatMinByp.lin.dp + valChiWatChiIsoPar[1].lin.dp)
- 2  pla.port_a.m_flow                                 2  0 = intChi.ports_bSup[1].m_flow + m_che(valChe[1].dp)
- 3  pla.intChi.valChiWatChiBypPar.port_a.m_flow       3  0 = eco.hex.port_a2.m_flow - port_a.m_flow + eco.valChiWatByp.port_a.m_flow
-
-Torn part, first assignment:
-pla.chi.valChiWatChiIsoPar[1].lin.dp := basicFlowFunction_m_flow(valChiWatChiBypPar.port_a.m_flow, valChiWatChiBypPar.lin.kVal, ...)
-```
-
-Bypass, chiller 1 and chiller 2 form a parallel group. Dymola picked the **flow through the closing bypass** as the group's iteration variable and computes the group ∆p by inverting the bypass law (based on the `inverse(...)` annotation). The flow through the open chiller-1 isolation valve, the min-bypass ∆p, `valChe[1].dp` and the economizer ∆p all follow forward: defect A. That assignment's slope is `R_byp = 0.375·m_turb/kVal²`, which grows by `1/l² = 1e8` as the valve closes, from 0.08 to 7.8e6 Pa/(kg/s), and every quantity derived from the group ∆p inherits the factor:
-
-```
-∂r1/∂m_byp ≈ R_byp · (1 + R_minByp · g_iso1) = 7.8e6 · (1 + 1.5e4 · 2.1e-3) = 2.7e8      (log: J_sum row 1 = 2.1e8)
-```
-
-The log confirms the timing: the block's condition estimate is 2e3–5e4 for the last half of the run and reaches 5e8 only in the final Jacobians as `kVal` hits its floor. A 2e-5 kg/s change in the bypass iterate moves the group ∆p by 157 Pa, the chiller-1 flow by 0.33 kg/s and `valChe[1].dp` by 5.2 kPa, walking check valve 1 across its whole 0–5000 Pa blend region (`J_sum` row 2 alternates 1.3e4 ↔ 2.4e6 between consecutive Jacobians). After row scaling all three rows are ≈ `e_{m_byp}`, hence `cond = 5e8` and Dymola's "no solution", a misreading: the system is well posed, the Jacobian is scaled by the `1/l²` of one torn assignment.
-
-With `use_cpl=true` the suction-header pressure is a state and the group ∆p is `bouChiWat.p − com.p`, a boundary value minus a state. Bypass and chiller flows are evaluated forward (`m = m_flow_dp(Δp, k)`), the bypass flow leaves the iteration set and residual 1 is linear in `valChe[2].dp`. The Compliance run passes through the identical transition (`kVal` reaches 3.0e-4 at 30827.5 s) and completes the day (14974 accepted steps, 331 NL convergence failures, no NL solver failure). The Leakage variant fails. Steering the tearing with `__Dymola_SimulationIterationVariables` is untested.
 
 ---
 
 ## Common cause
 
-|                                              | HP `HardCase1`                                      | Chiller `HardCase1`                               |
-| -------------------------------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| iteration variable                           | flow through the closed load valve                  | flow through the closing chiller bypass           |
-| ∆p from its inverse law                      | `R_load = 3.1e8 Pa/(kg/s)`                          | `R_byp` up to 7.8e6 Pa/(kg/s)                     |
-| open branch evaluated forward from that ∆p   | minimum-flow bypass                                 | chiller-1 isolation valve                         |
-| gain on the iteration variable (log `J_sum`) | 8.6e3 – 1.7e7 (row 7)                               | 2.1e8 (row 1)                                     |
-| amplifier over the run                       | constant: load valve closed all run                 | grows as `1/kVal²` while the bypass closes        |
-| HP-specific defect                           | B: `valChe[3].dp` tied by leak laws only            | none: nothing floats                              |
-| trigger                                      | HW-side residual at the start of a call             | bypass reaching its leakage floor                 |
-| what the compliance removes                  | defect B; the amplifier remains                     | the amplifier: bypass flow leaves the iteration set |
-| `Leakage` (`l = 1e-3`)                       | passes                                              | fails                                             |
+|                                              | HP `HardCase1`                           | Chiller `HardCase1`                                 |
+| -------------------------------------------- | ---------------------------------------- | --------------------------------------------------- |
+| iteration variable                           | flow through the closed load valve       | flow through the closing chiller bypass             |
+| ∆p from its inverse law                      | `R_load = 3.1e8 Pa/(kg/s)`               | `R_byp` up to 7.8e6 Pa/(kg/s)                       |
+| open branch evaluated forward from that ∆p   | minimum-flow bypass                      | chiller #1 isolation valve                          |
+| gain on the iteration variable (log `J_sum`) | 8.6e3 – 1.7e7 (row 7)                    | 2.1e8 (row 1)                                       |
+| amplifier over the run                       | constant: load valve closed all run      | grows as `1/kVal²` while the bypass closes          |
+| HP-specific defect                           | B: `valChe[3].dp` tied by leak laws only | none: nothing floats                                |
+| trigger                                      | HW-side residual at the start of a call  | bypass reaching its leakage floor                   |
+| what the compliance removes                  | defect B; the amplifier remains          | the amplifier: bypass flow leaves the iteration set |
+| `Leakage` (`l = 1e-3`)                       | passes                                   | fails                                               |
 
 ## Summary
 
@@ -231,8 +292,22 @@ Both failures share one cause, defect A: the tearing takes the flow through the 
 - **HP plant.** Defect A alone does not fail this run; defect B does. With all units in heating, `valChe[3].dp` is tied to the rest of the block by leak laws only. An HW-side residual at the start of a call becomes a kPa error on it, Newton never moves it back, and the isolation-valve and bypass balances are left asking for different loop flows. Removing defect B is enough: `Leakage` passes, and the CHW supply compliance converges in about 3 residual evaluations per call. Defect A remains, and `HardCase1ComplianceCHW` shows it can still stall on its own.
 
 
-## Appendix 1. Is the HW compliance needed? `HardCase1ComplianceCHW`, `use_cpl=true, use_cplHw=false`
+## Appendix 1. When to use compliance?
 
-Only the CHW loop can lose its pressure reference, so in principle the HW compliance is redundant. It is not: besides adding a state it **splits the block**. With both, the HW loop is its own 1×1 system (`0 = loaHea.val.dp − comHeaWatSup.p + pipHeaWat.dp + bouHeaWat.p`) and block 1 holds 8 CHW/check-valve unknowns; with CHW only, the HW supply pressure is rebuilt algebraically and the HW loop flow and min-bypass row join block 1 (9 unknowns). The run still completes (58.5 s, faster than either), but three Newton failures survive: `initialization.nonlinear[3]` (772 residues, rescued by global homotopy; 2 residues with both) and two at t = 19172.6 / 19174.3, the start of HW pump 1.
+Use it when at least one of these shows up in `dsmodel.mof`:
+- A pressure is set only by leak laws (defect B), and the block also contains something that moves on its own. The typical case is a CHW and HW loop sharing the same HP units behind isolation valves (HardCase1). Look for an iteration variable, such as a check-valve or isolation-valve ∆p, that enters the residuals only through leak laws, i.e. a Jacobian column of order 1e-7 to 1e-8.
+- Tearing gets a group ∆p from the inverse law of a valve that closes during the run (defect A). The chiller bypass is the example. The compliance must sit where it turns that ∆p into “boundary minus state”, e.g. at the pump suction.
+- A large distributed network where the pressure state splits the block. In NLoads it cut a 31-unknown block into two and lowered total CPU despite more steps.
+
+> [!warning]
+> Compliance must sit downstream of the pump check valves, which means at a location depending on whether primary pumps are dedicated or headered!
+
+Don’t use it when:
+- The loop is hydraulically separate from the others, has its own pressure boundary on a path that stays open, and its block has no HW/CHW coupling. HardCase3 and other 4-pipe or standalone loops are this case.
+- A quick check: if enabling compliance leaves the block’s size and iteration variables unchanged and removes no leak-law-only unknown, all it adds is a stiff state (τ = C/g, about 10 ms with flow) feeding the block.
+
+## Appendix 2. Is the HW compliance needed? `HardCase1ComplianceCHW`, `use_cpl=true, use_cplHw=false`
+
+Only the CHW loop can lose its pressure reference, so in principle the HW compliance is redundant. It is not: besides adding a state it **splits the block**. With both, the HW loop is its own 1×1 system (`0 = loaHea.val.dp − comHeaWatSup.p + pipHeaWat.dp + bouHeaWat.p`) and block 1 holds 8 CHW/check valve unknowns; with CHW only, the HW supply pressure is rebuilt algebraically and the HW loop flow and min-bypass row join block 1 (9 unknowns). The run still completes (58.5 s, faster than either), but three Newton failures survive: `initialization.nonlinear[3]` (772 residues, rescued by global homotopy; 2 residues with both) and two at t = 19172.6 / 19174.3, the start of HW pump 1.
 
 These two failures are defect A on its own. There the CHW side is dead (all pumps off, load valve shut) yet not idle: pump 1 pulls node 1 down 24.2 kPa below `comChiWatSup.p` and pushes 4.07e-4 kg/s through the closed `valChiWatUniInlIso[1]`, out through the min bypass. `comChiWatSup.p` is a state, but `port_aChiWat.m_flow` *still* reaches the rows only through the inverse law of the closed load valve, so it must be resolved at 2.4e-11 with `∂r/∂m_load = 1 + g_byp·R_load = 1.66e7` on the bypass row (row 8 of this 9×9 block; log: `J_sum` = 1.65737e7). The HW transient in the same block keeps kicking it past the bypass breakpoint `dp_turb = 14.0 Pa` ⇔ `m_load = 4.5e-8`: at the stall the iterate sits at −9.58e-8, i.e. −30 Pa across the bypass and a phantom 0.77 kg/s of bypass flow — exactly the printed residual. `J_sum` of that row alternates 5.3e5 ↔ 5e6 and the scaled residual limit-cycles between 1.2e-6 and 1.1e-5, never reaching tolerance; `cond = 2.2e6`, nowhere near singular. The trajectory is unaffected (both were rejected steps).
