@@ -6,16 +6,17 @@ The base run is drawn solid and is always shown; the variant compared against
 it is drawn dotted and picked from the dropdown in the page header, in the
 Dash app and in the static HTML alike.  Every variant is loaded into the
 figure, so the dropdown switches between them without reloading any data.
-Panels can be folded away individually in the Dash app.
+Panels can be folded away individually, in both too.
 
 The result files are the Dymola names of
 Buildings.Templates.Plants.Chillers.Validation.HardCase1 and its variants.
 
     python3 plot_compare_hardcase1.py           # Dash app on 127.0.0.1:8052
-    python3 plot_compare_hardcase1.py --html    # static HTML, all panels
+    python3 plot_compare_hardcase1.py --html    # static HTML, no server needed
 """
 import json
 import sys
+from html import escape
 
 sys.path.insert(0, "/home/reituag/gitrepo/BuildingsPy")
 
@@ -412,9 +413,11 @@ INDEX = """<!DOCTYPE html>
 </html>
 """ % STYLE
 
-# The static page: the header of the Dash app over the figure, with a plain
-# <select> in place of its dropdown.  Everything else the app offers needs a
-# server, so the static page shows all panels in the light theme.
+# The static page: the header and panel chips of the Dash app, done in the
+# browser since there is no server to call back.  Each panel is a figure of
+# its own, so folding a panel only hides its figure; the time axes, which the
+# app gets from shared subplots, are kept in step by hand.  Only the dark
+# theme is left to the app.
 PAGE = """<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>%(title)s</title>
@@ -426,13 +429,54 @@ PAGE = """<!DOCTYPE html>
 <select id="variant">%(options)s</select>
 <span class="note">— dotted</span></div>
 </header>
-%(chart)s
+<div id="bar"><span class="lab">Panels</span>
+<div id="chips">%(chips)s</div>
+<span class="sep"></span>
+<button id="all-btn">All</button><button id="none-btn">None</button>
+</div>
+%(charts)s
 <script>
 const VIS = %(visible)s;
+const panels = [...document.querySelectorAll(".panel")];
+const plots = panels.map(p => p.querySelector(".plotly-graph-div"));
+const boxes = [...document.querySelectorAll("#chips input")];
 const sel = document.getElementById("variant");
-sel.addEventListener("change", function () {
-  Plotly.restyle("chart", {visible: VIS[sel.value]});
-});
+
+// Variant: flip trace visibility in every panel, folded ones included.
+sel.addEventListener("change", () =>
+  plots.forEach((gd, i) => Plotly.restyle(gd, {visible: VIS[sel.value][i]})));
+
+// Panels: hide the figure of an unchecked chip.  A figure shown again is
+// resized, as the page may have changed width while it was hidden.
+function fold() {
+  boxes.forEach((b, i) => {
+    const was = panels[i].style.display !== "none";
+    panels[i].style.display = b.checked ? "" : "none";
+    if (b.checked && !was) Plotly.Plots.resize(plots[i]);
+  });
+}
+boxes.forEach(b => b.addEventListener("change", fold));
+document.getElementById("all-btn").onclick = () => {
+  boxes.forEach(b => b.checked = true); fold(); };
+document.getElementById("none-btn").onclick = () => {
+  boxes.forEach(b => b.checked = false); fold(); };
+
+// Time axis: zooming or panning one panel applies to all of them.  The
+// relayout this sends to the other panels echoes back the same range, which
+// is dropped.
+let last = null;
+plots.forEach(gd => gd.on("plotly_relayout", ev => {
+  let upd;
+  if ("xaxis.range[0]" in ev)
+    upd = {"xaxis.range": [ev["xaxis.range[0]"], ev["xaxis.range[1]"]]};
+  else if ("xaxis.range" in ev) upd = {"xaxis.range": ev["xaxis.range"]};
+  else if (ev["xaxis.autorange"]) upd = {"xaxis.autorange": true};
+  else return;
+  const key = JSON.stringify(upd);
+  if (key === last) return;
+  last = key;
+  plots.forEach(o => { if (o !== gd) Plotly.relayout(o, upd); });
+}));
 </script>
 </body>
 </html>
@@ -440,19 +484,30 @@ sel.addEventListener("change", function () {
 
 
 def write_html(path):
-    """Write every panel of every run to `path`, as one self-contained page."""
-    selected = list(range(len(panels())))
-    fig = make_figure(selected, LIGHT)
+    """Write every panel of every run to `path`, as one self-contained page.
+
+    Return the number of traces written.
+    """
+    figs = [make_figure([i], LIGHT) for i in range(len(panels()))]
     opts = "".join(f'<option{" selected" if name == DEFAULT_B else ""}>{name}'
                    "</option>" for name in RUNS_B)
+    chips = "".join(f'<label><input type="checkbox" checked>{escape(p[0])}'
+                    "</label>" for p in panels())
+    charts = "\n".join(
+        '<div class="panel">%s</div>' % fig.to_html(
+            full_html=False, include_plotlyjs="cdn" if i == 0 else False,
+            div_id=f"p{i}", config={"displaylogo": False, "responsive": True})
+        for i, fig in enumerate(figs))
+    # VIS[variant][panel]: the visibility of the traces of one panel.
+    visible = {name: [visibility([i])[name] for i in range(len(figs))]
+               for name in RUNS_B}
     with open(path, "w") as out:
         out.write(PAGE % dict(
             title=f"{RUN_A[1]} vs variants", css=STYLE, base=RUN_A[0],
-            options=opts, visible=json.dumps(visibility(selected)),
-            chart=fig.to_html(full_html=False, include_plotlyjs="cdn",
-                              div_id="chart"),
+            options=opts, chips=chips, charts=charts,
+            visible=json.dumps(visible),
         ))
-    return fig
+    return sum(len(fig.data) for fig in figs)
 
 
 def build_app():
@@ -548,8 +603,7 @@ def build_app():
 
 if __name__ == "__main__":
     if "--html" in sys.argv:
-        fig = write_html(OUT)
-        print(f"{OUT}: {len(panels())} panels, {len(fig.data)} traces, "
+        print(f"{OUT}: {len(panels())} panels, {write_html(OUT)} traces, "
               f"{len(RUNS_B)} variants")
         if absent():
             print("dropped: " + ", ".join(absent()))
