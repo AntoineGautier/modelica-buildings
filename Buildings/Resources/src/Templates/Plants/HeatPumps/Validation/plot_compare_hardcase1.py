@@ -24,7 +24,8 @@ from plotly.subplots import make_subplots
 RUN_A = ("HardCase1_dassl.mat", "Base")
 # The variants the base run can be compared against, in dropdown order.
 RUNS_B = {
-    "Compliance": "HardCase1Compliance.mat",
+    "Compliance C=1e-5": "HardCase1Compliance.mat",
+    "Compliance C=1e-3": "HardCase1ComplianceHighC.mat",
     "Leakage": "HardCase1Leakage.mat",
     "Linearized": "HardCase1Linearized.mat",
 }

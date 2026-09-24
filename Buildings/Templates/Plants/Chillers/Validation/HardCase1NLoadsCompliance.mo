@@ -2,7 +2,7 @@ within Buildings.Templates.Plants.Chillers.Validation;
 model HardCase1NLoadsCompliance
   "Validation of chiller plant template with a distributed set of terminal loads"
   extends Buildings.Templates.Plants.Chillers.Validation.HardCase1NLoads(
-    pla(use_cpl=true));
+    pla(intChi(use_cpl=true)));
 annotation(experiment(StopTime=86400,
   Tolerance=1e-06,
   __Dymola_Algorithm="Cvode"),
