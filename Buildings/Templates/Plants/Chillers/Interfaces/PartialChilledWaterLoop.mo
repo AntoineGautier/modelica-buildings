@@ -14,6 +14,12 @@ partial model PartialChilledWaterLoop
       final typCtlHea=ctl.typCtlHea,
       final typMeaCtlChiWatPri=ctl.typMeaCtlChiWatPri,
       final have_valChiWatChiBypPar=intChi.have_valChiWatChiBypPar));
+  parameter Boolean use_cpl = false
+    "Set to true to use hydraulic compliance"
+    annotation(Evaluate=true, Dialog(tab="Dynamics", group="Hydraulic compliance"));
+  parameter Real C(final unit="kg/Pa", final min=0) = 1E-5
+    "Hydraulic capacitance dm/dp"
+    annotation(Evaluate=true, Dialog(tab="Dynamics", group="Hydraulic compliance"));
   replaceable Buildings.Templates.Plants.Chillers.Components.ChillerGroups.Compression chi(
     final dTLifChi_min=dat.ctl.dTLifChi_min,
     final linearized=linearized,
@@ -336,6 +342,10 @@ partial model PartialChilledWaterLoop
     annotation(Placement(transformation(extent={{10,-10},{-10,10}},
       rotation=90,
       origin={0,-220})));
+  Buildings.Templates.Components.Routing.Compliance cplChiWatSup(redeclare
+      package Medium = MediumChiWat, final C=C) if use_cpl
+    "Hydraulic compliance at CHW supply"
+    annotation (Placement(transformation(extent={{70,20},{90,40}})));
 equation
   /* Control point connection - start */
   connect(TOut.T, bus.TOut);
@@ -492,6 +502,8 @@ equation
   connect(bouChiWat.ports[1], intChi.port_aByp)
     annotation(Line(points={{0,-230},{40,-230}},
       color={0,127,255}));
+  connect(cplChiWatSup.port_a, pumChiWatPri.ports_a[1])
+    annotation (Line(points={{80,20},{80,0}}, color={0,127,255}));
 annotation(Documentation(
   info="<html>
 <p>

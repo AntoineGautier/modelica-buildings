@@ -1,7 +1,7 @@
 within Buildings.Templates.Plants.HeatPumps.Validation;
 model HardCase1ComplianceHighC "Validation of AWHP plant template"
   extends Buildings.Templates.Plants.HeatPumps.Validation.HardCase1Compliance(
-    pla(C=1E-4));
+    pla(C=1E-3));
 annotation(experiment(StopTime=86400,
   Tolerance=1e-06,
   __Dymola_Algorithm="Cvode"));

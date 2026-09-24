@@ -326,6 +326,7 @@ Both failures share one cause, defect A: the tearing takes the flow through the 
 - *A bypass resistance is not an alternative to `comChiWatRet`.* Any ∆p across the common leg couples primary and secondary flows, so the merge happens without compliance.
 - *Polyvalent is excluded on empirical grounds only.* HardCase3 showed no gain, but with the old `valIso` placement. The supply-outlet placement is untested there, and `HardCase3Compliance` now translates to the same model as HardCase3.
 - *Cost.* Each compliance adds a fast state. HardCase4Compliance, before `comChiWatRet` was added: +11% steps and 734 vs 609 rejected steps. The HW split did not reduce residual calls (234k → 236k + 247k, plus 254k for the new 1×1 load branch). Both HardCase4 runs hit the same Newton failure in the CHW secondary block (t ≈ 57070 s). HardCase4 with `comChiWatRet` is not yet tested.
+- *Coil "flow direction reversed" warnings* (e.g. HardCase2Compliance, `loaHea`, −51 kg/s at t ≈ 27170 s) come from CVODE trial points, where the stiff compliance pressure is off by several bar. On accepted steps (`equidistant=false`) the flow never reverses. The warning moves with the output settings and disappears at tol=1e-8. Ignore it; `use_dynamicFlowRegime=true` would only hide it.
 - Always diff the nonlinear system sizes and iteration variables in `dsmodel.mof` with and without `use_cpl`.
 
 

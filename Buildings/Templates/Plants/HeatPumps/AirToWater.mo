@@ -1081,21 +1081,21 @@ model AirToWater
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=90,
       origin={0,-22})));
-  Buildings.Templates.Components.Routing.Compliance comChiWatSup(
+  Buildings.Templates.Components.Routing.Compliance cplChiWatSup(
     redeclare final package Medium = MediumChiWat,
     final C=C,
     final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325)
     if use_cpl and have_chiWat and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
     "Hydraulic compliance on CHW supply"
     annotation(Placement(transformation(extent={{280,100},{300,120}})));
-  Buildings.Templates.Components.Routing.Compliance comHeaWatSup(
+  Buildings.Templates.Components.Routing.Compliance cplHeaWatSup(
     redeclare final package Medium = MediumHeaWat,
     final C=C,
     final p_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325)
     if use_cpl and have_heaWat and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
     "Hydraulic compliance on HW supply"
     annotation (Placement(transformation(extent={{280,-260},{300,-240}})));
-  Buildings.Templates.Components.Routing.Compliance comChiWatRet(
+  Buildings.Templates.Components.Routing.Compliance cplChiWatRet(
     redeclare final package Medium = MediumChiWat,
     final C=C,
     final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325)
@@ -1672,11 +1672,11 @@ equation
   connect(pumPri.ports_aHeaWat, valIso.ports_bHeaWatPhp)
     annotation(Line(points={{-250,-50},{-250,-50}},
       color={0,127,255}));
-  connect(comChiWatRet.port_a, TChiWatPriRet.port_a)
+  connect(cplChiWatRet.port_a, TChiWatPriRet.port_a)
     annotation (Line(points={{80,20},{80,0},{70,0}}, color={0,127,255}));
-  connect(comChiWatSup.port_a, VChiWatLooOrSec_flow.port_a)
+  connect(cplChiWatSup.port_a, VChiWatLooOrSec_flow.port_a)
     annotation (Line(points={{290,100},{290,80}}, color={0,127,255}));
-  connect(comHeaWatSup.port_a, VHeaWatLooOrSec_flow.port_a)
+  connect(cplHeaWatSup.port_a, VHeaWatLooOrSec_flow.port_a)
     annotation (Line(points={{290,-260},{290,-280}}, color={0,127,255}));
 annotation(defaultComponentName="pla",
   Documentation(
