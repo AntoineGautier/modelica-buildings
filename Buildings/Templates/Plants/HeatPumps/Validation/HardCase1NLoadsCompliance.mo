@@ -2,7 +2,7 @@ within Buildings.Templates.Plants.HeatPumps.Validation;
 model HardCase1NLoadsCompliance
   "Validation of AWHP plant template with a distributed set of terminal loads"
   extends Buildings.Templates.Plants.HeatPumps.Validation.HardCase1NLoads(
-    pla(valIso(use_cpl=true)));
+    pla(use_cpl=true));
 annotation(experiment(StopTime=86400,
   Tolerance=1e-06,
   __Dymola_Algorithm="Cvode"),

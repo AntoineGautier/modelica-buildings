@@ -2,7 +2,11 @@
 
 TODO:
 
+Use use_cpl as the only switch for the compliance.
+Fix massDynamics = FixedInitial on the compliance rather than following energyDynamics.
+
 Mention alternatives:
+
 - Leakage:
 
   - not robust solution due to sensitivity to event grid (e.g. suppressing assert blocks!), or NL scale (HardCase1NLoadsLeakage failing) or structure (Chillers.Validation.HardCase1Leakage failing)
