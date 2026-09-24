@@ -296,19 +296,38 @@ Both failures share one cause, defect A: the tearing takes the flow through the 
 - **HP plant.** Defect A alone does not fail this run; defect B does. With all units in heating, `valChe[3].dp` is tied to the rest of the block by leak laws only. An HW-side residual at the start of a call becomes a kPa error on it, Newton never moves it back, and the isolation-valve and bypass balances are left asking for different loop flows. Removing defect B is enough: `Leakage` passes, and the CHW supply compliance converges in about 3 residual evaluations per call. Defect A remains, and `HardCase1ComplianceCHW` shows it can still stall on its own.
 
 
-## Appendix 1. When to use compliance?
+## Appendix 1. When to use compliance and where?
 
-Use it when at least one of these shows up in `dsmodel.mof`:
-- A pressure is set only by leak laws (defect B), and the block also contains something that moves on its own. The typical case is a CHW and HW loop sharing the same HP units behind isolation valves (HardCase1). Look for an iteration variable, such as a check-valve or isolation-valve ∆p, that enters the residuals only through leak laws, i.e. a Jacobian column of order 1e-7 to 1e-8.
-- Tearing gets a group ∆p from the inverse law of a valve that closes during the run (defect A). The chiller bypass is the example. The compliance must sit where it turns that ∆p into “boundary minus state”, e.g. at the pump suction.
-- A large distributed network where the pressure state splits the block. In NLoads it cut a 31-unknown block into two and lowered total CPU despite more steps.
+**Use it** when at least one of these shows up in `dsmodel.mof`:
+- A pressure is set only by leak laws (defect B), and the block also contains something that moves on its own. Typical case: CHW and HW loops sharing HP units behind isolation valves (HardCase1).
+- Tearing gets a group ∆p from the inverse law of a valve that closes during the run (defect A), e.g. the chiller bypass. The compliance must turn that ∆p into “boundary minus state”, e.g. at the pump suction.
+- A large distributed network that the pressure state splits. In NLoads it cut a 31-unknown block into two and lowered total CPU despite more steps.
 
-> [!warning]
-> Compliance must sit downstream of the pump check valves, which means at a location depending on whether primary pumps are dedicated or headered!
+**Skip it** when the loop is hydraulically separate, has its own pressure boundary on a path that stays open, and its block has no HW/CHW coupling (HardCase3, 4-pipe or standalone loops). Quick check: if enabling compliance leaves the block sizes and iteration variables unchanged and removes no leak-law-only unknown, it only adds a stiff state (τ = C/g, about 10 ms with flow).
 
-Don’t use it when:
-- The loop is hydraulically separate from the others, has its own pressure boundary on a path that stays open, and its block has no HW/CHW coupling. HardCase3 and other 4-pipe or standalone loops are this case.
-- A quick check: if enabling compliance leaves the block’s size and iteration variables unchanged and removes no leak-law-only unknown, all it adds is a stiff state (τ = C/g, about 10 ms with flow) feeding the block.
+**Two roles per loop.** For the compliance to pin the check valves, a loop needs:
+1. A pressure reference at the pump suction (primary return / common leg): the expansion-tank role.
+2. A known pressure downstream of *all* pump check valves: the pinning role. `com*WatSec` sits at the plant supply outlet (`V*WatLooOrSec_flow.port_a`), i.e. after the secondary pumps if any, else after the primary pumps, whether dedicated or headered. Sensors, pass-through tanks and junctions have zero ∆p, so in primary-only plants this is the same pressure as the primary pump outlet.
+
+| `typ`, distribution                | Reference (pump suction)                   | Pinning (supply outlet) |
+| ---------------------------------- | ------------------------------------------ | ----------------------- |
+| HW, all but Polyvalent             | `bouHeaWat`                                | `comHeaWatSec`          |
+| CHW, reversible, primary-only      | none; reached through the HPs to `bouHeaWat` | `comChiWatSec`          |
+| CHW, reversible, primary-secondary | `comChiWatRet`                             | `comChiWatSec`          |
+| Polyvalent (HW and CHW)            | `bouHeaWat`, `bouChiWat`                   | none (excluded)         |
+
+**Why `comChiWatRet` only with secondary pumps.** A compliance merges nonlinear systems only if it puts an absolute pressure into a subnet that until then involved only pressure differences.
+- *Primary-secondary (HardCase4):* the secondary loop meets the plant at one node, the zero-∆p common leg (fixed bypass, `Valve.None`), so it solves on its own from Σ∆p = 0. `comChiWatSec` alone makes the pump and load flows depend on the common-leg pressure, which is set only through the primary loop, the HPs and `bouHeaWat`. The CHW secondary 2×2 and the primary 3×3 merged into a 6×6. On the HW side, `bouHeaWat` fixes the common leg and the secondary 2×2 splits into 1+1. `comChiWatRet` gives the CHW common leg the same known pressure.
+- *Primary-only:* the loop with the compliance already runs through the HPs to `bouHeaWat`, and its return pressure is already an unknown of that system. A known supply pressure can only split it. HardCase2 went from a 12×12 to 4×4 (HW) + 7×7 (CHW), with the old `valIso` placement.
+
+**Caveats**
+- *Placement.* The old `valIso.comChiWatSup` at `ValvesIsolation.port_bChiWat` is downstream of the check valves with dedicated pumps but at the pump suction with headered pumps, where it failed (HardCase2). The supply-outlet placement avoids this in every configuration.
+- *Why a compliance and not a second `bouChiWat` on reversible plants:* CHW and HW are joined through the HP isolation valves. Two fixed boundaries would drive a permanent leak flow between them, carrying their fixed temperatures. `comChiWatRet` settles to the pressure `bouHeaWat` imposes and then carries no flow. Both nominal pressures are 2.5e5 Pa.
+- *A bypass resistance is not an alternative to `comChiWatRet`.* Any ∆p across the common leg couples primary and secondary flows, so the merge happens without compliance.
+- *Polyvalent is excluded on empirical grounds only.* HardCase3 showed no gain, but with the old `valIso` placement. The supply-outlet placement is untested there, and `HardCase3Compliance` now translates to the same model as HardCase3.
+- *Cost.* Each compliance adds a fast state. HardCase4Compliance, before `comChiWatRet` was added: +11% steps and 734 vs 609 rejected steps. The HW split did not reduce residual calls (234k → 236k + 247k, plus 254k for the new 1×1 load branch). Both HardCase4 runs hit the same Newton failure in the CHW secondary block (t ≈ 57070 s). HardCase4 with `comChiWatRet` is not yet tested.
+- Always diff the nonlinear system sizes and iteration variables in `dsmodel.mof` with and without `use_cpl`.
+
 
 ## Appendix 2. Is the HW compliance needed? `HardCase1ComplianceCHW`, `use_cpl=true, use_cplHw=false`
 

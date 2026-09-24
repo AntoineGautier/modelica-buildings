@@ -15,9 +15,10 @@ model AirToWater
     final typHp=Buildings.Templates.Components.Types.HeatPump.AirToWater);
   parameter Boolean use_cpl = false
     "Set to true to use hydraulic compliance"
-    annotation(Evaluate=true);
+    annotation(Evaluate=true, Dialog(tab="Dynamics", group="Hydraulic compliance"));
   parameter Real C(final unit="kg/Pa", final min=0) = 1E-5
-    "Hydraulic capacitance dm/dp";
+    "Hydraulic capacitance dm/dp"
+    annotation(Evaluate=true, Dialog(tab="Dynamics", group="Hydraulic compliance"));
   parameter Boolean is_dpBalYPumSetCal = false
     "Set to true to automatically size balancing valves or evaluate pump speed providing design flow"
     annotation(__ctrlFlow(enable=false),
@@ -652,7 +653,7 @@ model AirToWater
     final icon_pipe=Buildings.Templates.Components.Types.IntegrationPoint.Supply)
     if have_chiWat
     "CHW loop (primary-only) or secondary (primary-secondary) volume flow rate"
-    annotation(Placement(transformation(extent={{288,70},{308,90}})));
+    annotation(Placement(transformation(extent={{290,70},{310,90}})));
   Buildings.Templates.Components.Sensors.Temperature TChiWatSecSup(
     redeclare final package Medium=MediumChiWat,
     final have_sen=ctl.have_senTChiWatSecSup,
@@ -1080,34 +1081,28 @@ model AirToWater
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=90,
       origin={0,-22})));
-  Buildings.Templates.Components.Routing.Compliance comChiWatPri(
+  Buildings.Templates.Components.Routing.Compliance comChiWatSup(
     redeclare final package Medium = MediumChiWat,
     final C=C,
-    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal +
-    101325) if use_cpl and have_chiWat and typPumChiWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.None
-    "Hydraulic compliance"
-    annotation(Placement(transformation(extent={{10,100},{30,120}})));
-  Buildings.Templates.Components.Routing.Compliance comHeaWatPri(
+    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325)
+    if use_cpl and have_chiWat and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+    "Hydraulic compliance on CHW supply"
+    annotation(Placement(transformation(extent={{280,100},{300,120}})));
+  Buildings.Templates.Components.Routing.Compliance comHeaWatSup(
     redeclare final package Medium = MediumHeaWat,
     final C=C,
-    final p_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal +
-    101325) if use_cpl and have_heaWat and typPumHeaWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.None
-    "Hydraulic compliance"
-    annotation (Placement(transformation(extent={{10,-260},{30,-240}})));
-  Buildings.Templates.Components.Routing.Compliance comChiWatSec(
-    redeclare final package Medium = MediumChiWat,
-    final C=C,
-    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal +
-    101325) if use_cpl and have_chiWat and typPumChiWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.Centralized
-    "Hydraulic compliance"
-    annotation(Placement(transformation(extent={{278,100},{298,120}})));
-  Buildings.Templates.Components.Routing.Compliance comHeaWatSec(
-    redeclare final package Medium = MediumHeaWat,
-    final C=C,
-    final p_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal +
-    101325) if use_cpl and have_heaWat and typPumHeaWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.Centralized
-    "Hydraulic compliance"
+    final p_start=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325)
+    if use_cpl and have_heaWat and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+    "Hydraulic compliance on HW supply"
     annotation (Placement(transformation(extent={{280,-260},{300,-240}})));
+  Buildings.Templates.Components.Routing.Compliance comChiWatRet(
+    redeclare final package Medium = MediumChiWat,
+    final C=C,
+    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325)
+    if use_cpl and have_chiWat and typPumChiWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.Centralized
+     and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+    "Hydraulic compliance on CHW return"
+    annotation (Placement(transformation(extent={{70,20},{90,40}})));
 initial equation
   // Calculation of pump speed providing design flow
   if have_heaWat then
@@ -1386,7 +1381,7 @@ equation
     annotation(Line(points={{-218,-130},{-218,-130}},
       color={0,127,255}));
   connect(supChiWatSec.port_b, VChiWatLooOrSec_flow.port_a)
-    annotation(Line(points={{270,80},{288,80}},
+    annotation(Line(points={{270,80},{290,80}},
       color={0,0,0},
       visible=have_chiWat
         and typPumChiWatSec <>
@@ -1509,7 +1504,7 @@ equation
       thickness=0.5,
       pattern=LinePattern.Dash));
   connect(outPumChiWatSec.port_b, VChiWatLooOrSec_flow.port_a)
-    annotation(Line(points={{290,80},{288,80}},
+    annotation(Line(points={{290,80},{290,80}},
       color={0,0,0},
       thickness=1));
   connect(TChiWatPriRet.port_b, valIso.port_aChiWat)
@@ -1601,7 +1596,7 @@ equation
       color={0,0,0},
       thickness=0.5));
   connect(VChiWatLooOrSec_flow.port_b, port_bChiWat)
-    annotation(Line(points={{308,80},{600,80}},
+    annotation(Line(points={{310,80},{600,80}},
       color={0,0,0},
       thickness=0.5,
       visible=have_chiWat));
@@ -1677,14 +1672,12 @@ equation
   connect(pumPri.ports_aHeaWat, valIso.ports_bHeaWatPhp)
     annotation(Line(points={{-250,-50},{-250,-50}},
       color={0,127,255}));
-  connect(comChiWatSec.port_a, outPumChiWatSec.port_b)
-    annotation (Line(points={{288,100},{288,80},{290,80}}, color={0,127,255}));
-  connect(comHeaWatSec.port_a, outPumHeaWatSec.port_b)
+  connect(comChiWatRet.port_a, TChiWatPriRet.port_a)
+    annotation (Line(points={{80,20},{80,0},{70,0}}, color={0,127,255}));
+  connect(comChiWatSup.port_a, VChiWatLooOrSec_flow.port_a)
+    annotation (Line(points={{290,100},{290,80}}, color={0,127,255}));
+  connect(comHeaWatSup.port_a, VHeaWatLooOrSec_flow.port_a)
     annotation (Line(points={{290,-260},{290,-280}}, color={0,127,255}));
-  connect(comChiWatPri.port_a, VChiWatPri_flow.port_a)
-    annotation (Line(points={{20,100},{20,80}}, color={0,127,255}));
-  connect(comHeaWatPri.port_a, VHeaWatPri_flow.port_a)
-    annotation (Line(points={{20,-260},{20,-280}}, color={0,127,255}));
 annotation(defaultComponentName="pla",
   Documentation(
     info="<html>
