@@ -56,6 +56,14 @@ protected
       k=k_max,
       m_flow_turbulent=m_flow_turbulent)
     "Total pressure drop across fully open valve + fixed resistance when starting to close";
+  // m2_flow_tot is recomputed from dp_closing because basicFlowFunction_dp and
+  // basicFlowFunction_m_flow are not exact inverses for m2_flow < m_flow_turbulent
+  parameter Modelica.Units.SI.MassFlowRate m2_flow_tot =
+    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp(
+      dp=dp_closing,
+      k=k_max,
+      m_flow_turbulent=m_flow_turbulent)
+    "Flow rate through fully open valve + fixed resistance at dp=dp_closing";
   parameter Real dm1_flow_dp =
     Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der(
       dp=0,
@@ -70,6 +78,22 @@ protected
       m_flow_turbulent=m_flow_turbulent,
       dp_der=1)
     "Derivative of open valve flow function at dp=dp_closing";
+  parameter Real d2m1_flow_dp =
+    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der2(
+      dp=0,
+      k=k_min,
+      m_flow_turbulent=m_flow_turbulent,
+      dp_der=1,
+      dp_der2=0)
+    "Second derivative of closed valve flow function at dp=0";
+  parameter Real d2m2_flow_dp =
+    Buildings.Fluid.BaseClasses.FlowModels.basicFlowFunction_dp_der2(
+      dp=dp_closing,
+      k=k_max,
+      m_flow_turbulent=m_flow_turbulent,
+      dp_der=1,
+      dp_der2=0)
+    "Second derivative of open valve flow function at dp=dp_closing";
   Modelica.Units.SI.MassFlowRate m_flow_smooth
     "Smooth interpolation result between two flow regimes";
 initial equation
@@ -88,14 +112,16 @@ equation
       dp=dp,
       k=k_max,
       m_flow_turbulent=m_flow_turbulent)
-    else Buildings.Utilities.Math.Functions.cubicHermiteLinearExtrapolation(
+    else Buildings.Utilities.Math.Functions.quinticHermite(
       x=dp,
       x1=0,
       x2=dp_closing,
       y1=0,
-      y2=m2_flow,
+      y2=m2_flow_tot,
       y1d=dm1_flow_dp,
-      y2d=dm2_flow_dp)));
+      y2d=dm2_flow_dp,
+      y1dd=d2m1_flow_dp,
+      y2dd=d2m2_flow_dp)));
   if tau > Modelica.Constants.eps then
     tau * der(m_flow_relaxed) = m_flow_smooth - m_flow_relaxed;
   else
