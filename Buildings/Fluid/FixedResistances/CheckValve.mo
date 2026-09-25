@@ -29,7 +29,7 @@ model CheckValve "Check valve that avoids flow reversal"
     "Flow coefficient of fixed resistance that may be in series with valve,
     k=m_flow/sqrt(dp), with unit=(kg.m)^(1/2).";
 
-  parameter Modelica.Units.SI.Time tau(min=0) = 1
+  parameter Modelica.Units.SI.Time tau(min=0) = 0
     "Time constant for relaxation; 0 = purely algebraic"
     annotation(Dialog(tab="Dynamics"));
 
@@ -42,8 +42,6 @@ protected
   parameter Real k_max=if dpFixed_nominal > Modelica.Constants.eps then
     sqrt(1 / (1 / kFixed ^ 2 + 1 / Kv_SI ^ 2)) else Kv_SI
     "Maximum flow coefficient (valve fully open)";
-  parameter Modelica.Units.SI.MassFlowRate m1_flow = 0
-    "Flow rate through closed valve with zero pressure drop";
   // Kv_SI is used instead of k_max below because dpValve_closing is for the valve only,
   // fixed resistance excluded
   parameter Modelica.Units.SI.MassFlowRate m2_flow =
