@@ -136,26 +136,20 @@ block Up "Sequence for control devices when there is stage-up command"
     "Current chiller stage, it would be the same as chiller stage setpoint when it is not in staging process"
     annotation (Placement(transformation(extent={{-280,-30},{-240,10}}),
         iconTransformation(extent={{-140,10},{-100,50}})));
-  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaPlaConPum
-    if not have_airCoo
-    "True: enable condenser water pump when the plant is just enabled"
-    annotation (Placement(transformation(extent={{-280,-56},{-240,-16}}),
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaPla
+    "True: the plant is just enabled"
+    annotation (Placement(transformation(extent={{-280,-60},{-240,-20}}),
         iconTransformation(extent={{-140,-10},{-100,30}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uConWatReq[nChi]
     if not have_airCoo
-    "Condenser water requst status for each chiller"
-    annotation (Placement(transformation(extent={{-280,-90},{-240,-50}}),
+    "Condenser water request status for each chiller"
+    annotation (Placement(transformation(extent={{-280,-110},{-240,-70}}),
       iconTransformation(extent={{-140,-40},{-100,0}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uWSE
     if have_WSE and not have_airCoo
     "Water side economizer status: true = ON, false = OFF"
-    annotation (Placement(transformation(extent={{-280,-110},{-240,-70}}),
-      iconTransformation(extent={{-140,-60},{-100,-20}})));
-  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uEnaPlaConIso
-    if not have_airCoo
-    "True: enable condenser water isolation valve when then plant is just enabled"
     annotation (Placement(transformation(extent={{-280,-140},{-240,-100}}),
-        iconTransformation(extent={{-140,-90},{-100,-50}})));
+      iconTransformation(extent={{-140,-60},{-100,-20}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uChiHeaCon[nChi]
     if not have_airCoo
     "Chillers head pressure control status"
@@ -172,7 +166,7 @@ block Up "Sequence for control devices when there is stage-up command"
     annotation (Placement(transformation(extent={{-280,-240},{-240,-200}}),
         iconTransformation(extent={{-140,-160},{-100,-120}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uChiWatReq[nChi]
-    "Chilled water requst status for each chiller"
+    "Chilled water request status for each chiller"
     annotation (Placement(transformation(extent={{-280,-290},{-240,-250}}),
       iconTransformation(extent={{-140,-190},{-100,-150}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput uPla
@@ -246,7 +240,7 @@ block Up "Sequence for control devices when there is stage-up command"
 protected
   Buildings.Controls.OBC.CDL.Integers.Change cha
     "Check if stage setpoint increases"
-    annotation (Placement(transformation(extent={{-200,140},{-180,160}})));
+    annotation (Placement(transformation(extent={{-200,130},{-180,150}})));
   Buildings.Controls.OBC.ASHRAE.G36.Plants.Chillers.Staging.Processes.Subsequences.NextChiller
     nexChi(final nChi=nChi) "Identify next enabling chiller"
     annotation (Placement(transformation(extent={{-80,180},{-60,200}})));
@@ -270,7 +264,7 @@ protected
     final byPasSetTim=byPasSetTim,
     final aftByPasSetTim=aftByPasSetTim,
     final relFloThr=relFloThr)
-    "Check if minium bypass has been reset"
+    "Check if minimum bypass has been reset"
     annotation (Placement(transformation(extent={{60,70},{80,90}})));
   Buildings.Controls.OBC.ASHRAE.G36.Plants.Chillers.Staging.Processes.Subsequences.EnableCWPump
     enaNexCWP if not have_airCoo
@@ -318,18 +312,18 @@ protected
     final minFloSet=minFloSet,
     final byPasSetTim=byPasSetTim,
     final aftByPasSetTim=aftByPasSetTim)
-                               "End stage-up process"
+    "End stage-up process"
     annotation (Placement(transformation(extent={{20,-280},{40,-240}})));
   Buildings.Controls.OBC.CDL.Logical.Sources.Constant con(final k=false)
     "False constant"
     annotation (Placement(transformation(extent={{-200,20},{-180,40}})));
   Buildings.Controls.OBC.CDL.Logical.MultiOr mulOr(nin=nChi) if not have_airCoo
     "Multiple or"
-    annotation (Placement(transformation(extent={{-140,-62},{-120,-42}})));
+    annotation (Placement(transformation(extent={{-140,-64},{-120,-44}})));
   Buildings.Controls.OBC.CDL.Logical.MultiOr mulOr1(final nin=nChi)
     if not have_airCoo
     "Multiple or"
-    annotation (Placement(transformation(extent={{-80,-80},{-60,-60}})));
+    annotation (Placement(transformation(extent={{-80,-100},{-60,-80}})));
   Buildings.Controls.OBC.CDL.Logical.Switch logSwi2[nChi]
     "Logical switch"
     annotation (Placement(transformation(extent={{200,-170},{220,-150}})));
@@ -381,9 +375,6 @@ protected
     final delayTime=1,
     final delayOnInit=true) "Check if it has passed initial time"
     annotation (Placement(transformation(extent={{-140,230},{-120,250}})));
-  Buildings.Controls.OBC.CDL.Logical.Edge edg
-    "Rising edge when the new setpoint has been achieved"
-    annotation (Placement(transformation(extent={{120,70},{140,90}})));
   Buildings.Controls.OBC.CDL.Logical.And and3
     "Logical and"
     annotation (Placement(transformation(extent={{100,110},{120,130}})));
@@ -394,7 +385,7 @@ protected
     "To be disabled when it is air chilled"
     annotation (Placement(transformation(extent={{20,-180},{40,-160}})));
   Buildings.Controls.OBC.CDL.Logical.Not disPla "Disabled plant"
-    annotation (Placement(transformation(extent={{-220,-310},{-200,-290}})));
+    annotation (Placement(transformation(extent={{-200,-300},{-180,-280}})));
   Buildings.Controls.OBC.CDL.Logical.Or staEnd "Staging end"
     annotation (Placement(transformation(extent={{80,-300},{100,-280}})));
   Buildings.Controls.OBC.CDL.Reals.Switch chiWatIsoVal[nChi] if chiIsoValTyp
@@ -404,6 +395,11 @@ protected
   Buildings.Controls.OBC.CDL.Logical.Or or3
     "In staging up process or just enabling plant"
     annotation (Placement(transformation(extent={{20,110},{40,130}})));
+  Buildings.Controls.OBC.CDL.Logical.Or or4 if have_airCoo
+    "To be disabled when it is air chilled"
+    annotation (Placement(transformation(extent={{-140,-190},{-120,-170}})));
+  Buildings.Controls.OBC.CDL.Logical.Or or5 "Ending process"
+    annotation (Placement(transformation(extent={{-200,160},{-180,180}})));
 
 equation
   connect(lat.y,chiDemRed.uDemLim)
@@ -427,7 +423,7 @@ equation
     annotation (Line(points={{-118,150},{-100,150},{-100,-8},{-2,-8}},
       color={255,0,255}));
   connect(conWatPumCon.uWSE, uWSE)
-    annotation (Line(points={{58,-69},{-6,-69},{-6,-90},{-260,-90}},
+    annotation (Line(points={{58,-69},{20,-69},{20,-120},{-260,-120}},
       color={255,0,255}));
   connect(enaNexCWP.yChiSta, conWatPumCon.uChiSta)
     annotation (Line(points={{22,-10},{36,-10},{36,-66},{58,-66}},
@@ -452,10 +448,10 @@ equation
     annotation (Line(points={{18,-261},{-220,-261},{-220,-270},{-260,-270}},
       color={255,0,255}));
   connect(uConWatReq, endUp.uConWatReq)
-    annotation (Line(points={{-260,-70},{-164,-70},{-164,-269},{18,-269}},
+    annotation (Line(points={{-260,-90},{-164,-90},{-164,-269},{18,-269}},
       color={255,0,255}));
   connect(uConWatReq, mulOr1.u)
-    annotation (Line(points={{-260,-70},{-82,-70}},
+    annotation (Line(points={{-260,-90},{-82,-90}},
       color={255,0,255}));
   connect(chiDemRed.yChiDem, yChiDem)
     annotation (Line(points={{-58,124},{12,124},{12,180},{260,180}},
@@ -526,13 +522,13 @@ equation
     annotation (Line(points={{58,-51},{48,-51},{48,10},{-260,10}},
       color={255,0,255}));
   connect(mulOr.y, conWatPumCon.uLeaChiSta)
-    annotation (Line(points={{-118,-52},{44,-52},{44,-57},{58,-57}},
+    annotation (Line(points={{-118,-54},{44,-54},{44,-57},{58,-57}},
       color={255,0,255}));
   connect(mulOr.y, conWatPumCon.uLeaChiEna)
-    annotation (Line(points={{-118,-52},{-30,-52},{-30,-54},{58,-54}},
+    annotation (Line(points={{-118,-54},{58,-54}},
       color={255,0,255}));
   connect(mulOr1.y, conWatPumCon.uLeaConWatReq)
-    annotation (Line(points={{-58,-70},{-10,-70},{-10,-60},{58,-60}},
+    annotation (Line(points={{-58,-90},{-10,-90},{-10,-60},{58,-60}},
       color={255,0,255}));
   connect(conWatPumCon.yConWatPumNum, yConWatPumNum)
     annotation (Line(points={{82,-66},{220,-66},{220,-90},{260,-90}},
@@ -561,13 +557,12 @@ equation
   connect(nexChi.uChiSet, uChiSet)
     annotation (Line(points={{-82,190},{-230,190},{-230,170},{-260,170}},
       color={255,0,255}));
-  connect(uStaSet, cha.u) annotation (Line(points={{-260,200},{-210,200},{-210,
-          150},{-202,150}},
-                       color={255,127,0}));
+  connect(uStaSet, cha.u) annotation (Line(points={{-260,200},{-210,200},{-210,140},
+          {-202,140}},      color={255,127,0}));
   connect(uStaSet, enaNexCWP.uStaSet) annotation (Line(points={{-260,200},{-104,
           200},{-104,-19},{-2,-19}}, color={255,127,0}));
-  connect(uChiSta, enaNexCWP.uChiSta) annotation (Line(points={{-260,-10},{-180,
-          -10},{-180,-16},{-2,-16}}, color={255,127,0}));
+  connect(uChiSta, enaNexCWP.uChiSta) annotation (Line(points={{-260,-10},{-140,
+          -10},{-140,-16},{-2,-16}}, color={255,127,0}));
   connect(enaHeaCon.uChiHeaCon, uChiHeaCon) annotation (Line(points={{58,-148},{
           -48,-148},{-48,-160},{-260,-160}}, color={255,0,255}));
   connect(uChiHeaCon, endUp.uChiHeaCon) annotation (Line(points={{-260,-160},{-48,
@@ -585,48 +580,40 @@ equation
           272},{-142,272}}, color={255,127,0}));
   connect(and1.y, logSwi1.u3) annotation (Line(points={{-78,300},{-60,300},{-60,
           242},{-42,242}}, color={255,0,255}));
-  connect(uEnaPlaConPum, conWatPumCon.uEnaPla) annotation (Line(points={{-260,-36},
-          {40,-36},{40,-63},{58,-63}}, color={255,0,255}));
-  connect(uEnaPlaConIso, enaHeaCon.uEnaPla) annotation (Line(points={{-260,-120},
-          {-104,-120},{-104,-132},{58,-132}}, color={255,0,255}));
+  connect(uEnaPla, conWatPumCon.uEnaPla) annotation (Line(points={{-260,-40},{40,
+          -40},{40,-63},{58,-63}}, color={255,0,255}));
   connect(con2.y, truDel.u)
     annotation (Line(points={{-178,240},{-142,240}}, color={255,0,255}));
   connect(truDel.y, logSwi1.u2) annotation (Line(points={{-118,240},{-80,240},{-80,
           250},{-42,250}}, color={255,0,255}));
   connect(minChiWatFlo.yChaSet, minBypSet.uSetChaPro) annotation (Line(points={
           {42,32},{46,32},{46,72},{58,72}}, color={255,0,255}));
-  connect(edg.y, lat2.u) annotation (Line(points={{142,80},{150,80},{150,70},{158,
-          70}}, color={255,0,255}));
   connect(minBypSet.yMinBypRes, and3.u2) annotation (Line(points={{82,80},{90,
           80},{90,112},{98,112}}, color={255,0,255}));
-  connect(and3.y, edg.u) annotation (Line(points={{122,120},{130,120},{130,100},
-          {110,100},{110,80},{118,80}}, color={255,0,255}));
   connect(lat.y, and3.u1) annotation (Line(points={{-118,150},{80,150},{80,120},
           {98,120}}, color={255,0,255}));
   connect(lat.y, and4.u1) annotation (Line(points={{-118,150},{80,150},{80,160},
           {158,160}}, color={255,0,255}));
   connect(chiDemRed.yChiDemRed, and4.u2) annotation (Line(points={{-58,116},{
-          -32,116},{-32,152},{158,152}}, color={255,0,255}));
+          -52,116},{-52,152},{158,152}}, color={255,0,255}));
   connect(and4.y, lat1.u) annotation (Line(points={{182,160},{190,160},{190,140},
           {-28,140},{-28,100},{-22,100}}, color={255,0,255}));
   connect(or2.y, and4.u2) annotation (Line(points={{2,170},{6,170},{6,152},{158,
           152}}, color={255,0,255}));
-  connect(cha.up, and1.u1) annotation (Line(points={{-178,156},{-170,156},{-170,
+  connect(cha.up, and1.u1) annotation (Line(points={{-178,146},{-170,146},{-170,
           300},{-102,300}}, color={255,0,255}));
-  connect(cha.up, logSwi1.u1) annotation (Line(points={{-178,156},{-170,156},{
-          -170,258},{-42,258}}, color={255,0,255}));
+  connect(cha.up, logSwi1.u1) annotation (Line(points={{-178,146},{-170,146},{-170,
+          258},{-42,258}},      color={255,0,255}));
   connect(logSwi1.y, lat.u) annotation (Line(points={{-18,250},{0,250},{0,216},
           {-150,216},{-150,150},{-142,150}}, color={255,0,255}));
   connect(uChi, chiDemRed.uChi) annotation (Line(points={{-260,80},{-206,80},{-206,
           111},{-82,111}},      color={255,0,255}));
   connect(uChi, minChiWatFlo.uChi) annotation (Line(points={{-260,80},{-206,80},
           {-206,44},{18,44}}, color={255,0,255}));
-  connect(uChi, mulOr.u) annotation (Line(points={{-260,80},{-206,80},{-206,-52},
-          {-142,-52}}, color={255,0,255}));
+  connect(uChi, mulOr.u) annotation (Line(points={{-260,80},{-206,80},{-206,-54},
+          {-142,-54}}, color={255,0,255}));
   connect(uChi, endUp.uChi) annotation (Line(points={{-260,80},{-206,80},{-206,-253},
           {18,-253}},       color={255,0,255}));
-  connect(lat2.y, or1.u2) annotation (Line(points={{182,70},{190,70},{190,14},{-20,
-          14},{-20,-178},{18,-178}},     color={255,0,255}));
   connect(con.y, or1.u1) annotation (Line(points={{-178,30},{-96,30},{-96,-170},
           {18,-170}}, color={255,0,255}));
   connect(or1.y, enaChiIsoVal.uUpsDevSta) annotation (Line(points={{42,-170},{50,
@@ -634,10 +621,10 @@ equation
   connect(lat2.y, enaHeaCon.uUpsDevSta) annotation (Line(points={{182,70},{190,70},
           {190,14},{-20,14},{-20,-136},{58,-136}}, color={255,0,255}));
   connect(uPla, disPla.u)
-    annotation (Line(points={{-260,-300},{-222,-300}}, color={255,0,255}));
+    annotation (Line(points={{-260,-300},{-230,-300},{-230,-290},{-202,-290}},
+          color={255,0,255}));
   connect(disPla.y, staEnd.u1)
-    annotation (Line(points={{-198,-300},{-180,-300},{-180,-290},{78,-290}},
-         color={255,0,255}));
+    annotation (Line(points={{-178,-290},{78,-290}}, color={255,0,255}));
   connect(endUp.endStaTri, staEnd.u2) annotation (Line(points={{42,-269},{60,-269},
           {60,-298},{78,-298}}, color={255,0,255}));
   connect(staEnd.y, yEndStaTri) annotation (Line(points={{102,-290},{260,-290}},
@@ -682,16 +669,30 @@ equation
           112}}, color={255,0,255}));
   connect(lat1.y, or3.u2) annotation (Line(points={{2,100},{6,100},{6,112},{18,
           112}}, color={255,0,255}));
-  connect(uEnaPlaConPum, or3.u1) annotation (Line(points={{-260,-36},{-48,-36},
-          {-48,120},{18,120}}, color={255,0,255}));
+  connect(uEnaPla, or3.u1) annotation (Line(points={{-260,-40},{-48,-40},{-48,120},
+          {18,120}}, color={255,0,255}));
   connect(or3.y, minBypSet.uUpsDevSta) annotation (Line(points={{42,120},{50,
           120},{50,88},{58,88}}, color={255,0,255}));
   connect(or3.y, minChiWatFlo.uUpsDevSta) annotation (Line(points={{42,120},{50,
           120},{50,88},{10,88},{10,47},{18,47}}, color={255,0,255}));
-  connect(uEnaPlaConPum, enaNexCWP.uEnaPla) annotation (Line(points={{-260,-36},
-          {-48,-36},{-48,-13},{-2,-13}}, color={255,0,255}));
-  connect(uEndPro, nexChi.endPro) annotation (Line(points={{-260,140},{-220,140},
-          {-220,183},{-82,183}}, color={255,0,255}));
+  connect(uEnaPla, enaNexCWP.uEnaPla) annotation (Line(points={{-260,-40},{-48,-40},
+          {-48,-13},{-2,-13}}, color={255,0,255}));
+  connect(uEnaPla, enaHeaCon.uEnaPla) annotation (Line(points={{-260,-40},{-48,-40},
+          {-48,-132},{58,-132}}, color={255,0,255}));
+  connect(lat2.y, or4.u1) annotation (Line(points={{182,70},{190,70},{190,14},{-156,
+          14},{-156,-180},{-142,-180}}, color={255,0,255}));
+  connect(uEnaPla, or4.u2) annotation (Line(points={{-260,-40},{-168,-40},{-168,
+          -188},{-142,-188}}, color={255,0,255}));
+  connect(or4.y, or1.u2) annotation (Line(points={{-118,-180},{0,-180},{0,-178},
+          {18,-178}}, color={255,0,255}));
+  connect(uEndPro, or5.u1) annotation (Line(points={{-260,140},{-220,140},{-220,
+          170},{-202,170}}, color={255,0,255}));
+  connect(staEnd.y, or5.u2) annotation (Line(points={{102,-290},{180,-290},{180,
+          -310},{-214,-310},{-214,162},{-202,162}}, color={255,0,255}));
+  connect(or5.y, nexChi.endPro) annotation (Line(points={{-178,170},{-160,170},{
+          -160,183},{-82,183}}, color={255,0,255}));
+  connect(and3.y, lat2.u) annotation (Line(points={{122,120},{140,120},{140,70},
+          {158,70}}, color={255,0,255}));
 annotation (
   defaultComponentName="upProCon",
   Diagram(coordinateSystem(preserveAspectRatio=false,
@@ -817,13 +818,9 @@ This is to avoid the initial edge.")}),
           textColor={255,0,255},
           textString="uChiHeaCon"),
         Text(
-          extent={{-96,-62},{-30,-76}},
+          extent={{-98,16},{-52,0}},
           textColor={255,0,255},
-          textString="uEnaPlaConIso"),
-        Text(
-          extent={{-96,16},{-24,2}},
-          textColor={255,0,255},
-          textString="uEnaPlaConPum"),
+          textString="uEnaPla"),
         Text(
           extent={{50,-182},{98,-196}},
           textColor={255,0,255},
