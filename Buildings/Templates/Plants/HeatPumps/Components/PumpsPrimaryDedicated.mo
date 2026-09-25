@@ -6,6 +6,17 @@ model PumpsPrimaryDedicated
     "Medium model"
     annotation(__ctrlFlow(enable=false));
 
+  parameter Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary locBou
+    annotation(Evaluate=true, Dialog(tab="Advanced"));
+  Fluid.Sources.Boundary_pT bouHeaWat(
+    redeclare final package Medium=Medium,
+    p=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325,
+    nPorts=1)
+    if locBou == Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.HeatPumpOutlet
+    "Pressure boundary condition mimicking expansion tank"
+    annotation(Placement(transformation(extent={{10,-10},{-10,10}},
+      rotation=90,
+      origin={-100,-160})));
   parameter Integer nPumHeaWat
     "Number of primary HW pumps"
     annotation(Evaluate=true);
@@ -398,6 +409,15 @@ model PumpsPrimaryDedicated
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=90,
       origin={0,-138})));
+  Fluid.Sources.Boundary_pT bouChiWat(
+    redeclare final package Medium = Medium,
+    p=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325,
+    nPorts=1) if locBou == Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.HeatPumpOutlet
+     and not have_hp
+    "Pressure boundary condition mimicking expansion tank"
+    annotation(Placement(transformation(extent={{10,-10},{-10,10}},
+      rotation=90,
+      origin={-20,-160})));
   protected
   Buildings.Templates.Components.Interfaces.Bus busPumHeaWatPri
     "Primary HW pump control bus"
@@ -489,11 +509,21 @@ equation
   connect(pumHeaWat.ports_b[1:nHp], ports_bChiHeaWat)
     annotation(Line(points={{-140,-60},{-140,160},{-100,160},{-100,200}},
       color={0,127,255}));
+  if have_hp then
+  connect(bouHeaWat.ports[1], ports_aChiHeaWatHp[1]) annotation (Line(points={{-100,
+            -170},{-100,-180},{-160,-180},{-160,-200}}, color={0,127,255}));
+  else
+    connect(bouHeaWat.ports[1], ports_aHeaWatPhp[1]) annotation (Line(points={{-100,
+            -170},{-100,-180},{-80,-180},{-80,-200}},   color={0,127,255}));
+  end if;
+  connect(bouChiWat.ports[1], ports_aChiWatPhp[1])
+    annotation (Line(points={{-20,-170},{-20,-200}}, color={0,127,255}));
 annotation(defaultComponentName="pumPri",
   Diagram(coordinateSystem(extent={{-200,-200},{200,200}})),
   Icon(coordinateSystem(preserveAspectRatio=false,
     extent={{-2400,-400},{2400,400}}),
-    graphics={Bitmap(visible=typArrPumPri ==
+    graphics={
+              Bitmap(visible=typArrPumPri ==
       Buildings.Templates.Components.Types.PumpArrangement.Dedicated and
       nHp + nPhp >= 6,
       extent={{-50,-50},{50,50}},

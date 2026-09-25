@@ -18,6 +18,11 @@ package Types
     Variable1And2
       "Variable primary - Variable secondary centralized")
     "Enumeration to specify the type of CHW/HW distribution system";
+  type LocationBoundary = enumeration(
+    HeatPumpOutlet,
+      Supply,
+      Return
+      );
   type PumpsPrimary = enumeration(
     Constant
       "Constant speed pump specified separately",

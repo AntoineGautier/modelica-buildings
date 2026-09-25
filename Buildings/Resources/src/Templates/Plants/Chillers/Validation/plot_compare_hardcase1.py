@@ -31,7 +31,7 @@ RUNS_B = {
     "Leakage": "HardCase1Leakage_chiller.mat",
     "Linearized": "HardCase1Linearized_chiller.mat",
 }
-DEFAULT_B = "Linearized"
+DEFAULT_B = next(iter(RUNS_B))
 
 OUT = "compare.html"
 PORT = 8052
@@ -297,7 +297,7 @@ def make_figure(selected, theme, variant=None):
                 fig.add_trace(
                     go.Scatter(
                         x=t, y=y, customdata=cd,
-                        name=f"{label} · {run}",
+                        name=f"{label} · {run}", meta=run,
                         legend=f"legend{row if row > 1 else ''}",
                         mode="lines", visible=run in (RUN_A[1], variant),
                         line=dict(
@@ -511,7 +511,7 @@ def write_html(path):
 
 
 def build_app():
-    from dash import Dash, Input, Output, Patch, State, dcc, html
+    from dash import Dash, Input, Output, State, dcc, html
 
     titles = [p[0] for p in panels()]
     gone = absent()
@@ -560,6 +560,7 @@ def build_app():
             html.P([html.Code(" → ".join(RENAMED[0]))]),
         ], id="absent"),
         dcc.Store(id="theme", data="light"),
+        dcc.Store(id="fig"),
     ])
 
     @app.callback(Output("chips", "value"),
@@ -580,23 +581,25 @@ def build_app():
         "function(t) { document.body.dataset.theme = t; return window.dash_clientside.no_update; }",
         Output("theme", "id"), Input("theme", "data"))
 
-    # The browser already holds every variant, so switching one in only
-    # patches the visibility flags instead of sending the traces again.
-    @app.callback(Output("chart", "figure", allow_duplicate=True),
-                  Input("variant", "value"), State("chips", "value"),
-                  prevent_initial_call=True)
-    def _switch(variant, selected):
-        patch = Patch()
-        for i, on in enumerate(visibility(sorted(selected or []))[variant]):
-            patch["data"][i]["visible"] = on
-        return patch
-
-    @app.callback(Output("chart", "figure"),
-                  Input("chips", "value"), Input("theme", "data"),
-                  State("variant", "value"))
-    def _figure(selected, theme, variant):
+    @app.callback(Output("fig", "data"),
+                  Input("chips", "value"), Input("theme", "data"))
+    def _figure(selected, theme):
         return make_figure(sorted(selected or []),
-                           LIGHT if theme == "light" else DARK, variant)
+                           LIGHT if theme == "light" else DARK)
+
+    # The browser already holds every variant, so switching one in only
+    # flips the visibility flags instead of sending the traces again.  The
+    # flags are set from the figure and the variant as they both stand now,
+    # so a variant picked while a figure is still on its way is not lost when
+    # the figure arrives.
+    app.clientside_callback(
+        """function(fig, variant) {
+            if (!fig) return window.dash_clientside.no_update;
+            return {...fig, data: fig.data.map(t => ({...t,
+                visible: t.meta === %s || t.meta === variant}))};
+        }""" % json.dumps(RUN_A[1]),
+        Output("chart", "figure"), Input("fig", "data"),
+        Input("variant", "value"))
 
     return app
 

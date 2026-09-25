@@ -13,6 +13,12 @@ model AirToWater
         final yPumChiWatPriDedPhpSet=yPumChiWatPriDedPhpSet,
         final yPumChiWatPriHdrSet=yPumChiWatPriHdrSet)),
     final typHp=Buildings.Templates.Components.Types.HeatPump.AirToWater);
+  parameter Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary locBou=
+      Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.Return
+    annotation (Evaluate=true, Dialog(tab="Advanced"));
+  parameter Boolean use_bouChiWat = false
+    "Set to true to force using CHW boundary pressure for all plant configurations"
+    annotation(Evaluate=true, Dialog(tab="Advanced"));
   parameter Boolean use_cpl = false
     "Set to true to use hydraulic compliance"
     annotation(Evaluate=true, Dialog(tab="Dynamics", group="Hydraulic compliance"));
@@ -362,6 +368,7 @@ model AirToWater
     annotation(Placement(transformation(extent={{-540,-210},{-60,-130}})));
   Components.PumpsPrimaryDedicated pumPri(
     redeclare final package Medium=MediumHeaWat,
+    final locBou=locBou,
     final have_hp=have_hp,
     final have_php=have_php,
     final have_pumHeaWatPriVar=typPumPri ==
@@ -1066,17 +1073,18 @@ model AirToWater
   Fluid.Sources.Boundary_pT bouHeaWat(
     redeclare final package Medium=MediumHeaWat,
     p=Buildings.Templates.Data.Defaults.pHeaWat_rel_nominal + 101325,
-    nPorts=1)
-    if have_heaWat
+    nPorts=1) if have_heaWat and locBou <> Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.HeatPumpOutlet
     "Pressure boundary condition mimicking expansion tank"
     annotation(Placement(transformation(extent={{10,-10},{-10,10}},
       rotation=90,
-      origin={0,-340})));
+      origin={0,-318})));
   Fluid.Sources.Boundary_pT bouChiWat(
     redeclare final package Medium=MediumChiWat,
-    p=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325,
-    nPorts=1)
-    if typ == Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+    p=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325 + (if
+        locBou == Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.Supply
+         then 1 else 0),
+    nPorts=1) if (typ == Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
+     or use_bouChiWat) and locBou <> Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.HeatPumpOutlet
     "Pressure boundary condition mimicking expansion tank"
     annotation(Placement(transformation(extent={{-10,-10},{10,10}},
       rotation=90,
@@ -1095,14 +1103,6 @@ model AirToWater
     if use_cpl and have_heaWat and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
     "Hydraulic compliance on HW supply"
     annotation (Placement(transformation(extent={{280,-260},{300,-240}})));
-  Buildings.Templates.Components.Routing.Compliance cplChiWatRet(
-    redeclare final package Medium = MediumChiWat,
-    final C=C,
-    final p_start=Buildings.Templates.Data.Defaults.pChiWat_rel_nominal + 101325)
-    if use_cpl and have_chiWat and typPumChiWatSec == Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.Centralized
-     and typ <> Buildings.Templates.Plants.Controls.Types.PlantHeatPump.Polyvalent
-    "Hydraulic compliance on CHW return"
-    annotation (Placement(transformation(extent={{70,20},{90,40}})));
 initial equation
   // Calculation of pump speed providing design flow
   if have_heaWat then
@@ -1488,9 +1488,6 @@ equation
       visible=have_heaWat
         and typPumHeaWatSec <>
           Buildings.Templates.Plants.HeatPumps.Types.PumpsSecondary.Centralized));
-  connect(bouChiWat.ports[1], TChiWatPriRet.port_b)
-    annotation(Line(points={{0,-12},{0,0},{50,0}},
-      color={0,127,255}));
   connect(TChiWatSecSup.port_b, supChiWatSec.port_a)
     annotation(Line(points={{230,80},{250,80}},
       color={0,0,0},
@@ -1640,9 +1637,6 @@ equation
       color={0,0,0},
       thickness=0.5,
       pattern=LinePattern.Dash));
-  connect(bouHeaWat.ports[1], THeaWatPriRet.port_b)
-    annotation(Line(points={{0,-350},{0,-360},{50,-360}},
-      color={0,127,255}));
   connect(THeaWatPriRet.port_b, valIso.port_aHeaWat)
     annotation(Line(points={{50,-360},{-580,-360},{-580,60},{-540,60}},
       color={0,0,0},
@@ -1672,12 +1666,24 @@ equation
   connect(pumPri.ports_aHeaWat, valIso.ports_bHeaWatPhp)
     annotation(Line(points={{-250,-50},{-250,-50}},
       color={0,127,255}));
-  connect(cplChiWatRet.port_a, TChiWatPriRet.port_a)
-    annotation (Line(points={{80,20},{80,0},{70,0}}, color={0,127,255}));
   connect(cplChiWatSup.port_a, VChiWatLooOrSec_flow.port_a)
     annotation (Line(points={{290,100},{290,80}}, color={0,127,255}));
   connect(cplHeaWatSup.port_a, VHeaWatLooOrSec_flow.port_a)
     annotation (Line(points={{290,-260},{290,-280}}, color={0,127,255}));
+  if locBou == Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.Supply
+       then
+  connect(bouHeaWat.ports[1], tanHeaWatSup.port_a) annotation (Line(points={{0,-328},
+            {120,-328},{120,-280}},        color={0,127,255}));
+  connect(bouChiWat.ports[1], tanChiWatSup.port_a)
+    annotation (Line(points={{0,-12},{0,-12},{0,40},{120,40},{120,80}},
+                                                          color={0,127,255}));
+  elseif locBou == Buildings.Templates.Plants.HeatPumps.Types.LocationBoundary.Return
+       then
+        connect(bouChiWat.ports[1], TChiWatPriRet.port_b)
+    annotation (Line(points={{0,-12},{0,0},{50,0}},   color={0,127,255}));
+  connect(bouHeaWat.ports[1], THeaWatPriRet.port_b) annotation (Line(points={{0,-328},
+            {0,-360},{50,-360}},      color={0,127,255}));
+  end if;
 annotation(defaultComponentName="pla",
   Documentation(
     info="<html>
