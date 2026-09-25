@@ -3,11 +3,12 @@ AirToWaterReversibleHeatRecovery
 AirToWaterReversiblePolyvalent
 UserProject
 HardCase1
-HardCase1Leakage
-HardCase1Linearized
+HardCase1BypassFromDp
 HardCase1Compliance
 HardCase1ComplianceFixWarn
 HardCase1ComplianceHighC
+HardCase1Leakage
+HardCase1Linearized
 HardCase1NLoads
 HardCase1NLoadsCompliance
 HardCase1NLoadsLeakage

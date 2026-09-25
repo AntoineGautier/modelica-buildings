@@ -1,11 +1,16 @@
 # NL convergence failures in Templates
 
-TODO:
+TODO on main branches:
 
-Use use_cpl as the only switch for the compliance.
-Fix massDynamics = FixedInitial on the compliance rather than following energyDynamics.
+- Chiller:
+  - [x] `pla(intChi(valChiWatChiBypPar(from_dp=true)))`: solves HardCase1 with 7 NL failures (`linearized=true` has 6), HardCase2 NL failures 4 → 0
+- 
 
-Mention alternatives:
+
+
+
+
+Alternatives:
 
 - Leakage:
 
